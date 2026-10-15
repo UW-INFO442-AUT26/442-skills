@@ -1,6 +1,6 @@
 ---
 name: 442-create-exercise
-description: Builds a mobile-first practice exercise on any topic as one self-contained web page, then publishes it to the student's own GitHub account as a public GitHub Pages site and hands back the live link and a QR code. The author picks the interaction that teaches the idea best, which is often not a quiz: a simulation to play with and step through, an order to rebuild by dragging, a set of items to sort, a pair of lists to match. Use when a student asks for practice, drills, a quiz, self-testing, or to be quizzed on a topic, or wants notes turned into something to rehearse on their phone.
+description: "Builds a mobile-first practice exercise on any topic as one self-contained web page, then publishes it to the student's own GitHub account as a public GitHub Pages site and hands back the live link and a QR code. The author picks the interaction that teaches the idea best, which is often not a quiz: a simulation to play with and step through, an order to rebuild by dragging, a set of items to sort, a pair of lists to match. Use when a student asks for practice, drills, a quiz, self-testing, or to be quizzed on a topic, or wants notes turned into something to rehearse on their phone."
 ---
 
 # Build an exercise
