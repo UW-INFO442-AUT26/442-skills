@@ -29,7 +29,7 @@ submit.
 
 ## 2. Every answer gets feedback that says why
 
-**Rule.** Every graded step carries a `feedback` string that explains the
+**Rule.** Every question carries a `feedback` string that explains the
 mechanism, not the verdict. Grade on submit, show it on submit.
 
 **Why.** Feedback that names the goal, the gap, and the next move is what moves
@@ -148,10 +148,10 @@ going" is the first of the three feedback questions (Sadler, 1989; Hattie &
 Timperley, 2007). A vague bar invites stopping early.
 
 **In the spec.** `{ "text": "...", "minCorrect": 4 }`. Keep the text and the
-number in agreement. `minCorrect` counts graded steps only, so an `explore`
+number in agreement. `minCorrect` counts questions only, so an `explore`
 step never changes it.
 
-## 11. Answers are graded, not judged
+## 11. Answers are checked exactly, not judged
 
 **Rule.** A `short` step grades a normalized exact match against its `answer`
 list, then shows the model answer either way.
@@ -190,7 +190,7 @@ it does, is interactive work, and interactive work beats constructing an
 explanation, which beats reading and watching (Chi & Wylie, 2014). Handling the
 thing is what gives the student something concrete to hang the later words on.
 
-**In the spec.** An `explore` step is ungraded: it needs a `widget`, it shows a
+**In the spec.** An `explore` step is an activity, not a question: it needs a `widget`, it shows a
 Continue button, and it is not counted in `minCorrect`. Put it first on a new
 idea. Give the student something to drag or a variable to change, rather than a
 step that only prints text back at them. The widget must not print the answer
@@ -268,7 +268,7 @@ machine.
 | Rule | Lives in |
 |---|---|
 | 1, 11 | the page: nothing reveals before submit; the spec keeps answers out of `prompt`, `figure`, `widget` |
-| 2, 3 | `feedback`, `misconception` on every graded step |
+| 2, 3 | `feedback`, `misconception` on every question |
 | 4 | `meta.minutes`, the results screen |
 | 5 | the order of `steps[]`, and the mix of `kind` |
 | 6 | `hint` on early steps |
@@ -294,7 +294,7 @@ them do it.
 | `order` | The sequence, or the order of decisions, is the idea. |
 | `sort` | Items fall into two or three families. |
 | `match` | Two lists are easy to confuse, so they must be paired up. |
-| `explore` | The idea has parts, a trade-off, or a number that moves. Ungraded. |
+| `explore` | The idea has parts, a trade-off, or a number that moves. An activity, not a question. |
 
 ## Sources
 

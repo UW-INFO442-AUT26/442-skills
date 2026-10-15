@@ -19,8 +19,8 @@ import { dirname, isAbsolute, join } from "node:path";
 
 const EM_DASH = "\u2014";
 
-const GRADED_KINDS = new Set(["choice", "multi", "short", "order", "sort", "match"]);
-const KINDS = new Set([...GRADED_KINDS, "explore"]);
+const QUESTION_KINDS = new Set(["choice", "multi", "short", "order", "sort", "match"]);
+const KINDS = new Set([...QUESTION_KINDS, "explore"]);
 const FIGURE_TYPES = new Set(["svg", "html", "code"]);
 const CONTROL_TYPES = new Set(["range", "switch", "select", "button"]);
 
@@ -112,7 +112,7 @@ function checkMeta(meta) {
   }
   if (!isText(c.text)) add("meta.criterion.text", "required, the bar in the student's words");
   if (!isInt(c.minCorrect) || c.minCorrect < 0) {
-    add("meta.criterion.minCorrect", "required, a whole number that counts graded steps only");
+    add("meta.criterion.minCorrect", "required, a whole number that counts questions only");
   }
   if (meta.style !== undefined && (!isText(meta.style) || !meta.style.trim())) {
     add("meta.style", "optional, but when present it must be a non-empty string of CSS");
@@ -269,7 +269,7 @@ function checkStep(step, i, seen) {
     add(where + ".tag", "when present, a non-empty string naming the sub-topic");
   }
 
-  const graded = GRADED_KINDS.has(step.kind);
+  const isQuestion = QUESTION_KINDS.has(step.kind);
   if (!isText(step.kind)) {
     add(where + ".kind", "required");
   } else if (!KINDS.has(step.kind)) {
@@ -277,8 +277,8 @@ function checkStep(step, i, seen) {
   }
   if (!isText(step.prompt)) add(where + ".prompt", "required, the words the student reads");
 
-  if (graded && !isText(step.feedback)) {
-    add(where + ".feedback", "required on a graded step, explaining why the answer is right");
+  if (isQuestion && !isText(step.feedback)) {
+    add(where + ".feedback", "required on a question, explaining why the answer is right");
   }
   if (step.hint !== undefined && !isText(step.hint)) {
     add(where + ".hint", "when present, a non-empty string");
@@ -428,7 +428,7 @@ function checkStep(step, i, seen) {
     checkWidget(step.widget, where + ".widget", false);
   }
 
-  return graded;
+  return isQuestion;
 }
 
 function checkSpec(spec) {
@@ -446,22 +446,22 @@ function checkSpec(spec) {
 
   const seen = new Map();
   const kinds = new Map();
-  let graded = 0;
+  let questions = 0;
   spec.steps.forEach((step, i) => {
-    if (checkStep(step, i, seen)) graded += 1;
+    if (checkStep(step, i, seen)) questions += 1;
     const kind = isObject(step) && isText(step.kind) ? step.kind : "unknown";
     kinds.set(kind, (kinds.get(kind) || 0) + 1);
   });
 
   const minCorrect = spec.meta && isObject(spec.meta.criterion) ? spec.meta.criterion.minCorrect : undefined;
-  if (isInt(minCorrect) && minCorrect > graded) {
+  if (isInt(minCorrect) && minCorrect > questions) {
     add(
       "meta.criterion.minCorrect",
-      `is ${minCorrect}, but only ${graded} step${graded === 1 ? "" : "s"} ${graded === 1 ? "is" : "are"} graded; kinds present: ${[...kinds].map(([k, n]) => `${k} ${n}`).join(", ")}`,
+      `is ${minCorrect}, but only ${questions} step${questions === 1 ? "" : "s"} ${questions === 1 ? "is" : "are"} a question; kinds present: ${[...kinds].map(([k, n]) => `${k} ${n}`).join(", ")}`,
     );
   }
 
-  return { kinds, graded };
+  return { kinds, questions };
 }
 
 /* ------------------------------------------------------------------ *
@@ -564,11 +564,11 @@ function main() {
 
   const title = spec.meta && spec.meta.title ? spec.meta.title : specPath;
   const kinds = summary ? [...summary.kinds].map(([k, n]) => `${k} ${n}`).join(", ") : "";
-  const graded = summary ? summary.graded : 0;
+  const questions = summary ? summary.questions : 0;
   const minCorrect = spec.meta && spec.meta.criterion ? spec.meta.criterion.minCorrect : "?";
   const page = pagePath ? `, page ${pagePath} clean` : "";
   process.stdout.write(
-    `OK ${title}: ${spec.steps.length} steps, ${graded} graded, minCorrect ${minCorrect}, kinds: ${kinds}${page}\n`,
+    `OK ${title}: ${spec.steps.length} steps, ${questions} questions, minCorrect ${minCorrect}, kinds: ${kinds}${page}\n`,
   );
   return 0;
 }

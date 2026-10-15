@@ -874,7 +874,8 @@ h1::after {
 (function () {
   "use strict";
 
-  /* The seven step kinds. `explore` is the only one that is not graded. */
+  /* The seven step kinds. `explore` is the activity kind: nothing is scored
+     on it, and the page calls the rest the questions. */
   var KINDS = ["choice", "multi", "short", "order", "sort", "match", "explore"];
   var uid = 0;
 
@@ -887,8 +888,8 @@ h1::after {
 
   var meta = (spec.meta && typeof spec.meta === "object") ? spec.meta : {};
   var STEPS = prepareSteps(spec.steps);
-  var GRADED_TOTAL = 0;
-  STEPS.forEach(function (s) { if (s.kind !== "explore") GRADED_TOTAL += 1; });
+  var QUESTION_TOTAL = 0;
+  STEPS.forEach(function (s) { if (s.kind !== "explore") QUESTION_TOTAL += 1; });
 
   function isArr(v) { return Array.isArray(v); }
   function isNum(v) { return typeof v === "number" && isFinite(v); }
@@ -1134,10 +1135,10 @@ h1::after {
 
   function criterion() {
     var c = (meta.criterion && typeof meta.criterion === "object") ? meta.criterion : {};
-    var min = isNum(c.minCorrect) ? Math.round(c.minCorrect) : Math.ceil(GRADED_TOTAL * 0.8);
+    var min = isNum(c.minCorrect) ? Math.round(c.minCorrect) : Math.ceil(QUESTION_TOTAL * 0.8);
     return {
       text: typeof c.text === "string" ? c.text : "",
-      minCorrect: Math.max(0, Math.min(min, GRADED_TOTAL))
+      minCorrect: Math.max(0, Math.min(min, QUESTION_TOTAL))
     };
   }
 
@@ -1381,15 +1382,22 @@ h1::after {
   function renderIntro() {
     clear();
     var n = STEPS.length;
-    var ungraded = n - GRADED_TOTAL;
+    var questions = QUESTION_TOTAL;
+    var activities = n - QUESTION_TOTAL;
     var c = criterion();
 
     var figures = [
       el("div", { class: "figure" }, [
-        el("span", { class: "figure-n", text: String(n) }),
-        el("span", { class: "figure-l", text: n === 1 ? "step" : "steps" })
+        el("span", { class: "figure-n", text: String(questions) }),
+        el("span", { class: "figure-l", text: questions === 1 ? "question" : "questions" })
       ])
     ];
+    if (activities) {
+      figures.push(el("div", { class: "figure" }, [
+        el("span", { class: "figure-n", text: String(activities) }),
+        el("span", { class: "figure-l", text: activities === 1 ? "activity" : "activities" })
+      ]));
+    }
     if (isNum(meta.minutes)) {
       figures.push(el("div", { class: "figure" }, [
         el("span", { class: "figure-n", text: String(meta.minutes) }),
@@ -1399,10 +1407,10 @@ h1::after {
 
     var card = el("section", { class: "card" }, [
       el("div", { class: "figures" }, figures),
-      ungraded
-        ? el("p", { class: "lead", text: ungraded === 1
-            ? "One step is not graded. Play with it and try things."
-            : ungraded + " steps are not graded. Play with those and try things." })
+      activities
+        ? el("p", { class: "lead", text: activities === 1
+            ? "One step is an activity. There is nothing to get right in it, so try things."
+            : activities + " steps are activities. There is nothing to get right in them, so try things." })
         : null,
       el("p", { class: "lead", text: "Answer each one before you check it. Trying first is what makes it stick." }),
       c.text ? pair("Done means", document.createTextNode(c.text)) : null,
@@ -2046,9 +2054,9 @@ h1::after {
   function renderResults() {
     clear();
     var c = criterion();
-    var graded = queue.filter(function (i) { return STEPS[i].kind !== "explore"; });
-    var right = graded.filter(function (i) { return latest.get(i) === true; }).length;
-    var missed = graded.filter(function (i) { return latest.get(i) !== true; });
+    var questions = queue.filter(function (i) { return STEPS[i].kind !== "explore"; });
+    var right = questions.filter(function (i) { return latest.get(i) === true; }).length;
+    var missed = questions.filter(function (i) { return latest.get(i) !== true; });
     var overall = 0;
     STEPS.forEach(function (s, i) {
       if (s.kind !== "explore" && latest.get(i) === true) overall += 1;
@@ -2059,15 +2067,15 @@ h1::after {
     var card = el("section", { class: "card" });
     card.appendChild(el("p", { class: "score" }, [
       el("span", { class: "score-n", text: String(right) }),
-      el("span", { class: "score-d", text: "of " + graded.length })
+      el("span", { class: "score-d", text: "of " + questions.length })
     ]));
     card.appendChild(el("p", {
       class: "lead",
       text: firstPass
-        ? (graded.length && right === graded.length
-            ? "Every graded step right on the first pass."
-            : "Some graded steps were not right on the first pass. Read the notes below, then run them again.")
-        : "Right this round. Across the whole exercise: " + overall + " of " + GRADED_TOTAL + " graded steps."
+        ? (questions.length && right === questions.length
+            ? "Every question right on the first pass."
+            : "Some questions were not right on the first pass. Read the notes below, then run them again.")
+        : "Right this round. Across the whole exercise: " + overall + " of " + QUESTION_TOTAL + " questions."
     }));
 
     if (c.text) {
