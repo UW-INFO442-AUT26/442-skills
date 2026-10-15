@@ -39,6 +39,22 @@ curl -fsSL .../install.sh | bash -s -- --global    # this machine
 Then restart your agent and ask for something: "build me a new React project".
 Running the installer again is how you update.
 
+**Run it from your project folder.** The installer checks where you are, because
+installing in the wrong place is the usual reason the skills never show up. It
+handles four cases instead of guessing:
+
+| Where you ran it | What it does |
+|---|---|
+| Your project folder | Installs here. This is the case you want. |
+| A subfolder, like `src/` | Installs at the project root instead. Agents look for skills upward from the folder they start in and never downward, so a `src/` install would work only while you are standing in `src/`. |
+| Your home directory | Switches to option 2, a machine install, since a project install there reaches every folder under it anyway. |
+| A system folder, `/tmp`, or the installer's own checkout | Stops, says why, and tells you to `cd` into your project or to pass `--global`. |
+
+In a git repository it also adds `.omp/skills/` and `.opencode/skills/` to
+`.gitignore`, so nobody commits links that point into your home folder. In a
+folder that is not a repository it says so before installing, in case you are in
+the wrong place.
+
 Read [`install.sh`](install.sh) first if you want to see what it does. It's short.
 
 ## What it changes, and what it leaves alone

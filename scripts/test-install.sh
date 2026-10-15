@@ -56,6 +56,8 @@ contains "$WORK/log1" "No terminal to ask on" "defaulted to the project scope"
 [ -d "$P/.claude" ]; [ $? -ne 0 ]; check $? "no .claude directory was invented"
 [ -f "$HOME_DIR/.agents/AGENTS.md" ]; [ $? -ne 0 ]; check $? "the global AGENTS.md was left alone"
 [ -d "$HOME_DIR/.config/opencode" ]; [ $? -ne 0 ]; check $? "no OpenCode config directory was invented"
+[ -f "$P/.gitignore" ]; [ $? -ne 0 ]; check $? "no .gitignore was invented outside a repository"
+contains "$WORK/log1" "is not a git repository" "and the folder was questioned"
 
 printf '\n2. a project that already has an AGENTS.md and a skills folder\n'
 P="$WORK/existing"
@@ -184,6 +186,49 @@ run_uninstall "$P" --project > "$WORK/log12" 2>&1
 contains "$WORK/dotfiles/AGENTS.md" "My rules" "uninstall keeps the linked file's own content"
 not_contains "$WORK/dotfiles/AGENTS.md" "<!-- BEGIN 442-skills" "and removes the block through the link"
 [ -L "$P/AGENTS.md" ]; check $? "the symlink survived the uninstall"
+
+printf '\n11. standing in a subfolder of a project\n'
+P="$WORK/subfolder"
+mkdir -p "$P/src/components"
+git -C "$P" init -q -b main
+# The installer reports the resolved path (pwd -P), so compare like for like.
+P="$(cd "$P" && pwd -P)"
+run_install "$P/src/components" > "$WORK/log13" 2>&1
+check $? "installer exits clean"
+contains "$WORK/log13" "subfolder of the project at $P" "the subfolder was called out"
+[ -L "$P/.omp/skills/442-brand" ]; check $? "the skills went to the project root"
+[ -d "$P/src/components/.omp" ]; [ $? -ne 0 ]; check $? "nothing was left in the subfolder"
+contains "$P/AGENTS.md" "<!-- BEGIN 442-skills" "the rules went to the root AGENTS.md"
+[ -f "$P/src/components/AGENTS.md" ]; [ $? -ne 0 ]; check $? "and no rules file was made in the subfolder"
+contains "$P/.gitignore" ".omp/skills/" "the links were added to .gitignore"
+contains "$P/.gitignore" ".opencode/skills/" "both folders were"
+run_install "$P/src/components" > /dev/null 2>&1
+[ "$(count_of "$P/.gitignore" ".omp/skills/")" = "1" ]; check $? "a second run does not duplicate the entry"
+run_uninstall "$P/src/components" --project > /dev/null 2>&1
+[ -L "$P/.omp/skills/442-brand" ]; [ $? -ne 0 ]; check $? "uninstall finds the root install from the subfolder"
+
+printf '\n12. a system or temporary directory\n'
+run_install / > "$WORK/log14" 2>&1
+[ $? -ne 0 ]; check $? "installer refuses /"
+contains "$WORK/log14" "system or temporary directory" "and says why"
+run_install /tmp > "$WORK/log15" 2>&1
+[ $? -ne 0 ]; check $? "installer refuses /tmp"
+not_contains "$WORK/log15" "Linked" "and linked nothing"
+
+printf '\n13. a checkout of the skills repo itself\n'
+run_install "$SRC" > "$WORK/log16" 2>&1
+[ $? -ne 0 ]; check $? "installer refuses the checkout"
+contains "$WORK/log16" "checkout of the 442-skills repo" "and says why"
+not_contains "$SRC/AGENTS.md" "<!-- BEGIN 442-skills" "the repo's own AGENTS.md was left alone"
+
+printf '\n14. a config directory that is a file\n'
+P="$WORK/ocfile"
+mkdir -p "$P"
+printf 'not a directory\n' > "$P/.opencode"
+run_install "$P" > "$WORK/log17" 2>&1
+check $? "installer exits clean"
+contains "$WORK/log17" "Could not create" "the unusable target was reported"
+[ -L "$P/.omp/skills/442-brand" ]; check $? "the other targets still worked"
 
 if [ "$FAILED" = "0" ]; then
   printf '\ninstall.sh behaves. All checks passed.\n'

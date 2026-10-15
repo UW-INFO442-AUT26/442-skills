@@ -11,7 +11,8 @@
 set -euo pipefail
 
 DEST="${INFO442_SKILLS_HOME:-$HOME/.442-skills}"
-PROJECT_DIR="$PWD"
+PROJECT_DIR="$(pwd -P)"
+REAL_HOME="$(cd "$HOME" 2>/dev/null && pwd -P || printf '%s' "$HOME")"
 
 BEGIN_MARK="<!-- BEGIN 442-skills"
 END_MARK="<!-- END 442-skills -->"
@@ -31,6 +32,15 @@ for arg in "$@"; do
     *) warn "Ignoring unknown option: $arg" ;;
   esac
 done
+
+# The install may have gone to the project root rather than the subfolder it was
+# run from (see install.sh), so look from the same place it wrote.
+if [ "$SCOPE" != "global" ]; then
+  repo_root="$(git -C "$PROJECT_DIR" rev-parse --show-toplevel 2>/dev/null || true)"
+  if [ -n "$repo_root" ] && [ "$repo_root" != "$PROJECT_DIR" ] && [ "$repo_root" != "$REAL_HOME" ]; then
+    PROJECT_DIR="$repo_root"
+  fi
+fi
 
 DIRS=()
 AGENTS_FILES=()
