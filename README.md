@@ -1,21 +1,20 @@
 # INFO 442 skills
 
-A set of agent skills for **INFO 442, Cooperative Software Development**. Install
-them once, then your AI agent can scaffold a project, build you a practice
-exercise, plan a roadmap, write a spec, and more, all with the class conventions
-built in.
+Agent skills for INFO 442, Cooperative Software Development. Install them once,
+and your agent can set up a React project, build you a practice exercise, plan a
+roadmap, and write a spec, using the class conventions.
 
-Built for the course, usable by anyone.
+They're written for this course, but nothing stops you from using them elsewhere.
 
 ## Install
 
-One line in your terminal:
+Run this in your project directory:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/UW-INFO442-AUT26/442-skills/main/install.sh | bash
 ```
 
-It asks one question first:
+It asks one question:
 
 ```
   Install the INFO 442 skills for:
@@ -26,108 +25,109 @@ It asks one question first:
   Choose 1 or 2 [1]:
 ```
 
-**Project is the default**, and it is the right answer for coursework: the skills
-are available when your agent runs in that directory and nowhere else. Pick 2 to
-make them available in every session on the machine.
+Press Enter for your project. That's the usual answer for coursework: the skills
+work in that directory and nowhere else. Choose 2 if you want them in every
+project on your machine.
 
-To skip the question, pass the choice to bash:
+You can answer in advance instead, if you'd rather not be asked:
 
 ```bash
-# this project only
-curl -fsSL .../install.sh | bash -s -- --project
-
-# every project on this machine
-curl -fsSL .../install.sh | bash -s -- --global
+curl -fsSL .../install.sh | bash -s -- --project   # this project
+curl -fsSL .../install.sh | bash -s -- --global    # this machine
 ```
 
-Then restart your agent and try one: *"build me a new React project"*. Re-run the
-same line any time to update.
+Then restart your agent and ask for something: "build me a new React project".
+Running the installer again is how you update.
 
-Prefer to read before you run? Open [`install.sh`](install.sh).
+Read [`install.sh`](install.sh) first if you want to see what it does. It's short.
 
-### What it writes, and what it will not touch
+## What it changes, and what it leaves alone
 
-Installing is **additive**. Nothing you already have is replaced.
+Installing only adds. Nothing you already have gets replaced.
 
-| Where | Project install | Global install |
+|  | This project (the default) | This machine (option 2) |
 |---|---|---|
-| The skills | `.omp/skills/442-*` in this directory, plus `.agents/skills` or `.claude/skills` if those directories already exist | `~/.omp/agent/skills`, `~/.agents/skills`, and `~/.claude/skills` if you use Claude Code |
-| The rules | the `AGENTS.md` in this directory, or `.omp/AGENTS.md` or `CLAUDE.md` if that is the rules file you already have | `~/.agents/AGENTS.md` |
+| Skills go to | `.omp/skills/442-*` in this directory, and `.agents/skills` or `.claude/skills` if your project already has one | `~/.omp/agent/skills`, `~/.agents/skills`, and `~/.claude/skills` if you have Claude Code |
+| Rules go to | your `AGENTS.md` | `~/.agents/AGENTS.md` |
 
-- **An existing `AGENTS.md` keeps its content.** The rules go in as a stamped
-  block, `<!-- BEGIN 442-skills` to `<!-- END 442-skills -->`. Re-running the
-  installer refreshes that block and leaves everything around it exactly as it
-  was.
-- **A skills folder keeps its skills.** Only symlinks that point into the INFO 442
-  checkout are ever replaced. A skill of your own is left alone, and if one of
-  your names collides with a class skill, the installer says so and skips it
-  rather than overwriting anything.
-- **A global install leaves your projects alone**, and a project install leaves
-  every other project alone.
+If your project already keeps its rules in `.omp/AGENTS.md` or `CLAUDE.md`, the
+installer writes into that file rather than making a second one.
 
-The skills themselves live in `~/.442-skills` and are symlinked into place, so
-"update" is just running the installer again. That has one consequence worth
-knowing: the links point at your home directory, so if you commit a project, add
-`.omp/skills/` to its `.gitignore`. A teammate who cloned your project would
-otherwise get links that point nowhere.
+**Your `AGENTS.md` keeps its content.** The class rules go in as a block between
+two markers. Run the installer again and it rewrites that block, leaving the rest
+of the file exactly as it was.
 
-### Uninstall
+**Your own skills stay put.** The installer only replaces links that it made
+itself. If you happen to have a skill with the same name as a class skill, it
+tells you and skips that one.
+
+**Projects stay separate.** A project install touches that directory only. A
+machine install touches no project at all.
+
+One thing worth knowing: the skills live in `~/.442-skills` and are linked into
+place, so those links point at your home folder. If you commit a project, add
+`.omp/skills/` to its `.gitignore`, or a teammate who clones it gets links that
+go nowhere.
+
+## Remove it
 
 ```bash
 bash ~/.442-skills/uninstall.sh              # this project, and this machine
-bash ~/.442-skills/uninstall.sh --project    # only the directory you are in
-bash ~/.442-skills/uninstall.sh --global     # only this machine
+bash ~/.442-skills/uninstall.sh --project    # just this directory
+bash ~/.442-skills/uninstall.sh --global     # just this machine
 ```
 
-It removes the symlinks it made and the managed rules block, and nothing else. The
-checkout at `~/.442-skills` is left in place; `rm -rf ~/.442-skills` when you want
-it gone.
+It removes the links and the rules block, and leaves everything else alone. The
+checkout stays at `~/.442-skills` until you delete it yourself.
 
 ## The skills
 
 | Skill | What it does |
 |---|---|
-| `442-react-init` | Scaffolds a clean Vite + React project (default boilerplate stripped) with an INFO 442 home page. |
-| `442-create-exercise` | Turns any topic into a mobile-first interactive practice exercise, published to GitHub Pages at a public link. |
-| `442-create-roadmap` | Turns a project brief and a team's constraints into a phased, week-by-week development roadmap. |
-| `442-create-personas` | Generates deep, non-generic user personas for a problem statement. |
-| `442-create-names` | A naming partner that produces a distinctive product name and tests it for believability. |
-| `442-tdd` | Drives a change test-first: a failing test, then the smallest code to pass, then refactor. |
-| `442-prioritize` | Sorts a raw pile of requirements or ideas into P0 / P1 / P2. |
-| `442-grill` | Interviews you one question at a time to sharpen a vague idea into a written spec. |
-| `442-brand` | The INFO 442 design tokens and style rules. Other skills read it; you rarely invoke it directly. |
-| `442-write-skill` | How to write a skill for this repo. Read before contributing. |
+| `442-react-init` | Sets up a clean Vite + React project: default boilerplate removed, INFO 442 home page in its place. |
+| `442-create-exercise` | Turns a topic into a mobile-first practice exercise, and publishes it as a link you can open on your phone. |
+| `442-create-roadmap` | Turns a project brief and your team's constraints into a week-by-week plan. |
+| `442-create-personas` | Writes realistic user personas for a problem statement. |
+| `442-create-names` | Works with you on a product name, and tests it against the alternatives. |
+| `442-tdd` | Builds a change test first: write the failing test, make it pass, then clean it up. |
+| `442-prioritize` | Sorts a pile of requirements and ideas into P0, P1, and P2. |
+| `442-grill` | Asks you one question at a time until a vague idea becomes a written spec. |
+| `442-brand` | The class colors, type, and spacing. Other skills read it, so you rarely call it yourself. |
+| `442-write-skill` | How to write a skill for this repo. Read it before you contribute one. |
 
-Prefix every skill with `442-` when you invoke it by name.
+Call a skill by name, with the `442-` prefix. Or just describe what you want, and
+your agent picks the one that fits.
 
-## What the installer adds to AGENTS.md
+## What goes into your AGENTS.md
 
-Two class rules, so AI use is visible and attributed:
+Two class rules about AI use, so that anyone reading your work can see how it was
+made:
 
-- **Cite AI-written code** with an inline comment naming what the AI did and how
-  it was used.
-- **Co-author AI commits**: an AI must never be the sole author; every commit it
-  makes carries a `Co-authored-by:` trailer.
+- **Say which code an AI wrote**, in a comment that names what it did and how you
+  used it.
+- **Add a `Co-authored-by:` line to every commit an AI makes.** An AI is never the
+  only author of a commit.
 
-Both are spelled out in the managed block; edit that block in
-[`reference/agents-block.md`](reference/agents-block.md), not on your machine.
+The installer writes both. The exact wording lives in
+[`reference/agents-block.md`](reference/agents-block.md), so if the class changes
+those rules, change them there rather than on your own machine.
 
-## Contributing
+## Contribute a skill
 
-Students are encouraged to contribute. Every change arrives by pull request and
-is reviewed before merge. See [`CONTRIBUTING.md`](CONTRIBUTING.md) and, before
-you write anything, [`AGENTS.md`](AGENTS.md).
+If you write a skill worth sharing, open a pull request. Every change gets
+reviewed before it lands. Read [`CONTRIBUTING.md`](CONTRIBUTING.md) first, and
+[`AGENTS.md`](AGENTS.md) for the rules this repo follows.
 
 ## Layout
 
 ```
-skills/     one directory per skill (<name>/SKILL.md + its own files)
+skills/     one directory per skill: <name>/SKILL.md, plus whatever it needs
 reference/  source documents the skills cite, including the AGENTS.md block
-scripts/    check-repo.mjs, the pre-commit gate, and the installer test
-install.sh  the one-line installer
+scripts/    check-repo.mjs, the gate, and the installer test
+install.sh  the installer
 ```
 
 ## License
 
 MIT. The skill-writing guide in `skills/442-write-skill/` is adapted from
-[Matt Pocock's skills](https://github.com/mattpocock/skills) (MIT).
+[Matt Pocock's skills](https://github.com/mattpocock/skills), also MIT.
