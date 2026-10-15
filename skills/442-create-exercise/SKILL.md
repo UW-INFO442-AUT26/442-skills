@@ -1,5 +1,5 @@
 ---
-name: 442-exercise
+name: 442-create-exercise
 description: Builds a mobile-first practice exercise on any topic as one self-contained web page, then publishes it to the student's own GitHub account as a public GitHub Pages site and hands back the live link and a QR code. Use when a student asks for practice, drills, a quiz, self-testing, or to be quizzed on a topic, or wants notes turned into something to rehearse on their phone.
 ---
 
@@ -61,7 +61,7 @@ Make a folder for the exercise and copy the template into it:
 
 ```bash
 mkdir -p exercises/<slug>
-cp ~/.agents/skills/442-exercise/assets/exercise.html exercises/<slug>/index.html
+cp ~/.agents/skills/442-create-exercise/assets/exercise.html exercises/<slug>/index.html
 ```
 
 Then replace the JSON inside the `<script type="application/json"
@@ -88,8 +88,8 @@ point at the same files. `--name` is `meta.slug`, and it becomes the repo
 name and therefore the URL.
 
 ```bash
-node ~/.agents/skills/442-exercise/scripts/publish.mjs exercises/<slug> --name <slug> --dry-run
-node ~/.agents/skills/442-exercise/scripts/publish.mjs exercises/<slug> --name <slug>
+node ~/.agents/skills/442-create-exercise/scripts/publish.mjs exercises/<slug> --name <slug> --dry-run
+node ~/.agents/skills/442-create-exercise/scripts/publish.mjs exercises/<slug> --name <slug>
 ```
 
 The script makes the folder a git repo on `main`, commits it, creates

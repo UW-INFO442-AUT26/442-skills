@@ -29,10 +29,10 @@ Prefer to read before you run? Open [`install.sh`](install.sh). To remove it:
 | Skill | What it does |
 |---|---|
 | `442-react-init` | Scaffolds a clean Vite + React project (default boilerplate stripped) with an INFO 442 home page. |
-| `442-exercise` | Turns any topic into a mobile-first interactive practice exercise, published to GitHub Pages at a public link. |
-| `442-roadmap` | Turns a project brief and a team's constraints into a phased, week-by-week development roadmap. |
-| `442-personas` | Generates deep, non-generic user personas for a problem statement. |
-| `442-names` | A naming partner that produces a distinctive product name and tests it for believability. |
+| `442-create-exercise` | Turns any topic into a mobile-first interactive practice exercise, published to GitHub Pages at a public link. |
+| `442-create-roadmap` | Turns a project brief and a team's constraints into a phased, week-by-week development roadmap. |
+| `442-create-personas` | Generates deep, non-generic user personas for a problem statement. |
+| `442-create-names` | A naming partner that produces a distinctive product name and tests it for believability. |
 | `442-tdd` | Drives a change test-first: a failing test, then the smallest code to pass, then refactor. |
 | `442-prioritize` | Sorts a raw pile of requirements or ideas into P0 / P1 / P2. |
 | `442-grill` | Interviews you one question at a time to sharpen a vague idea into a written spec. |

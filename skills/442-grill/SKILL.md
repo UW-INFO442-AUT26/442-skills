@@ -81,10 +81,10 @@ not this one.
 
 8. **Hand back.** Read the spec back in three lines and give the student one
    named next action. An open question goes to the person listed beside it. A
-   settled problem goes to planning: Call the Skill tool with `442-roadmap`.
+   settled problem goes to planning: Call the Skill tool with `442-create-roadmap`.
    *Done when:* the student can name their single next step without asking you.
 
 ## What's next
 
 Put your `SPEC.md` where your team can see it, then Call the Skill tool with
-`442-roadmap` to turn it into a week-by-week plan.
+`442-create-roadmap` to turn it into a week-by-week plan.

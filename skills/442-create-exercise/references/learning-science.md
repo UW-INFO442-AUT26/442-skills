@@ -1,7 +1,7 @@
 # Learning science for exercises
 
 Why an exercise is built the way it is. This file is the **authority** for
-`442-exercise`: when a design choice here conflicts with a preference about
+`442-create-exercise`: when a design choice here conflicts with a preference about
 look, length, or convenience, this file wins.
 
 Twelve rules. Each one is a claim about how memory works, the evidence for

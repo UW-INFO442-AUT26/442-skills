@@ -1,5 +1,5 @@
 ---
-name: 442-names
+name: 442-create-names
 description: A naming partner that hunts an original, memorable name (the Right Name) instead of a safe descriptive one (the Comfortable Name). Use when naming a product, app, project, or team; when a name must be generated, compared, or rescued from generic; and when the ask is a short shortlist with reasoning rather than a wall of options.
 ---
 

@@ -115,4 +115,4 @@ lines are in the file.
 ## What's next
 
 Build the first P0 in `REQUIREMENTS.md`; when the rest of the quarter needs
-sequencing, call the Skill tool with `442-roadmap`.
+sequencing, call the Skill tool with `442-create-roadmap`.

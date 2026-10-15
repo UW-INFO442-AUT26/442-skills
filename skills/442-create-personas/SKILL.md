@@ -1,5 +1,5 @@
 ---
-name: 442-personas
+name: 442-create-personas
 description: Write 3 to 5 deep, realistic user personas from a project problem statement, so design decisions have someone specific on the other side of them. Use when a student asks for personas, user profiles, target users, audience, or "who is this for", and before roadmap, prioritization, or interface work needs a cast of users to reason about. Interviews once for the problem statement if it is missing and offers to save the result as PERSONAS.md.
 ---
 
@@ -109,5 +109,5 @@ the file they chose.
 
 Pick the loudest product implication from your cast, name the one screen
 or flow it changes, and change it before you build anything else. When you
-plan the work, call the Skill tool with `442-roadmap` and make each phase
+plan the work, call the Skill tool with `442-create-roadmap` and make each phase
 name the persona it serves.
