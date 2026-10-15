@@ -222,6 +222,7 @@ for dir in "${TARGETS[@]}"; do printf '  %s\n' "$dir"; done
 say "Rules added to $AGENTS_MD"
 say "Restart your agent, then try one, for example: \"build me a React project\"."
 if [ "$SCOPE" = "project" ]; then
+  say "Heads up: those are symlinks into $DEST. If you commit this project, add .omp/skills/ to its .gitignore first."
   say "To undo this later, run this from $PROJECT_DIR: bash $DEST/uninstall.sh --project"
 else
   say "To undo this later: bash $DEST/uninstall.sh --global"

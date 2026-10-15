@@ -66,7 +66,10 @@ Installing is **additive**. Nothing you already have is replaced.
   every other project alone.
 
 The skills themselves live in `~/.442-skills` and are symlinked into place, so
-"update" is just running the installer again.
+"update" is just running the installer again. That has one consequence worth
+knowing: the links point at your home directory, so if you commit a project, add
+`.omp/skills/` to its `.gitignore`. A teammate who cloned your project would
+otherwise get links that point nowhere.
 
 ### Uninstall
 
