@@ -18,6 +18,8 @@ permissions:
   contents: read
 
 jobs:
+  # The job name is the required status check on main. Renaming it un-requires
+  # it, and a pull request then waits forever for a check that never reports.
   validate:
     name: validate
     runs-on: ubuntu-latest
