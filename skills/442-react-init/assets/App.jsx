@@ -2,9 +2,9 @@ const projectName = "PROJECT_NAME";
 
 const links = [
   {
-    label: "UW Canvas",
-    href: "https://canvas.uw.edu",
-    note: "Assignments, grades, and course materials.",
+    label: "Canvas",
+    href: "https://canvas.uw.edu/courses/1919426",
+    note: "The INFO 442 course: assignments, grades, and materials.",
     primary: true,
   },
   {
@@ -40,16 +40,6 @@ export default function App() {
             </a>
           </li>
         ))}
-
-        {/* Placeholder: replace "#" with the real course site URL. */}
-        <li className="card">
-          <a className="card-link" href="#" data-placeholder="course-site URL">
-            <span className="card-label">Course site</span>
-            <span className="card-note">
-              Add the course site URL here when it is ready.
-            </span>
-          </a>
-        </li>
       </ul>
     </div>
   );

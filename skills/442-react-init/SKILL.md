@@ -62,10 +62,8 @@ Then set the project name in two places: the `projectName` constant at
 the top of `src/App.jsx`, and the `<title>` in `index.html`. Replace the
 `PROJECT_NAME` placeholder in both.
 
-The page links to UW Canvas and to the 442-skills repo. For any other
-course link the student needs, leave the placeholder anchor
-(`<a href="#" data-placeholder="course-site URL">`) and tell them to fill
-in the real URL; do not invent one.
+The page links to the INFO 442 Canvas course and to the 442-skills repo.
+Nothing else needs filling in; only `PROJECT_NAME` changes.
 
 Done when no `PROJECT_NAME` placeholder remains and `src/index.css`,
 `src/App.jsx`, `index.html`, and `.gitignore` all hold the skill's
@@ -104,5 +102,4 @@ trailer.
 
 ## What's next
 
-Delete the placeholder anchor and put your real course site URL in its
-place, then build your first component in `src/App.jsx`.
+Build your first component in `src/App.jsx` and reload the page to see it.
