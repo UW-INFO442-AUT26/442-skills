@@ -1,25 +1,97 @@
 #!/usr/bin/env bash
-# Install the INFO 442 skills for the current user.
+# INFO 442 skills installer.
 #
 #   curl -fsSL https://raw.githubusercontent.com/UW-INFO442-AUT26/442-skills/main/install.sh | bash
 #
-# Clones (or updates) the repo into ~/.442-skills, symlinks every skill
-# into each agent harness's skills directory, and adds the INFO 442 rules
-# block to ~/.agents/AGENTS.md. Re-run any time to update.
+# The skills land in the project you are standing in, so they are available
+# there and nowhere else. The installer asks first: answer 2 to install them
+# for every session on this machine instead.
+#
+#   ... | bash -s -- --project     # this project, no question
+#   ... | bash -s -- --global      # this machine, no question
+#
+# Installing is additive. An existing AGENTS.md keeps its content and gains
+# the INFO 442 rules; skills that are already in the target folder are left
+# alone. Re-run any time to update.
 set -euo pipefail
 
 REPO="${INFO442_SKILLS_REPO:-UW-INFO442-AUT26/442-skills}"
 BRANCH="${INFO442_SKILLS_BRANCH:-main}"
 DEST="${INFO442_SKILLS_HOME:-$HOME/.442-skills}"
+PROJECT_DIR="$PWD"
+
+BLOCK_FILE_NAME="reference/agents-block.md"
+BEGIN_MARK="<!-- BEGIN 442-skills"
+END_MARK="<!-- END 442-skills -->"
+
+say()  { printf '\033[35m[442-skills]\033[0m %s\n' "$*"; }
+warn() { printf '\033[33m[442-skills]\033[0m %s\n' "$*" >&2; }
+die()  { printf '\033[31m[442-skills]\033[0m %s\n' "$*" >&2; exit 1; }
+
+usage() {
+  cat <<'EOF'
+Install the INFO 442 skills.
+
+  --project, -p   install for the directory you are in (the default)
+  --global,  -g   install for every session on this machine
+  --help,    -h   print this text
+
+With no flag, the installer asks and defaults to this project.
+EOF
+}
+
 # Accept a GitHub slug (owner/name), or a full URL / local path for testing.
 case "$REPO" in
   *://*|/*|./*|../*) CLONE_URL="$REPO" ;;
   *) CLONE_URL="https://github.com/${REPO}.git" ;;
 esac
 
-say()  { printf '\033[35m[442-skills]\033[0m %s\n' "$*"; }
-warn() { printf '\033[33m[442-skills]\033[0m %s\n' "$*" >&2; }
-die()  { printf '\033[31m[442-skills]\033[0m %s\n' "$*" >&2; exit 1; }
+SCOPE=""
+for arg in "$@"; do
+  case "$arg" in
+    --project|-p) SCOPE=project ;;
+    --global|-g)  SCOPE=global ;;
+    -h|--help)    usage; exit 0 ;;
+    *) warn "Ignoring unknown option: $arg" ;;
+  esac
+done
+if [ -z "$SCOPE" ]; then
+  case "${INFO442_SKILLS_SCOPE:-}" in
+    project|global) SCOPE="$INFO442_SKILLS_SCOPE" ;;
+  esac
+fi
+
+# A project install in the home directory would be found by every directory
+# under it, which is a global install with extra steps. Say so and do the
+# thing they meant.
+if [ "$PROJECT_DIR" = "$HOME" ] && [ "$SCOPE" != "global" ]; then
+  warn "You are in your home directory, where a project install would apply everywhere under it."
+  warn "Installing for every session on this machine instead."
+  SCOPE=global
+fi
+
+# Ask, unless a flag or the environment already answered. The prompt reads the
+# terminal directly, because a piped install has no usable stdin.
+if [ -z "$SCOPE" ]; then
+  if [ -t 2 ] && [ -r /dev/tty ]; then
+    {
+      printf '\n  Install the INFO 442 skills for:\n\n'
+      printf '    1) this project only   %s   (default)\n' "$PROJECT_DIR"
+      printf '    2) every project       %s\n' "$HOME"
+      printf '\n  Choose 1 or 2 [1]: '
+    } > /dev/tty
+    answer=""
+    read -r answer < /dev/tty || answer=""
+    printf '\n' > /dev/tty
+    case "$answer" in
+      2|g|G|global) SCOPE=global ;;
+      *) SCOPE=project ;;
+    esac
+  else
+    SCOPE=project
+    say "No terminal to ask on, so installing for this project. Pass --global to change that."
+  fi
+fi
 
 command -v git >/dev/null 2>&1 || die "git is required but was not found."
 
@@ -37,57 +109,120 @@ else
 fi
 
 [ -d "$DEST/skills" ] || die "$DEST/skills is missing; the clone looks wrong."
+BLOCK_FILE="$DEST/$BLOCK_FILE_NAME"
+[ -f "$BLOCK_FILE" ] || die "$DEST/$BLOCK_FILE_NAME is missing; the clone looks wrong."
 
-# 2. Symlink each skill into every agent harness that is present on this
-#    machine. A symlink means `install.sh` again is the update path.
+# 2. Where the skills go. Each harness reads its own folder, so the targets
+#    depend on which one is present. `.omp/skills` is OMP's native project
+#    location and is always scanned; the others are only touched when their
+#    config directory already exists.
+TARGETS=()
+AGENTS_MD=""
+if [ "$SCOPE" = "project" ]; then
+  TARGETS+=("$PROJECT_DIR/.omp/skills")
+  [ -d "$PROJECT_DIR/.agents" ] && TARGETS+=("$PROJECT_DIR/.agents/skills")
+  [ -d "$PROJECT_DIR/.claude" ] && TARGETS+=("$PROJECT_DIR/.claude/skills")
+  if [ -f "$PROJECT_DIR/AGENTS.md" ]; then
+    AGENTS_MD="$PROJECT_DIR/AGENTS.md"
+  elif [ -f "$PROJECT_DIR/.omp/AGENTS.md" ]; then
+    AGENTS_MD="$PROJECT_DIR/.omp/AGENTS.md"
+  elif [ -f "$PROJECT_DIR/CLAUDE.md" ]; then
+    AGENTS_MD="$PROJECT_DIR/CLAUDE.md"
+  else
+    AGENTS_MD="$PROJECT_DIR/AGENTS.md"
+  fi
+else
+  TARGETS+=("$HOME/.omp/agent/skills")
+  TARGETS+=("$HOME/.agents/skills")
+  [ -d "$HOME/.claude" ] && TARGETS+=("$HOME/.claude/skills")
+  AGENTS_MD="$HOME/.agents/AGENTS.md"
+fi
+
+# Symlinks, so running install.sh again is the update path. Anything already
+# in the folder that we did not put there is never deleted.
 link_into() {
-  local skills_dir="$1" name src count=0
+  local skills_dir="$1" src name target linked=0 skipped=0
   mkdir -p "$skills_dir"
   for src in "$DEST"/skills/*/; do
     [ -d "$src" ] || continue
     name="$(basename "$src")"
-    rm -rf "$skills_dir/$name"
-    ln -s "${src%/}" "$skills_dir/$name"
-    count=$((count + 1))
+    target="$skills_dir/$name"
+    if [ -L "$target" ]; then
+      case "$(readlink "$target")" in
+        "$DEST"/*) rm -f "$target" ;;
+        *)
+          warn "$target is a symlink to $(readlink "$target"); leaving it alone"
+          skipped=$((skipped + 1))
+          continue
+          ;;
+      esac
+    elif [ -e "$target" ]; then
+      warn "$target already exists and was not put there by this installer; leaving it alone"
+      skipped=$((skipped + 1))
+      continue
+    fi
+    ln -s "${src%/}" "$target"
+    linked=$((linked + 1))
   done
-  say "Linked $count skills into $skills_dir"
+  if [ "$skipped" -gt 0 ]; then
+    say "Linked $linked skills into $skills_dir ($skipped left alone)"
+  else
+    say "Linked $linked skills into $skills_dir"
+  fi
 }
 
-# ~/.agents is the shared skills location (opencode, opencode-go, omp, and others).
-link_into "$HOME/.agents/skills"
-# Claude Code reads its own directory, when the user has it.
-if [ -d "$HOME/.claude" ]; then
-  link_into "$HOME/.claude/skills"
-fi
+for dir in "${TARGETS[@]}"; do
+  link_into "$dir"
+done
 
-# 3. Add the INFO 442 rules block to the user's global AGENTS.md, idempotently.
-AGENTS_MD="$HOME/.agents/AGENTS.md"
-BLOCK_FILE="$DEST/reference/agents-block.md"
-BEGIN_MARK="<!-- BEGIN 442-skills"
-END_MARK="<!-- END 442-skills -->"
-if [ -f "$BLOCK_FILE" ]; then
-  mkdir -p "$HOME/.agents"
-  touch "$AGENTS_MD"
-  if grep -q "$BEGIN_MARK" "$AGENTS_MD" 2>/dev/null; then
-    # Replace the managed block in place, preserving everything around it.
-    tmp="$(mktemp)"
-    awk -v begin="$BEGIN_MARK" -v end="$END_MARK" '
-      $0 ~ begin { skip = 1 }
-      skip != 1 { print }
-      $0 ~ end { skip = 0 }
-    ' "$AGENTS_MD" > "$tmp"
-    # Drop a trailing blank line left behind, then append the fresh block.
-    printf '%s\n\n' "$(cat "$tmp")" > "$tmp"
-    cat "$BLOCK_FILE" >> "$tmp"
-    mv "$tmp" "$AGENTS_MD"
-    say "Refreshed the INFO 442 rules block in $AGENTS_MD"
+# 3. Add the INFO 442 rules to the project's or the user's AGENTS.md. The block
+#    is stamped, so a re-run refreshes it and everything else in the file is
+#    left exactly as it was.
+upsert_block() {
+  local file="$1" tmp
+  mkdir -p "$(dirname "$file")"
+  [ -f "$file" ] || : > "$file"
+  tmp="$(mktemp)"
+  if grep -qF "$BEGIN_MARK" "$file"; then
+    awk -v b="$BEGIN_MARK" -v e="$END_MARK" '
+      index($0, b) > 0 { skip = 1 }
+      skip && index($0, e) > 0 { skip = 0; next }
+      !skip { print }
+    ' "$file" > "$tmp"
+    # Drop the blank lines the removed block left at the end, and any it ate
+    # from the middle, without touching the rest of the file.
+    awk '{ if ($0 ~ /^[[:space:]]*$/) { blanks++; next } for (i = 0; i < blanks; i++) print ""; blanks = 0; print }' "$tmp" > "$tmp.trim"
+    mv "$tmp.trim" "$tmp"
+    {
+      cat "$tmp"
+      [ -s "$tmp" ] && printf '\n'
+      cat "$BLOCK_FILE"
+    } > "$file"
+    say "Refreshed the INFO 442 rules block in $file"
   else
-    printf '\n' >> "$AGENTS_MD"
-    cat "$BLOCK_FILE" >> "$AGENTS_MD"
-    say "Added the INFO 442 rules block to $AGENTS_MD"
+    {
+      [ -s "$file" ] && printf '\n'
+      cat "$BLOCK_FILE"
+    } >> "$file"
+    say "Added the INFO 442 rules block to $file"
   fi
-fi
+  rm -f "$tmp"
+}
 
-say "Done. Skills installed:"
-for d in "$DEST"/skills/*/; do printf '  %s\n' "$(basename "$d")"; done
+upsert_block "$AGENTS_MD"
+
+# 4. Say what happened, in the terms the person used.
+if [ "$SCOPE" = "project" ]; then
+  say "Installed for $PROJECT_DIR"
+else
+  say "Installed for every project on this machine"
+fi
+say "The skills themselves live in $DEST, and are linked from:"
+for dir in "${TARGETS[@]}"; do printf '  %s\n' "$dir"; done
+say "Rules added to $AGENTS_MD"
 say "Restart your agent, then try one, for example: \"build me a React project\"."
+if [ "$SCOPE" = "project" ]; then
+  say "To undo this later, run this from $PROJECT_DIR: bash $DEST/uninstall.sh --project"
+else
+  say "To undo this later: bash $DEST/uninstall.sh --global"
+fi

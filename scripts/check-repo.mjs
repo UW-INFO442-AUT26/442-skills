@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 // Deterministic gate for the 442-skills repo. Run before every commit:
 //   node scripts/check-repo.mjs
-// Exit 0 = pass. Checks structure, not prose quality.
+// Exit 0 = pass. Checks structure, not prose quality, and runs the installer
+// test in throwaway directories.
 import { readdirSync, readFileSync, existsSync, statSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -66,6 +68,23 @@ for (const dir of skills) {
 
 for (const doc of ["README.md", "CONTRIBUTING.md", "AGENTS.md", "install.sh"]) {
   if (!existsSync(join(root, doc))) err(`missing ${doc}`);
+}
+
+// The installer runs for real. It has to be additive: an existing AGENTS.md
+// keeps its own content, and skills already in the target folder are left
+// where they are. scripts/test-install.sh drives it in throwaway directories
+// with a fake HOME, so nothing on the machine is touched.
+const gitAvailable = spawnSync("git", ["--version"], { encoding: "utf8" }).status === 0;
+if (!gitAvailable) {
+  warn("git is not available, so the installer test was skipped");
+} else {
+  const run = spawnSync("bash", [join(root, "scripts", "test-install.sh")], { encoding: "utf8" });
+  const output = `${run.stdout ?? ""}${run.stderr ?? ""}`;
+  const failures = output.split("\n").filter((line) => line.includes("FAIL"));
+  if (run.status !== 0) {
+    if (failures.length === 0) err("scripts/test-install.sh failed without naming a check");
+    for (const line of failures) err(`install: ${line.trim().replace(/^FAIL\s+/, "")}`);
+  }
 }
 
 // Em dashes are banned repo-wide (house style). scripts/ is exempt: it holds

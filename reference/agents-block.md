@@ -1,7 +1,7 @@
 <!-- BEGIN 442-skills (managed by github.com/UW-INFO442-AUT26/442-skills/install.sh; edit there, not here) -->
 ## INFO 442 (Autumn 2026)
 
-This machine has the INFO 442 skills installed (`~/.agents/skills/442-*`).
+This session has the INFO 442 skills installed (`442-*`).
 They cover scaffolding a React project, building practice exercises,
 planning a project, writing a spec, and more. Invoke one by name, or let
 it fire when a task fits.

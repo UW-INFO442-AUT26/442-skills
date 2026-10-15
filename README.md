@@ -1,8 +1,9 @@
 # INFO 442 skills
 
 A set of agent skills for **INFO 442, Cooperative Software Development**. Install
-once, then your AI agent can scaffold a project, build you a practice exercise,
-plan a roadmap, write a spec, and more, all with the class conventions built in.
+them once, then your AI agent can scaffold a project, build you a practice
+exercise, plan a roadmap, write a spec, and more, all with the class conventions
+built in.
 
 Built for the course, usable by anyone.
 
@@ -14,15 +15,70 @@ One line in your terminal:
 curl -fsSL https://raw.githubusercontent.com/UW-INFO442-AUT26/442-skills/main/install.sh | bash
 ```
 
-That clones the repo to `~/.442-skills`, links every skill into
-`~/.agents/skills` (and `~/.claude/skills` if you use Claude Code), and adds the
-INFO 442 rules to `~/.agents/AGENTS.md`. **Re-run the same line any time to
-update.**
+It asks one question first:
 
-Then restart your agent and try one: *"build me a new React project"*.
+```
+  Install the INFO 442 skills for:
 
-Prefer to read before you run? Open [`install.sh`](install.sh). To remove it:
-`~/.442-skills/uninstall.sh`.
+    1) this project only   /Users/you/projects/my-app   (default)
+    2) every project       /Users/you
+
+  Choose 1 or 2 [1]:
+```
+
+**Project is the default**, and it is the right answer for coursework: the skills
+are available when your agent runs in that directory and nowhere else. Pick 2 to
+make them available in every session on the machine.
+
+To skip the question, pass the choice to bash:
+
+```bash
+# this project only
+curl -fsSL .../install.sh | bash -s -- --project
+
+# every project on this machine
+curl -fsSL .../install.sh | bash -s -- --global
+```
+
+Then restart your agent and try one: *"build me a new React project"*. Re-run the
+same line any time to update.
+
+Prefer to read before you run? Open [`install.sh`](install.sh).
+
+### What it writes, and what it will not touch
+
+Installing is **additive**. Nothing you already have is replaced.
+
+| Where | Project install | Global install |
+|---|---|---|
+| The skills | `.omp/skills/442-*` in this directory, plus `.agents/skills` or `.claude/skills` if those directories already exist | `~/.omp/agent/skills`, `~/.agents/skills`, and `~/.claude/skills` if you use Claude Code |
+| The rules | the `AGENTS.md` in this directory, or `.omp/AGENTS.md` or `CLAUDE.md` if that is the rules file you already have | `~/.agents/AGENTS.md` |
+
+- **An existing `AGENTS.md` keeps its content.** The rules go in as a stamped
+  block, `<!-- BEGIN 442-skills` to `<!-- END 442-skills -->`. Re-running the
+  installer refreshes that block and leaves everything around it exactly as it
+  was.
+- **A skills folder keeps its skills.** Only symlinks that point into the INFO 442
+  checkout are ever replaced. A skill of your own is left alone, and if one of
+  your names collides with a class skill, the installer says so and skips it
+  rather than overwriting anything.
+- **A global install leaves your projects alone**, and a project install leaves
+  every other project alone.
+
+The skills themselves live in `~/.442-skills` and are symlinked into place, so
+"update" is just running the installer again.
+
+### Uninstall
+
+```bash
+bash ~/.442-skills/uninstall.sh              # this project, and this machine
+bash ~/.442-skills/uninstall.sh --project    # only the directory you are in
+bash ~/.442-skills/uninstall.sh --global     # only this machine
+```
+
+It removes the symlinks it made and the managed rules block, and nothing else. The
+checkout at `~/.442-skills` is left in place; `rm -rf ~/.442-skills` when you want
+it gone.
 
 ## The skills
 
@@ -41,7 +97,7 @@ Prefer to read before you run? Open [`install.sh`](install.sh). To remove it:
 
 Prefix every skill with `442-` when you invoke it by name.
 
-## What the installer adds to your global AGENTS.md
+## What the installer adds to AGENTS.md
 
 Two class rules, so AI use is visible and attributed:
 
@@ -63,8 +119,8 @@ you write anything, [`AGENTS.md`](AGENTS.md).
 
 ```
 skills/     one directory per skill (<name>/SKILL.md + its own files)
-reference/  source documents the skills cite
-scripts/    check-repo.mjs, the pre-commit gate
+reference/  source documents the skills cite, including the AGENTS.md block
+scripts/    check-repo.mjs, the pre-commit gate, and the installer test
 install.sh  the one-line installer
 ```
 

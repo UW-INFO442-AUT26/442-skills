@@ -2,7 +2,7 @@
 
 The operating contract for any AI agent working **in this repository**
 (adding or editing a skill). Students using the installed skills are
-governed by the block the installer adds to their global `AGENTS.md`, not
+governed by the block the installer adds to their `AGENTS.md`, not
 by this file.
 
 ## Before you write a skill
@@ -56,4 +56,5 @@ request and is reviewed before merge.
   pointer.
 - A **What's next** line ends the skill.
 - No em dashes; no raw color values where `442-brand` supplies tokens.
-- `scripts/check-repo.mjs` passes.
+- `scripts/check-repo.mjs` passes. If you touched `install.sh` or
+  `uninstall.sh`, its run of `scripts/test-install.sh` passes too.
