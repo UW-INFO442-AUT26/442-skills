@@ -51,9 +51,11 @@ check $? "installer exits clean"
 [ -f "$P/AGENTS.md" ]; check $? "AGENTS.md was created"
 contains "$WORK/log1" "No terminal to ask on" "defaulted to the project scope"
 [ -L "$P/.omp/skills/442-brand" ]; check $? "skills are linked into .omp/skills"
+[ -L "$P/.opencode/skills/442-brand" ]; check $? "skills are linked into .opencode/skills"
 [ -f "$P/.omp/skills/442-brand/SKILL.md" ]; check $? "the link resolves to a real SKILL.md"
 [ -d "$P/.claude" ]; [ $? -ne 0 ]; check $? "no .claude directory was invented"
 [ -f "$HOME_DIR/.agents/AGENTS.md" ]; [ $? -ne 0 ]; check $? "the global AGENTS.md was left alone"
+[ -d "$HOME_DIR/.config/opencode" ]; [ $? -ne 0 ]; check $? "no OpenCode config directory was invented"
 
 printf '\n2. a project that already has an AGENTS.md and a skills folder\n'
 P="$WORK/existing"
@@ -152,6 +154,36 @@ run_install "$P" > "$WORK/log9" 2>&1
 check $? "installer exits clean"
 [ -f "$P/.omp/skills/442-brand" ]; check $? "the file is still a file"
 contains "$WORK/log9" "leaving it alone" "and it was reported"
+
+printf '\n9. a machine with OpenCode configured\n'
+P="$WORK/opencode"
+mkdir -p "$P" "$HOME_DIR/.config/opencode"
+run_install "$P" --global > "$WORK/log10" 2>&1
+check $? "installer exits clean"
+[ -f "$HOME_DIR/.config/opencode/AGENTS.md" ]; check $? "the OpenCode rules file was created"
+contains "$HOME_DIR/.config/opencode/AGENTS.md" "<!-- BEGIN 442-skills" "and got the rules block"
+run_uninstall "$P" --global > /dev/null 2>&1
+not_contains "$HOME_DIR/.config/opencode/AGENTS.md" "<!-- BEGIN 442-skills" "uninstall takes it back out"
+
+printf '\n10. a rules file that is a symlink\n'
+P="$WORK/symlinked"
+mkdir -p "$P" "$WORK/dotfiles"
+printf '# My rules, kept in a dotfiles repo\n' > "$WORK/dotfiles/AGENTS.md"
+ln -s "$WORK/dotfiles/AGENTS.md" "$P/AGENTS.md"
+run_install "$P" > "$WORK/log11" 2>&1
+check $? "installer exits clean"
+[ -L "$P/AGENTS.md" ]; check $? "the symlink is still a symlink"
+contains "$WORK/log11" "not writing through it" "and following it was refused"
+not_contains "$WORK/dotfiles/AGENTS.md" "<!-- BEGIN 442-skills" "the file it points at was not edited"
+[ -L "$P/.opencode/skills/442-brand" ]; check $? "the skills installed anyway"
+
+# A block an older installer left through the link is still cleaned up, and
+# the link survives the cleanup.
+printf '# My rules\n\n<!-- BEGIN 442-skills (old run) -->\nleft behind\n<!-- END 442-skills -->\n' > "$WORK/dotfiles/AGENTS.md"
+run_uninstall "$P" --project > "$WORK/log12" 2>&1
+contains "$WORK/dotfiles/AGENTS.md" "My rules" "uninstall keeps the linked file's own content"
+not_contains "$WORK/dotfiles/AGENTS.md" "<!-- BEGIN 442-skills" "and removes the block through the link"
+[ -L "$P/AGENTS.md" ]; check $? "the symlink survived the uninstall"
 
 if [ "$FAILED" = "0" ]; then
   printf '\ninstall.sh behaves. All checks passed.\n'

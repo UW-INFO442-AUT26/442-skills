@@ -36,6 +36,7 @@ DIRS=()
 AGENTS_FILES=()
 if [ "$SCOPE" != "global" ]; then
   DIRS+=("$PROJECT_DIR/.omp/skills")
+  DIRS+=("$PROJECT_DIR/.opencode/skills")
   DIRS+=("$PROJECT_DIR/.agents/skills")
   DIRS+=("$PROJECT_DIR/.claude/skills")
   AGENTS_FILES+=("$PROJECT_DIR/AGENTS.md")
@@ -47,6 +48,7 @@ if [ "$SCOPE" != "project" ]; then
   DIRS+=("$HOME/.agents/skills")
   DIRS+=("$HOME/.claude/skills")
   AGENTS_FILES+=("$HOME/.agents/AGENTS.md")
+  AGENTS_FILES+=("$HOME/.config/opencode/AGENTS.md")
 fi
 
 removed=0
@@ -74,7 +76,13 @@ for agents_md in "${AGENTS_FILES[@]}"; do
   # Drop the blank lines the removed block left at the end.
   awk '{ if ($0 ~ /^[[:space:]]*$/) { blanks++; next } for (i = 0; i < blanks; i++) print ""; blanks = 0; print }' \
     "$tmp" > "$tmp.trim"
-  mv "$tmp.trim" "$agents_md"
+  # mv onto a symlink would replace the link with a regular file, so write
+  # through it and leave the link itself in place.
+  if [ -L "$agents_md" ]; then
+    cat "$tmp.trim" > "$agents_md"
+  else
+    mv "$tmp.trim" "$agents_md"
+  fi
   rm -f "$tmp"
   say "Removed the INFO 442 rules block from $agents_md"
 done

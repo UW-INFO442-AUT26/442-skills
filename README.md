@@ -47,8 +47,13 @@ Installing only adds. Nothing you already have gets replaced.
 
 |  | This project (the default) | This machine (option 2) |
 |---|---|---|
-| Skills go to | `.omp/skills/442-*` in this directory, and `.agents/skills` or `.claude/skills` if your project already has one | `~/.omp/agent/skills`, `~/.agents/skills`, and `~/.claude/skills` if you have Claude Code |
-| Rules go to | your `AGENTS.md` | `~/.agents/AGENTS.md` |
+| Skills go to | `.omp/skills/442-*` and `.opencode/skills/442-*` in this directory, and `.agents/skills` or `.claude/skills` if your project already has one | `~/.omp/agent/skills`, `~/.agents/skills`, and `~/.claude/skills` if you have Claude Code |
+| Rules go to | your `AGENTS.md` | `~/.agents/AGENTS.md`, and `~/.config/opencode/AGENTS.md` if you use OpenCode |
+
+Each agent reads its own folder, which is why there is more than one. OMP
+projects read `.omp/skills`; OpenCode reads `.opencode/skills`, plus `.agents/`
+and `.claude/` if they exist; Claude Code reads `.claude/skills`. The rules are
+the same file for everyone: `AGENTS.md` in the project root.
 
 If your project already keeps its rules in `.omp/AGENTS.md` or `CLAUDE.md`, the
 installer writes into that file rather than making a second one.
@@ -56,6 +61,10 @@ installer writes into that file rather than making a second one.
 **Your `AGENTS.md` keeps its content.** The class rules go in as a block between
 two markers. Run the installer again and it rewrites that block, leaving the rest
 of the file exactly as it was.
+
+**A rules file that is a symlink is left alone.** Writing through it would edit
+whatever it points at, which is usually another repo. The installer tells you
+that it skipped it, and you can paste the block in yourself.
 
 **Your own skills stay put.** The installer only replaces links that it made
 itself. If you happen to have a skill with the same name as a class skill, it
@@ -66,8 +75,8 @@ machine install touches no project at all.
 
 One thing worth knowing: the skills live in `~/.442-skills` and are linked into
 place, so those links point at your home folder. If you commit a project, add
-`.omp/skills/` to its `.gitignore`, or a teammate who clones it gets links that
-go nowhere.
+`.omp/skills/` and `.opencode/skills/` to its `.gitignore`, or a teammate who
+clones it gets links that go nowhere.
 
 ## Remove it
 

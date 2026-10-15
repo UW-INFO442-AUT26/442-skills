@@ -113,29 +113,34 @@ BLOCK_FILE="$DEST/$BLOCK_FILE_NAME"
 [ -f "$BLOCK_FILE" ] || die "$DEST/$BLOCK_FILE_NAME is missing; the clone looks wrong."
 
 # 2. Where the skills go. Each harness reads its own folder, so the targets
-#    depend on which one is present. `.omp/skills` is OMP's native project
-#    location and is always scanned; the others are only touched when their
-#    config directory already exists.
+#    depend on which one is present. `.omp/skills` and `.opencode/skills` are
+#    both native project locations that their harness always scans, so they are
+#    always created; the others are only touched when their config directory
+#    already exists.
 TARGETS=()
-AGENTS_MD=""
+RULES_FILES=()
 if [ "$SCOPE" = "project" ]; then
   TARGETS+=("$PROJECT_DIR/.omp/skills")
+  TARGETS+=("$PROJECT_DIR/.opencode/skills")
   [ -d "$PROJECT_DIR/.agents" ] && TARGETS+=("$PROJECT_DIR/.agents/skills")
   [ -d "$PROJECT_DIR/.claude" ] && TARGETS+=("$PROJECT_DIR/.claude/skills")
   if [ -f "$PROJECT_DIR/AGENTS.md" ]; then
-    AGENTS_MD="$PROJECT_DIR/AGENTS.md"
+    RULES_FILES+=("$PROJECT_DIR/AGENTS.md")
   elif [ -f "$PROJECT_DIR/.omp/AGENTS.md" ]; then
-    AGENTS_MD="$PROJECT_DIR/.omp/AGENTS.md"
+    RULES_FILES+=("$PROJECT_DIR/.omp/AGENTS.md")
   elif [ -f "$PROJECT_DIR/CLAUDE.md" ]; then
-    AGENTS_MD="$PROJECT_DIR/CLAUDE.md"
+    RULES_FILES+=("$PROJECT_DIR/CLAUDE.md")
   else
-    AGENTS_MD="$PROJECT_DIR/AGENTS.md"
+    RULES_FILES+=("$PROJECT_DIR/AGENTS.md")
   fi
 else
   TARGETS+=("$HOME/.omp/agent/skills")
   TARGETS+=("$HOME/.agents/skills")
   [ -d "$HOME/.claude" ] && TARGETS+=("$HOME/.claude/skills")
-  AGENTS_MD="$HOME/.agents/AGENTS.md"
+  RULES_FILES+=("$HOME/.agents/AGENTS.md")
+  # OpenCode reads its rules from its own global file, not from
+  # ~/.agents/AGENTS.md. Only touch it where OpenCode is set up.
+  [ -d "$HOME/.config/opencode" ] && RULES_FILES+=("$HOME/.config/opencode/AGENTS.md")
 fi
 
 # Symlinks, so running install.sh again is the update path. Anything already
@@ -180,6 +185,14 @@ done
 #    left exactly as it was.
 upsert_block() {
   local file="$1" tmp
+  # A symlinked rules file belongs to whatever it points at, which is usually
+  # another repo. Writing through it would edit a file outside the one being
+  # installed into, so say so and leave it alone.
+  if [ -L "$file" ]; then
+    warn "$file is a symlink to $(readlink "$file"); not writing through it"
+    warn "The INFO 442 rules are in $BLOCK_FILE if you want to add them there yourself"
+    return 0
+  fi
   mkdir -p "$(dirname "$file")"
   [ -f "$file" ] || : > "$file"
   tmp="$(mktemp)"
@@ -209,7 +222,9 @@ upsert_block() {
   rm -f "$tmp"
 }
 
-upsert_block "$AGENTS_MD"
+for file in "${RULES_FILES[@]}"; do
+  upsert_block "$file"
+done
 
 # 4. Say what happened, in the terms the person used.
 if [ "$SCOPE" = "project" ]; then
@@ -219,10 +234,9 @@ else
 fi
 say "The skills themselves live in $DEST, and are linked from:"
 for dir in "${TARGETS[@]}"; do printf '  %s\n' "$dir"; done
-say "Rules added to $AGENTS_MD"
 say "Restart your agent, then try one, for example: \"build me a React project\"."
 if [ "$SCOPE" = "project" ]; then
-  say "Heads up: those are symlinks into $DEST. If you commit this project, add .omp/skills/ to its .gitignore first."
+  say "Heads up: those are symlinks into $DEST. If you commit this project, add .omp/skills/ and .opencode/skills/ to its .gitignore first."
   say "To undo this later, run this from $PROJECT_DIR: bash $DEST/uninstall.sh --project"
 else
   say "To undo this later: bash $DEST/uninstall.sh --global"
