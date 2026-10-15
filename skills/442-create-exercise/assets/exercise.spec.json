@@ -2,9 +2,9 @@
   "_guide": {
     "what this file is": "The schema for one exercise, with a worked example under it. Copy this file, replace the example with your topic, check it with scripts/validate-spec.mjs, then paste the object from \"meta\" down into the spec island of assets/exercise.html.",
     "how it becomes a page": "The object from \"meta\" down is the spec. It is pasted into the <script type=\"application/json\" id=\"spec\"> island inside assets/exercise.html. Keys starting with _ are ignored by the page. Run the validator on the file before you paste: node scripts/validate-spec.mjs <spec.json>.",
-    "the one rule above all": "Pick the interaction that teaches this idea best. Ask yourself what the student should DO to learn it, then pick the kind. A quiz is right for some ideas and wrong for many others. A process wants order, a set of categories wants sort, a pair of ideas that look alike wants match, and anything that changes or relates numbers wants a widget.",
+    "the one rule above all": "Movement and visuals first. Ask yourself what the student should SEE and what they should MOVE, then pick the kind. A quiz is right for some ideas and wrong for many others. A text question is the fallback, not the default. A process wants order, a set of categories wants sort, a pair of ideas that look alike wants match, and anything that changes or relates wants a widget: a control to drag, a Play or Step animation, or a diagram that answers to a value.",
     "rule: nothing reveals before submit": "No prompt, option list, figure or widget may show an answer before the student submits. The page grades on submit and then shows feedback.",
-    "rule: write simply": "Short sentences. Common words. Explain a term the first time it is used. This holds for the page copy and for every prompt, feedback and misconception string here. A reader whose first language is not English must follow it easily.",
+    "rule: write simply": "Short sentences. Common words. Explain a term the first time it is used. This holds for the page copy and for every prompt, feedback and misconception string here.",
     "rule: no em dashes": "Do not use the long dash (the em dash) anywhere in this file. Use a comma, a colon, or two sentences.",
     "meta.title": "What the student sees as the page heading. Plain and specific, no marketing.",
     "meta.slug": "Lowercase repo and folder name: letters, digits, single hyphens. It becomes the GitHub repo name and so the URL.",
@@ -12,6 +12,7 @@
     "meta.minutes": "Honest length of one sitting. 6 to 12 steps fits a 10 minute phone session (rule 12).",
     "meta.criterion.text": "The bar in the student's words. The intro and the results screen both show it (rule 10).",
     "meta.criterion.minCorrect": "How many graded steps must be right for the criterion to count as met. Graded steps only: an explore step is never counted. Keep this number in agreement with the text.",
+    "meta.resources": "Optional. A short list of links to keep going after the exercise: [{ \"label\": \"...\", \"href\": \"https://...\", \"note\": \"one line, optional\" }]. The intro and the results screen both show them under a heading that reads Keep going. Point at one or two good sources, not a reading list.",
     "steps": "6 to 12 steps for a 10 minute exercise. Order them so neighbouring steps do not all ask the same shape of question, and so sub-topics alternate (rule 5).",
     "steps[].id": "Short stable id, unique in the file. The results screen uses it to name a missed step.",
     "steps[].kind": "One of choice, multi, short, order, sort, match, explore. See the table below.",
@@ -22,17 +23,21 @@
     "steps[].hint": "Optional. One nudge behind a Hint button. Put hints on the early steps of an idea, then drop them so the last step on that idea is free recall (rule 6).",
     "steps[].figure": "Optional, and it may decorate any step. A visual shown above the prompt: { \"type\": \"svg\" | \"html\" | \"code\", \"content\": \"<markup or code text>\", \"caption\": \"optional\" }. For \"svg\" and \"html\" the content is injected as markup. For \"code\" the content is shown in a code block.",
     "figure reveal": "Any element inside a figure may carry data-reveal=\"some caption text\". That element becomes tappable, and hoverable on a desktop, and toggles its caption. This is the tap-or-hover-to-learn-more move. Use it for a diagram whose parts each need a name.",
-    "steps[].widget": "Optional on any step, required on explore. An interactive play area: { \"html\": \"<markup>\", \"controls\": [ ... ], \"js\": \"function (values, root) { ... }\", \"caption\": \"optional\" }.",
-    "widget.controls[]": "Each control is one of: { \"type\": \"range\", \"name\", \"label\", \"min\", \"max\", \"step\", \"value\", \"unit\": optional }, { \"type\": \"switch\", \"name\", \"label\", \"value\": true|false }, { \"type\": \"select\", \"name\", \"label\", \"options\": [ ... ], \"value\" }.",
-    "widget.js": "The page renders the controls, holds the current values keyed by control name, and calls this function once at load and again on every change. It receives (values, root), where root is the play area element. Update the DOM inside root from here. That is how a simulation is built.",
+    "design system": "The page follows the checked 442-brand design system: one accent, one radius, one shadow, one spacing scale, and a light and a dark theme that both meet their contrast floors. Add no colors and no sizes by hand, in a widget's markup either. Use the tokens the worked example uses, for example var(--ink-2), var(--space-2) and var(--accent).",
+    "when to reach for a widget": "Reach for a widget when the idea has parts that move, change, or relate. Three shapes cover most of it: controls the student drags (range, switch, select) so the picture redraws under their hand; a Play or Step animation built from button controls, so a process runs one state at a time; a diagram that reacts to a value. Reach for a figure when the point is structure, and mark its parts with data-reveal. Animate a process and never decorate: motion that carries no idea costs attention and teaches nothing. An order or sort step is already a drag, so use those kinds before you write your own.",
+    "steps[].widget": "Optional on any step, required on explore. An interactive play area: { \"html\": \"<markup>\", \"controls\": [ ... ], \"js\": \"function (values, root, changed) { ... }\", \"caption\": \"optional\" }.",
+    "widget.controls[]": "Each control is one of: { \"type\": \"range\", \"name\", \"label\", \"min\", \"max\", \"step\", \"value\", \"unit\": optional }, { \"type\": \"switch\", \"name\", \"label\", \"value\": true|false }, { \"type\": \"select\", \"name\", \"label\", \"options\": [ ... ], \"value\" }, { \"type\": \"button\", \"name\", \"label\" }. A range, a switch and a select each write the value the student chose into values[name].",
+    "widget button": "A button holds no value of its own. Each click adds 1 to values[name] and then calls js. Read the count to know where you are: with one button named play, the first press leaves values.play at 1. Add a second button named reset and the frame becomes values.play minus values.reset. That is how Play, Step and Reset are built. Label a button with what one click does, so Next step and Start again beat a vague Play.",
+    "widget.js": "The page compiles js once for each step, so anything your function closes over keeps its value while the step is on screen. Then it calls js(values, root, changed). values holds every control value keyed by control name. root is the play area element, and you draw by updating the DOM inside it. changed is the name of the control the student just used, or the string \"init\" on the first call, when the page draws the step for the first time. When you want state of your own, let the source return your step function: (function () { var at = 0; return function (values, root, changed) { ... }; })()",
+    "widget motion": "Prefer a CSS transition to a timer. Change a class or a style and let the page's transition carry the movement. If the step truly needs a timer, store its id on root.__timer: the page clears that when the step unmounts, so nothing keeps running. The page also honours reduced motion, so no answer may depend on an animation finishing.",
     "kind choice": "Tap one option. Needs options (3 to 5 strings, each believable) and answer (the zero based index of the right one). Submits on tap. Order the options so the right one is not always in the same place.",
     "kind multi": "Tap all that apply. Needs options (a string array) and answer (an array of the indices that are correct: all of them and only them). Submits on a button.",
     "kind short": "Type the answer from memory. Needs answer as one accepted string, or an array of accepted strings. Matching ignores case, collapses spaces, and ignores trailing punctuation. Submits on a button.",
-    "kind order": "Tap the items in the right order, with undo. Needs options (a string array, already in the order shown to the student) and answer (the correct order, as indices into options: a permutation of 0 to length minus 1). Submits on a button. Use it when the idea is a sequence or a decision order.",
-    "kind sort": "Put each item into a bucket. Needs buckets (2 or 3 names) and items (a list of { \"text\", \"bucket\" }, where bucket is the correct bucket index). Submits on a button. Use it when the idea is 'which family does this belong to'.",
+    "kind order": "Drag the items into the right order, or move one item one place at a time with the Up and Down buttons on its row, which are also the keyboard path. The items show in the order you list them and the student reorders them in place. Needs options (a string array) and answer (the correct order, as indices into options: a permutation of 0 to length minus 1). A Reset puts them back as they started. Submits on a button. Use it when the idea is a sequence or a decision order.",
+    "kind sort": "Drag each item onto a bucket, or tap the bucket button on the item's row. Needs buckets (2 or 3 names) and items (a list of { \"text\", \"bucket\" }, where bucket is the correct bucket index). Submits on a button. Use it when the idea is 'which family does this belong to'.",
     "kind match": "Pair each left item with a right item. Needs lefts, rights (both string arrays, rights in display order) and answer (answer[i] is the correct index into rights for lefts[i]). Submits on a button. Use it when two sets of things are easily confused with each other.",
-    "kind explore": "Ungraded, and it needs a widget. The page shows the widget and a Continue button. Nothing is scored here and nothing is counted in minCorrect. Put an explore step early when the student should play with the system before you ask anything about it (rule 13).",
-    "which kind to reach for": "choice: one right answer among plausible rivals. multi: several things at once are true. short: the student must produce the word or number with no options in front of them. order: the sequence or the decision order matters. sort: items fall into families. match: two lists are easy to mix up. explore: a system has parts, a trade-off, or a number that moves."
+    "kind explore": "Ungraded, and it needs a widget. The page shows the widget and a Continue button. Nothing is scored here and nothing is counted in minCorrect. Put an explore step early when the student should play with the system before you ask anything about it (rule 13). A widget that walks a process with a Play or Step button belongs here, with a prediction step just before it (rule 14).",
+    "which kind to reach for": "choice: one right answer among plausible rivals. multi: several things at once are true. short: the student must produce the word or number with no options in front of them. order: the sequence or the decision order matters, and the student drags it into place. sort: items fall into families, dragged or tapped into buckets. match: two lists are easy to mix up. explore: a system has parts, a trade-off, a number that moves, or a process to step through."
   },
 
   "meta": {
@@ -67,6 +72,21 @@
         ],
         "js": "function (values, root) {\n  var code = Number(values.code);\n  var family = Math.floor(code / 100);\n  var families = {\n    1: \"1xx: the server is still working\",\n    2: \"2xx: it worked\",\n    3: \"3xx: look somewhere else\",\n    4: \"4xx: the request is wrong\",\n    5: \"5xx: the server is wrong\"\n  };\n  var named = {\n    200: \"The request worked and the answer is in the body.\",\n    301: \"The thing moved. Ask again at the new address.\",\n    400: \"The bytes you sent do not parse.\",\n    401: \"No usable login came with the request.\",\n    403: \"You are known, and you are still not allowed.\",\n    404: \"There is nothing at that address.\",\n    500: \"The request was fine and the handler failed.\",\n    502: \"The server behind this one answered badly.\"\n  };\n  root.querySelector(\"[data-code]\").textContent = code;\n  root.querySelector(\"[data-family]\").textContent = families[family] || \"not a real family\";\n  root.querySelector(\"[data-meaning]\").textContent = named[code] || \"Slide to 200, 301, 400, 401, 403, 404, 500 or 502 for a named example.\";\n}",
         "caption": "Every code sits in a family, and the family says whose problem it is."
+      }
+    },
+    {
+      "id": "e2",
+      "tag": "what to do next",
+      "kind": "explore",
+      "prompt": "Press Next step to walk a redirect from the first request to the last one. Walk it here first, then answer the questions.",
+      "widget": {
+        "html": "<p data-head style=\"font-size: var(--text-sm); color: var(--ink-2); margin: 0 0 var(--space-2)\">Step 1 of 4: the client asks</p><div style=\"display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-2); margin: 0 0 var(--space-3)\"><span data-node=\"0\" style=\"height: var(--space-2); border-radius: var(--radius-pill); background: var(--border); transition: background var(--motion) var(--ease)\"></span><span data-node=\"1\" style=\"height: var(--space-2); border-radius: var(--radius-pill); background: var(--border); transition: background var(--motion) var(--ease)\"></span><span data-node=\"2\" style=\"height: var(--space-2); border-radius: var(--radius-pill); background: var(--border); transition: background var(--motion) var(--ease)\"></span><span data-node=\"3\" style=\"height: var(--space-2); border-radius: var(--radius-pill); background: var(--border); transition: background var(--motion) var(--ease)\"></span></div><p data-line style=\"font-family: var(--font-mono); font-size: var(--text-lg); margin: 0\">GET /old-page</p><p data-note style=\"font-size: var(--text-base); color: var(--ink-2); margin: var(--space-2) 0 0\">The client has asked for the address it was given, and it waits.</p>",
+        "controls": [
+          { "type": "button", "name": "step", "label": "Next step" },
+          { "type": "button", "name": "reset", "label": "Start again" }
+        ],
+        "js": "(function () {\n  var frames = [\n    [\"Step 1 of 4: the client asks\", \"GET /old-page\", \"The client has asked for the address it was given, and it waits.\"],\n    [\"Step 2 of 4: the reply\", \"301 Moved Permanently\", \"The body is empty. A Location header names the new address.\"],\n    [\"Step 3 of 4: the client asks again\", \"GET /new-page\", \"Same request, sent to the address the reply named.\"],\n    [\"Step 4 of 4: the answer\", \"200 OK\", \"The page arrives, one extra round trip later.\"]\n  ];\n  var at = 0;\n  return function (values, root, changed) {\n    if (changed === \"reset\") at = 0;\n    else if (changed === \"step\") at = Math.min(at + 1, frames.length - 1);\n    var f = frames[at];\n    root.querySelector(\"[data-head]\").textContent = f[0];\n    root.querySelector(\"[data-line]\").textContent = f[1];\n    root.querySelector(\"[data-note]\").textContent = f[2];\n    var nodes = root.querySelectorAll(\"[data-node]\");\n    for (var i = 0; i < nodes.length; i += 1) {\n      nodes[i].style.background = i <= at ? \"var(--accent)\" : \"var(--border)\";\n    }\n  };\n})()",
+        "caption": "Each press of Next step moves the request one step along. Start again goes back to the first one."
       }
     },
     {
@@ -107,7 +127,7 @@
       "id": "o1",
       "tag": "what to do next",
       "kind": "order",
-      "prompt": "A request failed. Tap the checks in the order a client should try them.",
+      "prompt": "A request failed. Drag the checks into the order a client should try them, or use the Up and Down buttons on a row to move it one place.",
       "options": [
         "Send the request again after a short wait",
         "Read the status family",
@@ -138,7 +158,7 @@
       "id": "s2",
       "tag": "the five families",
       "kind": "sort",
-      "prompt": "Put each code in the bucket that says who has to fix the problem.",
+      "prompt": "Put each code in the bucket that says who has to fix the problem. Drag a code onto a bucket, or tap the bucket button on its row.",
       "buckets": ["The request is wrong", "The server is wrong", "Nobody is wrong"],
       "items": [
         { "text": "400 Bad Request", "bucket": 0 },

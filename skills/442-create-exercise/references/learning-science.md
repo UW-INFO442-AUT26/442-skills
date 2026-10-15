@@ -7,7 +7,9 @@ look, length, or convenience, this file wins.
 Sixteen rules. Each one is a claim about how learning works, the evidence for
 it, and what it forces in the spec you write. Rules 1 to 12 are about memory.
 Rules 13 to 16 are about what the student is doing at each step, which is often
-not answering a question.
+not answering a question. When the idea has parts that move, change, or relate,
+what the student does with those parts is the exercise, and a text question is
+the fallback (rules 13 to 16).
 
 ## 1. Make them retrieve before you tell
 
@@ -172,21 +174,27 @@ the criterion of rule 10. Attention is the scarce resource.
 
 **In the spec.** If the topic needs 20 steps, that is two exercises.
 
-## 13. Let them play before you explain
+## 13. Let them move it before you explain
 
 **Rule.** When the thing has parts, a trade-off, or a number that moves, open
-with an `explore` step that lets the student change it and watch. Ask for the
-idea only after they have handled it.
+with an `explore` step that lets the student change it and watch. If the idea
+has parts that move, or parts that relate to each other, build the thing they
+can move, and ask for the idea only after they have handled it.
 
 **Why.** Learning by doing beats learning by watching, as long as the doing
 comes with guidance and feedback (Alfieri, Brooks, Aldrich & Tenenbaum, 2011).
 Guided practice with feedback is roughly as effective as one-to-one human
-tutoring in step-based systems (vanLehn, 2011). The play gives the student
-something concrete to hang the later words on.
+tutoring in step-based systems (vanLehn, 2011). The student's own activity is
+the active part: dragging an item, or controlling a variable and watching what
+it does, is interactive work, and interactive work beats constructing an
+explanation, which beats reading and watching (Chi & Wylie, 2014). Handling the
+thing is what gives the student something concrete to hang the later words on.
 
 **In the spec.** An `explore` step is ungraded: it needs a `widget`, it shows a
 Continue button, and it is not counted in `minCorrect`. Put it first on a new
-idea. The widget must not print the answer to a later question.
+idea. Give the student something to drag or a variable to change, rather than a
+step that only prints text back at them. The widget must not print the answer
+to a later question.
 
 ## 14. Ask for a prediction before they see what happens
 
@@ -196,11 +204,15 @@ Then show it, and point out the gap.
 **Why.** Committing to a prediction before the evidence makes the evidence
 matter. Surprise at the gap is what drives the correction (Brod, Hasselhorn &
 Bunge, 2018; White & Gunstone, 1992, for the predict, observe, explain
-routine).
+routine). Prediction is also what keeps an animation from turning into
+something to watch: the student has already given an answer, so the motion
+lands on a question instead of passing by.
 
 **In the spec.** This is rule 1 applied to an interactive step: the widget
 runs, but the student says what they think will happen first. A `choice` step
-placed just before the observation does the job.
+placed just before the observation does the job. When the widget has a Play or
+Step button, the prediction step comes before the student presses it the first
+time, and the prompt tells them to press Play after they have chosen.
 
 ## 15. Show a worked example, then take it apart
 
@@ -218,7 +230,7 @@ worked example. The step after it asks for one piece, and the step that ends
 the idea asks for the whole thing. Rule 6's `hint` is the smaller version of
 the same move.
 
-## 16. Draw it when the idea is about relations or change
+## 16. Draw it and move it when the idea is about relations or change
 
 **Rule.** If the idea is about how things relate, or about something that
 changes, show it: a diagram, a code block, or a widget the student can drive.
@@ -227,15 +239,22 @@ Words alone are the fallback, not the default.
 **Why.** A diagram that shows the relations directly saves the reader the work
 of rebuilding them from prose (Larkin & Simon, 1987). Pictures and words
 together beat either alone when they carry different parts of the idea, and
-extra decoration hurts (Mayer & Moreno, 2003). Several views of one system
-help when they are linked on purpose (Ainsworth, 2006). For things that move
-or change over time, an animation or a simulation beats a static picture
-(Höffler & Leutner, 2007).
+extra decoration hurts (Mayer & Moreno, 2003). Several views of one system help
+when they are linked on purpose (Ainsworth, 2006). For things that move or
+change over time, an animation or a simulation beats a static picture, but the
+gain depends on the motion carrying the process: animation of a process that is
+genuinely dynamic helps, and motion added for looks costs attention and does
+not teach (Höffler & Leutner, 2007; Tversky, Morrison & Betrancourt, 2002). A
+student who can step the motion forward, hold it still, or drag the moving part
+gets the most out of it, which is why the widget controls matter as much as the
+drawing.
 
 **In the spec.** Reach for `widget` when the point is a trade-off, a range, or
-a process. Reach for `figure` when the point is structure. Mark the parts of a
-figure with `data-reveal` so the student can tap or hover to name them. Never
-draw decoration.
+a process that runs. Reach for `figure` when the point is structure. When the
+widget animates, the motion has to be the idea itself: a Play or Step button
+that walks a process, a control the student drags, a diagram that answers to a
+value. Mark the parts of a figure with `data-reveal` so the student can tap or
+hover to name them. Never draw decoration, and never animate decoration.
 
 ## Where each rule lands
 
@@ -250,10 +269,10 @@ draw decoration.
 | 8, 9 | `meta.goal`, the interview |
 | 10 | `meta.criterion`, the results screen |
 | 12 | the number of `steps[]` |
-| 13 | an early `explore` step with a `widget` |
+| 13 | an early `explore` step with a `widget` the student drags or plays |
 | 14 | a prediction step placed before the observation |
 | 15 | `figure` or `widget` on the first step of an idea |
-| 16 | `figure` for structure, `widget` for change |
+| 16 | `figure` for structure, `widget` for a process that moves |
 
 ## How a kind is chosen
 
@@ -281,6 +300,7 @@ them do it.
 - Butler, A. C., & Roediger, H. L. (2008). Feedback enhances the positive effects and reduces the negative effects of multiple-choice testing. *Memory & Cognition*, 36(3).
 - Cepeda, N. J., Pashler, H., Vul, E., Wixted, J. T., & Rohrer, D. (2006). Distributed practice in verbal recall tasks: A review and quantitative synthesis. *Psychological Bulletin*, 132(3).
 - Chi, M. T. H., de Leeuw, N., Chiu, M.-H., & LaVancher, C. (1994). Eliciting self-explanations improves understanding. *Cognitive Science*, 18(3).
+- Chi, M. T. H., & Wylie, R. (2014). The ICAP framework: Linking cognitive engagement to active learning outcomes. *Educational Psychologist*, 49(4).
 - Dunlosky, J., Rawson, K. A., Marsh, E. J., Nathan, M. J., & Willingham, D. T. (2013). Improving students' learning with effective learning techniques. *Psychological Science in the Public Interest*, 14(1).
 - Hattie, J., & Timperley, H. (2007). The power of feedback. *Review of Educational Research*, 77(1).
 - Höffler, T. N., & Leutner, D. (2007). Instructional animation versus static pictures: A meta-analysis. *Learning and Instruction*, 17(6).
@@ -295,6 +315,7 @@ them do it.
 - Sweller, J. (1988). Cognitive load during problem solving: Effects on learning. *Cognitive Science*, 12(2).
 - Sweller, J., & Cooper, G. A. (1985). The use of worked examples as a substitute for problem solving in learning algebra. *Cognition and Instruction*, 2(1).
 - Taylor, K., & Rohrer, D. (2010). The effects of interleaved practice. *Applied Cognitive Psychology*, 24(6).
+- Tversky, B., Morrison, J. B., & Betrancourt, M. (2002). Animation: can it facilitate? *International Journal of Human-Computer Studies*, 57(4).
 - vanLehn, K. (2011). The relative effectiveness of human tutoring, intelligent tutoring systems, and other tutoring systems. *Educational Psychologist*, 46(4).
 - White, B. Y., & Gunstone, R. F. (1992). *Probing Understanding*. Falmer Press.
 - Wiggins, G., & McTighe, J. (2005). *Understanding by Design* (2nd ed.). ASCD.

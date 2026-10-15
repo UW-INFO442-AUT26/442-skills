@@ -1,6 +1,6 @@
 ---
 name: 442-create-exercise
-description: Builds a mobile-first practice exercise on any topic as one self-contained web page, then publishes it to the student's own GitHub account as a public GitHub Pages site and hands back the live link and a QR code. The author picks the interaction that teaches the idea best, which is often not a quiz: a simulation to play with, an order to rebuild, a set of items to sort, a pair of lists to match. Use when a student asks for practice, drills, a quiz, self-testing, or to be quizzed on a topic, or wants notes turned into something to rehearse on their phone.
+description: Builds a mobile-first practice exercise on any topic as one self-contained web page, then publishes it to the student's own GitHub account as a public GitHub Pages site and hands back the live link and a QR code. The author picks the interaction that teaches the idea best, which is often not a quiz: a simulation to play with and step through, an order to rebuild by dragging, a set of items to sort, a pair of lists to match. Use when a student asks for practice, drills, a quiz, self-testing, or to be quizzed on a topic, or wants notes turned into something to rehearse on their phone.
 ---
 
 # Build an exercise
@@ -8,20 +8,39 @@ description: Builds a mobile-first practice exercise on any topic as one self-co
 Turn a topic into one web page the student finishes on a phone, then publish it
 to their own GitHub account and hand back a link.
 
-**Interactivity is the priority.** Before you write a step, ask what the
-student should DO to learn this idea, then pick the interaction that makes them
-do it. A quiz is right when one answer wins among believable rivals. It is the
-wrong tool for a process, a set of families, a trade-off, or anything that
-moves. A page the student drives and watches teaches more than a page that asks
-them to recall a sentence, whenever the idea is about relations or change.
+**Movement and visuals first.** Before you write a step, ask what the student
+should SEE and what they should MOVE. If the idea has parts that move, change,
+or relate to each other, build something the student can watch and drive. A
+text question is the fallback, not the default. A quiz is right when one answer
+wins among believable rivals. It is the wrong tool for a process, a set of
+families, a trade-off, or anything that moves. A page the student drives and
+watches teaches more than a page that asks them to recall a sentence, whenever
+the idea is about relations or change.
 
-Two rules hold on every step:
+When the idea has any of these, reach for a `widget`:
+
+- **Controls the student drags.** A `range`, a `switch`, or a `select` that
+  redraws the picture as they move it. Numbers and trade-offs belong here.
+- **A Play, Step, or Reset animation.** `button` controls that walk a process
+  forward one state at a time, so the student can stop it and look.
+- **A diagram that reacts.** Parts that move, light up, or name themselves when
+  a value changes.
+
+Keep a text question when nothing moves: one right answer among rivals, a word
+or a number produced from memory, an item to recognise. Movement is not
+decoration. Animate a process, because the process is the idea, and never
+animate something just to make the page busier.
+
+Three rules hold on every step:
 
 - **Nothing reveals the answer before submit.** Not the prompt, not the option
   list, not a `figure`, not a `widget`.
 - **Write simply.** Short sentences. Common words. Explain a term the first
   time it is used. That holds for the page's own copy and for every `prompt`,
   `feedback`, and `misconception` string you write.
+- **Take the look from the system, not your taste.** The page follows the
+  checked `442-brand` design system, so every exercise looks like a 442
+  artifact. Add no colors and no sizes by hand.
 
 Read [references/learning-science.md](references/learning-science.md) before you
 write steps. It is the authority for this skill: where it and your taste
@@ -54,22 +73,65 @@ then take the kind that does it. Often the answer is not a question at all.
 | `choice` | Taps one option | One right answer among believable rivals |
 | `multi` | Taps all that apply | Several things are true at once, and they must be separated |
 | `short` | Types the answer from memory | They must produce the word or the number with no options in front of them |
-| `order` | Taps the items into the right order, with undo | The sequence, or the order of decisions, is the idea |
-| `sort` | Puts each item into a bucket | Items fall into two or three families |
+| `order` | Drags the items into the right order, or moves them one place with Up and Down | The sequence, or the order of decisions, is the idea |
+| `sort` | Drags each item onto a bucket, or taps the bucket | Items fall into two or three families |
 | `match` | Pairs each left item with a right item | Two lists are easy to confuse, so they must be paired up |
 | `explore` | Plays with a `widget` and taps Continue | The idea has parts, a trade-off, or a number that moves |
+
+`order` and `sort` move by dragging on a touch screen or with a mouse, and they
+still finish with the keyboard and with taps, so no one is locked out of the
+step. Both grade exactly as they always did.
 
 `explore` is the interactive one, and it is **ungraded**: nothing is scored on
 it and it never counts toward `minCorrect`. Put it first on an idea the student
 has not handled before, so they play before you explain (rule 13).
 
-Reach for a `widget` when a number, a range, or a trade-off carries the idea,
-and for a `figure` when structure carries it. Mark the parts of a figure with
-`data-reveal` so the student can tap or hover to name them (rule 16).
+Reach for a `widget` when a number, a range, a trade-off, or a process carries
+the idea, and for a `figure` when structure carries it. Mark the parts of a
+figure with `data-reveal` so the student can tap or hover to name them (rule
+16).
+
+**What a widget is made of.** A `widget` has `html`, `controls`, `js`, and an
+optional `caption`. There are four control types, and one of them does not hold
+a value:
+
+- `range`, `switch`, and `select` write what the student chose into
+  `values[name]`, where `name` is the control's own name.
+- `button` adds 1 to `values[name]` every time it is clicked. That is how you
+  build Play, Step, and Reset: `{ "type": "button", "name": "play", "label":
+  "Play" }`.
+
+The page compiles `js` once for each step. A plain function is enough when it
+can read everything it needs from `values` and `root`. When you want a variable
+of your own to survive between clicks, let the source return your step
+function:
+
+```js
+(function () {
+  var at = 0;
+  return function (values, root, changed) {
+    if (changed === "reset") at = 0;
+    // draw from here
+  };
+})()
+```
+
+Either way, the page calls it as `js(values, root, changed)`:
+
+- `values` holds every control value, keyed by control name.
+- `root` is the play area. Draw by changing the DOM inside it.
+- `changed` is the name of the control the student just used, or `"init"` on
+  the first call, when the page draws the step for the first time.
+
+Prefer a CSS transition to a timer. Move a thing by changing a class or a
+style, and let the page's own transition carry it. If a step really needs a
+timer, store its id on `root.__timer`, and the page clears it when the step
+unmounts. The page honours reduced motion, so never make finishing the step
+depend on an animation.
 
 **Done when** every idea in the capability has a kind chosen for it, at least
-one step is something other than a question, and you can say in one line why
-each kind fits its idea.
+one step has the student move or play with something instead of answering, and
+you can say in one line why each kind fits its idea.
 
 ## 3. Write the spec
 
@@ -92,8 +154,14 @@ The rules that are not negotiable:
 - `meta.criterion` states the bar in the student's words, and
   `meta.criterion.minCorrect` agrees with that text. It counts graded steps
   only.
+- **Give them somewhere to go next.** `meta.resources` is an optional short
+  list, `[{ "label", "href", "note" }]`, shown on the intro and the results
+  screen under a heading that reads Keep going. Point at one or two real
+  sources, not a reading list.
 - No prompt, option list, figure, or widget gives an answer away before
   submit.
+- Every `widget` obeys the contract in step 2: named controls, a `js` that
+  reads `values`, draws inside `root`, and switches on `changed`.
 
 Then check it with [scripts/validate-spec.mjs](scripts/validate-spec.mjs):
 
@@ -131,9 +199,17 @@ and a rendered tag chip or the removed header badge.
 The template is already finished: brand tokens are vendored inline from
 `442-brand`, it makes no network requests, every control is at least 44 by 44
 px, and it lays out for a 360 px phone column first. It renders all seven
-kinds, the `figure` types, the `data-reveal` toggle, and the `widget` controls
-from the spec. Ship it as it is. If you need a visual element it does not have,
-call the Skill tool with `442-brand` and take the tokens from there.
+kinds, the `figure` types, the `data-reveal` toggle, and all four `widget`
+control types, `button` included. Ship it as it is.
+
+**Do not style anything by hand.** The page follows the checked `442-brand`
+design system: one accent, one radius, one shadow, one spacing scale, and the
+type scale, in a light theme and a dark theme that both meet their contrast
+floors. No color and no size goes into the page outside the tokens, and that
+holds for the markup inside a `figure` or a `widget` too. If you need a visual
+element the template does not have, read
+[442-brand/STYLE.md](../442-brand/STYLE.md) and take the tokens and the shapes
+from there.
 
 **Done when** opening `exercises/<slug>/index.html` shows the title, the intro
 with the step count, and step 1, and nothing on the page reveals an answer

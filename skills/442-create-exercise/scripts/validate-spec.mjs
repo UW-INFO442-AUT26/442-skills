@@ -22,7 +22,7 @@ const EM_DASH = "\u2014";
 const GRADED_KINDS = new Set(["choice", "multi", "short", "order", "sort", "match"]);
 const KINDS = new Set([...GRADED_KINDS, "explore"]);
 const FIGURE_TYPES = new Set(["svg", "html", "code"]);
-const CONTROL_TYPES = new Set(["range", "switch", "select"]);
+const CONTROL_TYPES = new Set(["range", "switch", "select", "button"]);
 
 const USAGE = `Validate one exercise spec against the contract.
 
@@ -114,6 +114,20 @@ function checkMeta(meta) {
   if (!isInt(c.minCorrect) || c.minCorrect < 0) {
     add("meta.criterion.minCorrect", "required, a whole number that counts graded steps only");
   }
+  if (meta.resources !== undefined) {
+    if (!Array.isArray(meta.resources)) {
+      add("meta.resources", "optional, but when present it must be an array of { label, href }");
+    } else {
+      meta.resources.forEach((r, i) => {
+        const where = "meta.resources[" + i + "]";
+        if (!isObject(r)) { add(where, "must be an object with label and href"); return; }
+        if (!isText(r.label)) add(where + ".label", "required, the text the student taps");
+        if (!isText(r.href)) add(where + ".href", "required, a link the student can open");
+        else if (!/^https?:\/\/\S+$/.test(r.href)) add(where + ".href", "must be a full http or https link");
+        if (r.note !== undefined && !isText(r.note)) add(where + ".note", "optional, but when present it must be text");
+      });
+    }
+  }
 }
 
 // A misconception is a string, or an object keyed by the wrong option index
@@ -176,7 +190,7 @@ function checkWidget(widget, where, required) {
     add(where + ".caption", "when present, a non-empty string");
   }
   if (!isText(widget.js)) {
-    add(where + ".js", "required, the body of function (values, root) that updates the play area");
+    add(where + ".js", "required, the body of function (values, root, changed) that updates the play area");
   }
   if (widget.controls === undefined) return;
   if (!Array.isArray(widget.controls)) {
