@@ -1,91 +1,201 @@
 {
   "_guide": {
-    "what this file is": "The schema for an exercise, with a worked example below it. Copy this file, replace the example with your topic, and it is a valid spec.",
-    "how it becomes a page": "The object from \"meta\" down is pasted into the <script type=\"application/json\" id=\"spec\"> data island inside assets/exercise.html. Keys starting with _ are ignored by the page; keep or delete them.",
-    "meta.title": "What the student sees as the page heading. Plain, specific, no marketing.",
-    "meta.slug": "Lowercase repo and folder name: letters, digits, hyphens. It becomes the GitHub repo name and therefore the URL.",
-    "meta.goal": "One sentence starting 'After this you can ...'. The one capability the exercise trains. See rule 8 in references/learning-science.md.",
+    "what this file is": "The schema for one exercise, with a worked example under it. Copy this file, replace the example with your topic, check it with scripts/validate-spec.mjs, then paste the object from \"meta\" down into the spec island of assets/exercise.html.",
+    "how it becomes a page": "The object from \"meta\" down is the spec. It is pasted into the <script type=\"application/json\" id=\"spec\"> island inside assets/exercise.html. Keys starting with _ are ignored by the page. Run the validator on the file before you paste: node scripts/validate-spec.mjs <spec.json>.",
+    "the one rule above all": "Pick the interaction that teaches this idea best. Ask yourself what the student should DO to learn it, then pick the kind. A quiz is right for some ideas and wrong for many others. A process wants order, a set of categories wants sort, a pair of ideas that look alike wants match, and anything that changes or relates numbers wants a widget.",
+    "rule: nothing reveals before submit": "No prompt, option list, figure or widget may show an answer before the student submits. The page grades on submit and then shows feedback.",
+    "rule: write simply": "Short sentences. Common words. Explain a term the first time it is used. This holds for the page copy and for every prompt, feedback and misconception string here. A reader whose first language is not English must follow it easily.",
+    "rule: no em dashes": "Do not use the long dash (the em dash) anywhere in this file. Use a comma, a colon, or two sentences.",
+    "meta.title": "What the student sees as the page heading. Plain and specific, no marketing.",
+    "meta.slug": "Lowercase repo and folder name: letters, digits, single hyphens. It becomes the GitHub repo name and so the URL.",
+    "meta.goal": "One sentence starting 'After this you can ...'. It names the one capability the exercise trains. See rule 8 in references/learning-science.md.",
     "meta.minutes": "Honest length of one sitting. 6 to 12 steps fits a 10 minute phone session (rule 12).",
-    "meta.criterion.text": "The bar in the student's words, shown on the intro and results screens (rule 10).",
-    "meta.criterion.minCorrect": "Number of steps that must be right for the criterion to count as met. Keep it in agreement with the text.",
-    "steps[].id": "Short stable id used in the results list. Any unique string.",
-    "steps[].tag": "Sub-topic of this step. Used to interleave different sub-topics instead of blocking them (rule 5).",
-    "steps[].kind": "\"choice\" (tap one option) or \"short\" (type the answer from memory). Mix them.",
-    "steps[].prompt": "The question. It must never contain or hint at the answer (rule 1).",
-    "steps[].options": "Required for \"choice\": 3 to 5 short options, each a plausible answer. Order them so the right one is not always in the same position.",
-    "steps[].answer": "For \"choice\": the zero-based index of the right option. For \"short\": a string, or an array of accepted strings. Matching is lowercase, whitespace-collapsed, and trailing punctuation is ignored.",
-    "steps[].feedback": "Why the answer is right. Shown after every attempt, right or wrong. Explain the mechanism, not the verdict (rule 2).",
-    "steps[].misconception": "The tempting wrong belief and why it fails. Either one string, or an object keyed by wrong option index with a \"default\" fallback. Shown only after a wrong attempt (rule 3).",
-    "steps[].hint": "Optional. One nudge, shown behind a Hint button. Put hints on early steps only, then drop them (rule 6)."
+    "meta.criterion.text": "The bar in the student's words. The intro and the results screen both show it (rule 10).",
+    "meta.criterion.minCorrect": "How many graded steps must be right for the criterion to count as met. Graded steps only: an explore step is never counted. Keep this number in agreement with the text.",
+    "steps": "6 to 12 steps for a 10 minute exercise. Order them so neighbouring steps do not all ask the same shape of question, and so sub-topics alternate (rule 5).",
+    "steps[].id": "Short stable id, unique in the file. The results screen uses it to name a missed step.",
+    "steps[].kind": "One of choice, multi, short, order, sort, match, explore. See the table below.",
+    "steps[].prompt": "The question or the doing instruction. It must never contain or hint at the answer (rule 1).",
+    "steps[].tag": "Author-only label for the sub-topic, used to interleave instead of blocking one idea together (rule 5). The page never renders it. It does not appear anywhere the student can see.",
+    "steps[].feedback": "Required on every graded kind. Explains WHY the answer is right, shown after every attempt, right or wrong. Explain the mechanism, not the verdict (rule 2).",
+    "steps[].misconception": "Required on choice and multi. The tempting wrong belief and why it fails, shown only after a wrong attempt (rule 3). Write one string for the whole step, or an object keyed by wrong option index with an optional \"default\".",
+    "steps[].hint": "Optional. One nudge behind a Hint button. Put hints on the early steps of an idea, then drop them so the last step on that idea is free recall (rule 6).",
+    "steps[].figure": "Optional, and it may decorate any step. A visual shown above the prompt: { \"type\": \"svg\" | \"html\" | \"code\", \"content\": \"<markup or code text>\", \"caption\": \"optional\" }. For \"svg\" and \"html\" the content is injected as markup. For \"code\" the content is shown in a code block.",
+    "figure reveal": "Any element inside a figure may carry data-reveal=\"some caption text\". That element becomes tappable, and hoverable on a desktop, and toggles its caption. This is the tap-or-hover-to-learn-more move. Use it for a diagram whose parts each need a name.",
+    "steps[].widget": "Optional on any step, required on explore. An interactive play area: { \"html\": \"<markup>\", \"controls\": [ ... ], \"js\": \"function (values, root) { ... }\", \"caption\": \"optional\" }.",
+    "widget.controls[]": "Each control is one of: { \"type\": \"range\", \"name\", \"label\", \"min\", \"max\", \"step\", \"value\", \"unit\": optional }, { \"type\": \"switch\", \"name\", \"label\", \"value\": true|false }, { \"type\": \"select\", \"name\", \"label\", \"options\": [ ... ], \"value\" }.",
+    "widget.js": "The page renders the controls, holds the current values keyed by control name, and calls this function once at load and again on every change. It receives (values, root), where root is the play area element. Update the DOM inside root from here. That is how a simulation is built.",
+    "kind choice": "Tap one option. Needs options (3 to 5 strings, each believable) and answer (the zero based index of the right one). Submits on tap. Order the options so the right one is not always in the same place.",
+    "kind multi": "Tap all that apply. Needs options (a string array) and answer (an array of the indices that are correct: all of them and only them). Submits on a button.",
+    "kind short": "Type the answer from memory. Needs answer as one accepted string, or an array of accepted strings. Matching ignores case, collapses spaces, and ignores trailing punctuation. Submits on a button.",
+    "kind order": "Tap the items in the right order, with undo. Needs options (a string array, already in the order shown to the student) and answer (the correct order, as indices into options: a permutation of 0 to length minus 1). Submits on a button. Use it when the idea is a sequence or a decision order.",
+    "kind sort": "Put each item into a bucket. Needs buckets (2 or 3 names) and items (a list of { \"text\", \"bucket\" }, where bucket is the correct bucket index). Submits on a button. Use it when the idea is 'which family does this belong to'.",
+    "kind match": "Pair each left item with a right item. Needs lefts, rights (both string arrays, rights in display order) and answer (answer[i] is the correct index into rights for lefts[i]). Submits on a button. Use it when two sets of things are easily confused with each other.",
+    "kind explore": "Ungraded, and it needs a widget. The page shows the widget and a Continue button. Nothing is scored here and nothing is counted in minCorrect. Put an explore step early when the student should play with the system before you ask anything about it (rule 13).",
+    "which kind to reach for": "choice: one right answer among plausible rivals. multi: several things at once are true. short: the student must produce the word or number with no options in front of them. order: the sequence or the decision order matters. sort: items fall into families. match: two lists are easy to mix up. explore: a system has parts, a trade-off, or a number that moves."
   },
 
   "meta": {
     "title": "HTTP status codes",
     "slug": "442-http-status-codes",
-    "goal": "After this you can tell what went wrong in a request by reading its status code.",
-    "minutes": 6,
+    "goal": "After this you can decide what to do next when a request fails, by reading its status code.",
+    "minutes": 10,
     "criterion": {
-      "text": "Get at least 4 of 5 right, including the 401 vs 403 pair.",
-      "minCorrect": 4
+      "text": "Get at least 6 of the 8 graded steps right.",
+      "minCorrect": 6
     }
   },
 
   "steps": [
     {
-      "id": "s1",
-      "tag": "4xx: who is at fault",
+      "id": "e1",
+      "tag": "the five families",
+      "kind": "explore",
+      "prompt": "Slide the code and watch the family under it. Play here first, then answer the questions.",
+      "widget": {
+        "html": "<p data-code style=\"font-family: var(--font-mono); font-size: var(--text-2xl); margin: 0 0 var(--space-2)\">404</p><p data-family style=\"font-size: var(--text-lg); margin: 0 0 var(--space-2)\">4xx: the request is wrong</p><p data-meaning style=\"color: var(--ink-2); margin: 0\">There is nothing at that address.</p>",
+        "controls": [
+          {
+            "type": "range",
+            "name": "code",
+            "label": "Status code",
+            "min": 100,
+            "max": 599,
+            "step": 1,
+            "value": 404
+          }
+        ],
+        "js": "function (values, root) {\n  var code = Number(values.code);\n  var family = Math.floor(code / 100);\n  var families = {\n    1: \"1xx: the server is still working\",\n    2: \"2xx: it worked\",\n    3: \"3xx: look somewhere else\",\n    4: \"4xx: the request is wrong\",\n    5: \"5xx: the server is wrong\"\n  };\n  var named = {\n    200: \"The request worked and the answer is in the body.\",\n    301: \"The thing moved. Ask again at the new address.\",\n    400: \"The bytes you sent do not parse.\",\n    401: \"No usable login came with the request.\",\n    403: \"You are known, and you are still not allowed.\",\n    404: \"There is nothing at that address.\",\n    500: \"The request was fine and the handler failed.\",\n    502: \"The server behind this one answered badly.\"\n  };\n  root.querySelector(\"[data-code]\").textContent = code;\n  root.querySelector(\"[data-family]\").textContent = families[family] || \"not a real family\";\n  root.querySelector(\"[data-meaning]\").textContent = named[code] || \"Slide to 200, 301, 400, 401, 403, 404, 500 or 502 for a named example.\";\n}",
+        "caption": "Every code sits in a family, and the family says whose problem it is."
+      }
+    },
+    {
+      "id": "c1",
+      "tag": "identity or permission",
       "kind": "choice",
-      "prompt": "A request needs a login and did not send one. Which status comes back?",
-      "options": ["401 Unauthorized", "403 Forbidden", "404 Not Found", "500 Internal Server Error"],
+      "prompt": "A request arrives with no login at all. Which code comes back?",
+      "options": [
+        "401 Unauthorized",
+        "403 Forbidden",
+        "404 Not Found",
+        "500 Internal Server Error"
+      ],
       "answer": 0,
-      "feedback": "401 means the request carried no usable credentials, so the server is saying who are you. 403 means it knows who you are and still refuses.",
+      "feedback": "401 means the request carried no usable credentials, so the server asks who are you. 403 means the server knows who you are and still refuses.",
       "misconception": {
-        "1": "403 is the tempting pick because it sounds more severe, but 403 means the server recognized you and denied you. No credentials at all is 401.",
-        "3": "500 means the server broke. Nothing broke here; the request simply arrived without a login."
+        "1": "403 sounds more severe, so it is tempting. But 403 means the server recognized you and denied you. No credentials at all is 401.",
+        "3": "500 means the server broke. Nothing broke here: the request simply arrived without a login."
       },
-      "hint": "One of these two codes is about identity and the other is about permission."
+      "hint": "One of these two codes is about identity, and the other is about permission."
+    },
+    {
+      "id": "s1",
+      "tag": "the five families",
+      "kind": "short",
+      "prompt": "Which family of codes says the request itself was wrong? Write the family.",
+      "answer": ["4xx", "400s", "4 hundred", "client error", "client errors"],
+      "feedback": "4xx is the request's fault: the server read it and refused it. The server blames itself with 5xx.",
+      "misconception": "Most people answer 5xx, because a failed request feels like a server problem. 5xx means the request was fine and the server could not finish the job.",
+      "figure": {
+        "type": "code",
+        "content": "HTTP/1.1 401 Unauthorized\nWWW-Authenticate: Bearer realm=\"api\"",
+        "caption": "The reply the server sends when it wants a login."
+      },
+      "hint": "Count the families from 1xx up. The one that blames the sender is the fourth."
+    },
+    {
+      "id": "o1",
+      "tag": "what to do next",
+      "kind": "order",
+      "prompt": "A request failed. Tap the checks in the order a client should try them.",
+      "options": [
+        "Send the request again after a short wait",
+        "Read the status family",
+        "Fix the bytes the server refused",
+        "Refresh the token and send again"
+      ],
+      "answer": [1, 3, 2, 0],
+      "feedback": "Read the family first, because it decides everything else. 401 needs a new token, 4xx needs a different request, 5xx is worth one careful retry with a growing wait.",
+      "misconception": "Retrying first is the common mistake. A retry on a 400 sends the same broken bytes again, and the server answers the same way."
+    },
+    {
+      "id": "t1",
+      "tag": "codes to meaning",
+      "kind": "match",
+      "prompt": "Pair each code with what the server is telling you.",
+      "lefts": ["400", "401", "403", "404"],
+      "rights": [
+        "You are not allowed to do that",
+        "The bytes you sent do not parse",
+        "You are not logged in",
+        "There is nothing at that address"
+      ],
+      "answer": [1, 2, 0, 3],
+      "feedback": "Two of these look identical until you ask one question: did the server know who you were? 401 says no, 403 says yes and still no.",
+      "misconception": "401 and 403 get swapped constantly, because both read as refusals. Keep the test in mind: 401 is about who you are, 403 is about what you may do."
     },
     {
       "id": "s2",
-      "tag": "5xx: the server",
-      "kind": "short",
-      "prompt": "Name the one status family that means the request was fine and the server failed while handling it.",
-      "answer": ["500", "5xx", "500s", "server error", "internal server error", "five hundred"],
-      "feedback": "5xx is the server's own admission of fault. Anything 4xx blames the request.",
-      "misconception": "Most students answer 4xx. 4xx means the request was wrong; 5xx means the request was fine and the server could not finish the job."
+      "tag": "the five families",
+      "kind": "sort",
+      "prompt": "Put each code in the bucket that says who has to fix the problem.",
+      "buckets": ["The request is wrong", "The server is wrong", "Nobody is wrong"],
+      "items": [
+        { "text": "400 Bad Request", "bucket": 0 },
+        { "text": "404 Not Found", "bucket": 0 },
+        { "text": "500 Internal Server Error", "bucket": 1 },
+        { "text": "502 Bad Gateway", "bucket": 1 },
+        { "text": "200 OK", "bucket": 2 },
+        { "text": "301 Moved Permanently", "bucket": 2 }
+      ],
+      "feedback": "The first digit is the whole story. 4xx blames the request, 5xx blames the server, and 2xx and 3xx mean the request was handled.",
+      "misconception": "404 gets filed under the server, because the page is missing. But the request asked for an address that is not there, so the fix is on the request side.",
+      "figure": {
+        "type": "svg",
+        "content": "<svg viewBox=\"0 0 320 96\" width=\"100%\" role=\"img\" aria-label=\"The five families of status codes as a row of blocks\"><g font-size=\"13\" text-anchor=\"middle\"><rect data-reveal=\"1xx: the server is working on it, so wait\" x=\"2\" y=\"16\" width=\"58\" height=\"44\" rx=\"6\" fill=\"var(--surface-2)\" stroke=\"var(--border)\"/><text x=\"31\" y=\"43\" fill=\"var(--ink)\">1xx</text><rect data-reveal=\"2xx: it worked\" x=\"66\" y=\"16\" width=\"58\" height=\"44\" rx=\"6\" fill=\"var(--success-soft)\"/><text x=\"95\" y=\"43\" fill=\"var(--ink)\">2xx</text><rect data-reveal=\"3xx: the thing moved, so ask again elsewhere\" x=\"130\" y=\"16\" width=\"58\" height=\"44\" rx=\"6\" fill=\"var(--info-soft)\"/><text x=\"159\" y=\"43\" fill=\"var(--ink)\">3xx</text><rect data-reveal=\"4xx: the request is wrong, so fix it before you send it again\" x=\"194\" y=\"16\" width=\"58\" height=\"44\" rx=\"6\" fill=\"var(--warning-soft)\"/><text x=\"223\" y=\"43\" fill=\"var(--ink)\">4xx</text><rect data-reveal=\"5xx: the server is wrong, so a careful retry is fair\" x=\"258\" y=\"16\" width=\"58\" height=\"44\" rx=\"6\" fill=\"var(--error-soft)\"/><text x=\"287\" y=\"43\" fill=\"var(--ink)\">5xx</text></g></svg>",
+        "caption": "Tap a block to read what its family decides."
+      },
+      "hint": "Only the first digit matters for this question."
+    },
+    {
+      "id": "c2",
+      "tag": "identity or permission",
+      "kind": "choice",
+      "prompt": "You are logged in as a student. You ask for another student's invoice and your role may not open it. Which code fits?",
+      "options": ["403 Forbidden", "401 Unauthorized", "200 OK", "302 Found"],
+      "answer": 0,
+      "feedback": "You are known, so it is not 401, and the server refuses the action, so it is 403. A 200 with an empty page would hide the refusal, and a redirect would not explain it.",
+      "misconception": {
+        "1": "401 means no usable credentials. You have credentials. They just do not grant this resource.",
+        "2": "A 200 with nothing in it tells the client nothing and hides a real decision."
+      }
+    },
+    {
+      "id": "m1",
+      "tag": "who is at fault",
+      "kind": "multi",
+      "prompt": "Which of these mean the client should change the request before sending it again?",
+      "options": [
+        "400 Bad Request",
+        "404 Not Found",
+        "500 Internal Server Error",
+        "200 OK",
+        "502 Bad Gateway"
+      ],
+      "answer": [0, 1],
+      "feedback": "Both are 4xx, so the request needs a fix: different bytes, or a different address. The others either worked or are the server's own problem.",
+      "misconception": {
+        "2": "500 and 502 look like failures, so they feel like something to fix. They are the server's problem, and resending the same request is the right first move.",
+        "3": "200 means the request was fine. There is nothing to change."
+      }
     },
     {
       "id": "s3",
-      "tag": "4xx: who is at fault",
-      "kind": "choice",
-      "prompt": "You are logged in and you ask for another user's billing page. The server has never offered you that page. Which status is closest to correct?",
-      "options": ["403 Forbidden", "401 Unauthorized", "200 OK", "302 Found"],
-      "answer": 0,
-      "feedback": "You are known (so not 401) and the server refuses the action (403). Returning 200 with an empty page hides the refusal, and a redirect does not explain it.",
-      "misconception": {
-        "1": "401 again means no credentials. You have credentials; they just do not grant this resource.",
-        "2": "A 200 with nothing in it teaches the client nothing and hides a real authorization decision."
-      }
-    },
-    {
-      "id": "s4",
-      "tag": "4xx: the request",
-      "kind": "choice",
-      "prompt": "A client sends JSON the server cannot parse. No server code ran. Which status fits?",
-      "options": ["400 Bad Request", "500 Internal Server Error", "502 Bad Gateway", "204 No Content"],
-      "answer": 0,
-      "feedback": "400 is the client's fault: the bytes that arrived were malformed, so the server could not start work on them.",
-      "misconception": {
-        "1": "500 means code ran and failed. Here the server rejected the payload before running anything."
-      }
-    },
-    {
-      "id": "s5",
-      "tag": "5xx: the server",
+      "tag": "the five families",
       "kind": "short",
-      "prompt": "A status code comes back after a crash in your own handler. Write it.",
+      "prompt": "Your own handler throws, so no response is ever written. Which status do you return?",
       "answer": ["500", "500 internal server error", "internal server error"],
-      "feedback": "500, or a more specific 5xx, is the server reporting that the request was fine and handling it was not."
+      "feedback": "500, or a more specific 5xx, is the server saying the request was fine and handling it was not. Send it from the handler that caught the error."
     }
   ]
 }

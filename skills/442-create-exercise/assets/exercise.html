@@ -125,19 +125,6 @@ body {
 
 .top { padding-bottom: var(--space-4); }
 
-.badge {
-  display: inline-block;
-  margin: 0 0 var(--space-3);
-  padding: var(--space-1) var(--space-3);
-  background: var(--uw-purple);
-  color: #FFFFFF;
-  border-radius: var(--radius-pill);
-  font-size: var(--text-xs);
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
 h1 {
   margin: 0;
   font-size: var(--text-2xl);
@@ -202,16 +189,6 @@ h1::after {
   transition: width var(--motion) var(--ease);
 }
 
-.tag {
-  display: inline-block;
-  margin-bottom: var(--space-3);
-  padding: var(--space-1) var(--space-2);
-  background: var(--accent-soft);
-  color: var(--uw-purple-deep);
-  border-radius: var(--radius-pill);
-  font-size: var(--text-xs);
-}
-
 .prompt {
   margin: 0 0 var(--space-6);
   font-size: var(--text-xl);
@@ -219,6 +196,124 @@ h1::after {
   font-weight: 600;
   overflow-wrap: anywhere;
 }
+
+.prompt:focus { outline: none; }
+
+/* ---- figure: a visual above the prompt ---------------------------- */
+
+.fig { margin: 0 0 var(--space-6); padding: 0; }
+
+.fig-body { display: block; }
+.fig-body > svg,
+.fig-body > img { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+
+.fig-cap {
+  margin: var(--space-2) 0 0;
+  color: var(--muted);
+  font-size: var(--text-xs);
+  text-align: center;
+}
+
+/* Code figures and any author supplied <pre> wrap, so a long line never
+   makes the page scroll sideways on a phone. */
+.fig-code,
+.fig-body pre {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.fig-code code,
+.fig-body pre code { font-family: var(--font-mono); font-size: var(--text-sm); }
+
+/* A figure element with data-reveal: tap or hover to show one caption. */
+.reveal { cursor: pointer; }
+.reveal:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.reveal-on { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.reveals { margin-top: var(--space-3); }
+
+.reveal-cap {
+  margin: 0 0 var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--ink);
+  font-size: var(--text-sm);
+}
+
+.reveal-cap:last-child { margin-bottom: 0; }
+
+/* ---- widget: an interactive play area ----------------------------- */
+
+.widget {
+  margin: 0 0 var(--space-6);
+  padding: var(--space-4);
+  background: var(--surface-2);
+  border-radius: var(--radius);
+}
+
+.play { min-height: var(--space-8); }
+.play > * { max-width: 100%; }
+.play svg, .play img { max-width: 100%; height: auto; }
+.play p { margin: 0 0 var(--space-2); overflow-wrap: anywhere; }
+.play p:last-child { margin-bottom: 0; }
+
+.controls { display: grid; gap: var(--space-3); margin-top: var(--space-4); }
+
+.ctl { display: grid; gap: var(--space-2); }
+
+.ctl-lbl { color: var(--ink-2); font-size: var(--text-sm); font-weight: 600; }
+
+.ctl-row { display: flex; align-items: center; gap: var(--space-3); }
+
+.rng {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: var(--tap);
+  accent-color: var(--accent);
+}
+
+.ctl-out {
+  flex: none;
+  min-width: 3.5rem;
+  text-align: right;
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+
+.ctl-switch {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--tap);
+  cursor: pointer;
+}
+
+.sw { flex: none; width: 1.4rem; height: 1.4rem; accent-color: var(--accent); }
+
+.sel {
+  width: 100%;
+  min-height: var(--tap);
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: var(--text-base);
+}
+
+.widget-cap { margin: var(--space-3) 0 0; color: var(--muted); font-size: var(--text-xs); }
+
+/* ---- answers ------------------------------------------------------ */
+
+.answer { margin-top: var(--space-3); }
 
 .opts { display: grid; gap: var(--space-3); }
 
@@ -268,6 +363,9 @@ h1::after {
   text-transform: uppercase;
 }
 
+.opt[data-picked="yes"] { background: var(--accent-soft); border-color: var(--accent); }
+.opt[data-picked="yes"] .opt-key { border-color: var(--accent); color: var(--accent); }
+
 .opt[data-state="right"] {
   background: var(--success-soft);
   border-color: var(--success);
@@ -289,13 +387,76 @@ h1::after {
 .opt[data-state="muted"] { opacity: 1; color: var(--muted); }
 .opt[data-state="muted"] .opt-key { color: var(--muted); }
 
-.short { display: grid; gap: var(--space-2); }
+/* order: the pool is the same as .opts, the picks stack above it */
+.chips { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--space-2); }
+
+.chip {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-base);
+}
+
+.chip-n { flex: none; color: var(--ink-2); font-weight: 600; }
+.chip[data-state="right"] { background: var(--success-soft); border-color: var(--success); }
+.chip[data-state="wrong"] { background: var(--error-soft); border-color: var(--error); }
+.chip[data-state="right"] .opt-mark { color: var(--success); }
+.chip[data-state="wrong"] .opt-mark { color: var(--error); }
 
 .lbl {
+  margin: var(--space-4) 0 var(--space-2);
   color: var(--ink-2);
   font-size: var(--text-sm);
   font-weight: 600;
 }
+
+.lbl:first-child { margin-top: 0; }
+
+/* sort and match: one row per item, a button per bucket or partner */
+.assign { display: grid; gap: var(--space-3); }
+
+.arow {
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.arow[data-state="right"] { border-color: var(--success); background: var(--success-soft); }
+.arow[data-state="wrong"] { border-color: var(--error); background: var(--error-soft); }
+.arow[data-state="right"] .opt-mark { color: var(--success); }
+.arow[data-state="wrong"] .opt-mark { color: var(--error); }
+
+.atext { margin: 0 0 var(--space-2); font-weight: 600; overflow-wrap: anywhere; }
+
+.abtns { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+
+.abtn {
+  min-height: var(--tap);
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: var(--text-sm);
+  line-height: var(--leading);
+  text-align: left;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.abtn:hover:not(:disabled) { border-color: var(--accent); }
+.abtn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); font-weight: 600; }
+.abtn:disabled { cursor: default; }
+.abtn[data-state="right"] { background: var(--success-soft); border-color: var(--success); }
+.abtn[data-state="wrong"] { background: var(--error-soft); border-color: var(--error); }
+.abtn[data-state="muted"] { color: var(--muted); }
+
+.short { display: grid; gap: var(--space-2); }
 
 .inp {
   width: 100%;
@@ -321,6 +482,8 @@ h1::after {
   font-weight: 600;
   cursor: pointer;
 }
+
+.btn:disabled { opacity: 0.5; cursor: default; }
 
 .btn-primary { background: var(--accent); color: var(--accent-ink); }
 .btn-primary:hover { background: var(--uw-purple); }
@@ -369,7 +532,7 @@ h1::after {
 .fb-no .fb-verdict { color: var(--error); }
 
 .fb-answer { font-weight: 600; }
-.fb-answer code { font-family: var(--font-mono); font-size: var(--text-sm); }
+.fb-answer code { font-family: var(--font-mono); font-size: var(--text-sm); overflow-wrap: anywhere; }
 .fb-mis { color: var(--ink-2); font-size: var(--text-sm); }
 
 .facts { margin: 0; padding-left: var(--space-6); }
@@ -401,12 +564,6 @@ h1::after {
   font-size: var(--text-sm);
 }
 
-.foot {
-  margin-top: var(--space-6);
-  color: var(--muted);
-  font-size: var(--text-xs);
-}
-
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 @media (min-width: 30rem) {
@@ -417,7 +574,6 @@ h1::after {
 <body>
 <div class="wrap">
   <header class="top">
-    <span class="badge">INFO 442</span>
     <h1 id="page-title">Practice exercise</h1>
     <p class="goal" id="page-goal"></p>
   </header>
@@ -451,7 +607,7 @@ h1::after {
       "kind": "short",
       "prompt": "Write the file name that holds the schema and a worked example.",
       "answer": ["exercise.spec.json", "exercise.spec", "spec.json"],
-      "feedback": "assets/exercise.spec.json carries the field guide and a five step example to copy.",
+      "feedback": "assets/exercise.spec.json carries the field guide and a worked example to copy.",
       "misconception": "The schema file is assets/exercise.spec.json, next to assets/exercise.html."
     }
   ]
@@ -462,29 +618,104 @@ h1::after {
 (function () {
   "use strict";
 
-  var raw = document.getElementById("spec");
-  var spec = {};
-  try { spec = JSON.parse(raw.textContent || "{}"); } catch (err) { spec = {}; }
+  /* The seven step kinds. `explore` is the only one that is not graded. */
+  var KINDS = ["choice", "multi", "short", "order", "sort", "match", "explore"];
+  var uid = 0;
 
-  var meta = spec.meta || {};
-  var steps = (spec.steps || []).filter(function (s) { return s && s.prompt; });
-  steps.forEach(function (s) {
-    if (!s.kind) s.kind = (Array.isArray(s.options) && s.options.length) ? "choice" : "short";
-  });
+  // ---- read the spec and drop what cannot be rendered ----------------
+
+  var island = document.getElementById("spec");
+  var spec = {};
+  try { spec = JSON.parse((island && island.textContent) || "{}"); } catch (err) { spec = {}; }
+  if (!spec || typeof spec !== "object") spec = {};
+
+  var meta = (spec.meta && typeof spec.meta === "object") ? spec.meta : {};
+  var STEPS = prepareSteps(spec.steps);
+  var GRADED_TOTAL = 0;
+  STEPS.forEach(function (s) { if (s.kind !== "explore") GRADED_TOTAL += 1; });
+
+  function isArr(v) { return Array.isArray(v); }
+  function isNum(v) { return typeof v === "number" && isFinite(v); }
+  function inRange(v, n) { return isNum(v) && v === Math.floor(v) && v >= 0 && v < n; }
+  function isStrings(v, min) {
+    return isArr(v) && v.length >= min && v.every(function (s) { return typeof s === "string" && s.length > 0; });
+  }
+  function isPermutation(arr, n) {
+    if (!isArr(arr) || arr.length !== n) return false;
+    var seen = {};
+    for (var i = 0; i < arr.length; i += 1) {
+      if (!inRange(arr[i], n) || seen[arr[i]]) return false;
+      seen[arr[i]] = true;
+    }
+    return true;
+  }
+
+  function prepareSteps(list) {
+    if (!isArr(list)) return [];
+    var out = [];
+    list.forEach(function (s) {
+      if (!s || typeof s !== "object") return;
+      if (typeof s.prompt !== "string" || !s.prompt) return;
+      if (!s.kind) {
+        s.kind = (isArr(s.options) && s.options.length) ? "choice" : "short";
+      }
+      if (KINDS.indexOf(s.kind) === -1) return;
+      if (validStep(s)) out.push(s);
+    });
+    return out;
+  }
+
+  /* A step renders only when its own fields are complete. Anything else
+     is skipped, so one broken step cannot take the page down. */
+  function validStep(s) {
+    var k = s.kind;
+    if (k === "choice") {
+      return isStrings(s.options, 2) && s.options.length <= 5 && inRange(s.answer, s.options.length);
+    }
+    if (k === "multi") {
+      return isStrings(s.options, 1) && isArr(s.answer) && s.answer.length > 0 &&
+        s.answer.every(function (n) { return inRange(n, s.options.length); });
+    }
+    if (k === "short") {
+      var list = isArr(s.answer) ? s.answer : [s.answer];
+      return list.some(function (a) { return typeof a === "string" && norm(a); });
+    }
+    if (k === "order") {
+      return isStrings(s.options, 2) && isPermutation(s.answer, s.options.length);
+    }
+    if (k === "sort") {
+      if (!isStrings(s.buckets, 2) || s.buckets.length > 3) return false;
+      return isArr(s.items) && s.items.length > 0 && s.items.every(function (item) {
+        return item && typeof item.text === "string" && item.text && inRange(item.bucket, s.buckets.length);
+      });
+    }
+    if (k === "match") {
+      return isStrings(s.lefts, 1) && isStrings(s.rights, 1) && isArr(s.answer) &&
+        s.answer.length === s.lefts.length &&
+        s.answer.every(function (n) { return inRange(n, s.rights.length); });
+    }
+    if (k === "explore") {
+      var w = s.widget;
+      return !!(w && typeof w === "object" && (typeof w.html === "string" || typeof w.js === "string"));
+    }
+    return false;
+  }
+
+  // ---- page furniture -------------------------------------------------
 
   var app = document.getElementById("app");
   var titleEl = document.getElementById("page-title");
   var goalEl = document.getElementById("page-goal");
 
-  var title = meta.title || "Practice exercise";
+  var title = (typeof meta.title === "string" && meta.title) ? meta.title : "Practice exercise";
   titleEl.textContent = title;
   document.title = title;
-  if (meta.goal) goalEl.textContent = meta.goal; else goalEl.remove();
+  if (typeof meta.goal === "string" && meta.goal) goalEl.textContent = meta.goal;
+  else if (goalEl) goalEl.remove();
 
-  // latest attempt outcome for each step index
-  var latest = new Map();
+  var latest = new Map();   // step index -> true when the latest try was right
   var screen = "intro";
-  var queue = [];
+  var queue = [];           // step indices in this round, in order
   var pos = 0;
   var round = 1;
 
@@ -501,57 +732,281 @@ h1::after {
       });
     }
     if (kids) {
-      (Array.isArray(kids) ? kids : [kids]).forEach(function (kid) {
+      (isArr(kids) ? kids : [kids]).forEach(function (kid) {
         if (kid) node.appendChild(kid);
       });
     }
     return node;
   }
 
+  function mark(node, text) {
+    node.appendChild(el("span", { class: "opt-mark", text: text }));
+  }
+
   function clear() {
     while (app.firstChild) app.removeChild(app.firstChild);
   }
 
-  function norm(s) {
-    return String(s === null || s === undefined ? "" : s)
+  // ---- grading --------------------------------------------------------
+
+  function norm(v) {
+    return String(v === null || v === undefined ? "" : v)
       .toLowerCase().trim().replace(/\s+/g, " ").replace(/[.;,!?]+$/, "");
   }
 
   function accepted(step) {
-    var a = step.answer;
-    var list = Array.isArray(a) ? a : [a];
+    var list = isArr(step.answer) ? step.answer : [step.answer];
     return list.map(norm).filter(Boolean);
   }
 
-  function modelAnswer(step) {
-    if (step.kind === "choice" && Array.isArray(step.options)) {
-      var i = typeof step.answer === "number" ? step.answer : step.options.indexOf(step.answer);
-      return i >= 0 && i < step.options.length ? step.options[i] : String(step.answer);
-    }
-    return accepted(step)[0] || String(step.answer);
+  function sameOrder(a, b) {
+    if (!isArr(a) || a.length !== b.length) return false;
+    for (var i = 0; i < a.length; i += 1) { if (a[i] !== b[i]) return false; }
+    return true;
+  }
+
+  function sameSet(a, b) {
+    var x = a.slice().sort(function (p, q) { return p - q; });
+    var y = b.slice().sort(function (p, q) { return p - q; });
+    return sameOrder(x, y);
   }
 
   function isCorrect(step, given) {
-    if (step.kind === "choice") {
-      if (typeof step.answer === "number") return given === step.answer;
-      return norm(step.options[given]) === norm(step.answer);
+    switch (step.kind) {
+      case "choice":  return given === step.answer;
+      case "multi":   return isArr(given) && sameSet(given, step.answer);
+      case "short":   return accepted(step).indexOf(norm(given)) !== -1;
+      case "order":   return sameOrder(given, step.answer);
+      case "sort":    return step.items.every(function (item, i) { return given[i] === item.bucket; });
+      case "match":   return sameOrder(given, step.answer);
+      default:        return false;
     }
-    return accepted(step).indexOf(norm(given)) !== -1;
+  }
+
+  /* The model answer is shown exactly as the author wrote it, so the
+     student reads the real spelling rather than the match key. */
+  function firstAnswer(step) {
+    var list = isArr(step.answer) ? step.answer : [step.answer];
+    var first = list.filter(function (a) { return typeof a === "string" && a.trim(); })[0];
+    return first || String(step.answer);
+  }
+
+  function modelAnswer(step) {
+    switch (step.kind) {
+      case "choice": return step.options[step.answer];
+      case "multi":  return step.answer.map(function (i) { return step.options[i]; }).join(", ");
+      case "short":  return firstAnswer(step);
+      case "order":  return step.answer.map(function (i) { return step.options[i]; }).join(" then ");
+      case "sort":   return step.items.map(function (item) {
+        return item.text + " in " + step.buckets[item.bucket];
+      }).join("; ");
+      case "match":  return step.lefts.map(function (left, i) {
+        return left + " with " + step.rights[step.answer[i]];
+      }).join("; ");
+      default:       return "";
+    }
+  }
+
+  function misconceptionKey(step, given) {
+    if (step.kind === "choice") return given;
+    if (step.kind === "multi") {
+      var wrong = (isArr(given) ? given : []).filter(function (i) { return step.answer.indexOf(i) === -1; });
+      wrong.sort(function (a, b) { return a - b; });
+      return wrong.length ? wrong[0] : "default";
+    }
+    return "default";
   }
 
   function misconceptionFor(step, key) {
     var m = step.misconception;
     if (!m) return "";
     if (typeof m === "string") return m;
-    if (Array.isArray(m)) return m[key] || "";
-    return m[String(key)] || m.default || "";
+    if (typeof m === "object") return m[String(key)] || m.default || "";
+    return "";
   }
 
   function criterion() {
-    var c = meta.criterion || {};
-    var min = typeof c.minCorrect === "number" ? c.minCorrect : Math.ceil(steps.length * 0.8);
-    return { text: c.text || "", minCorrect: Math.min(Math.max(min, 1), steps.length) };
+    var c = (meta.criterion && typeof meta.criterion === "object") ? meta.criterion : {};
+    var min = isNum(c.minCorrect) ? Math.round(c.minCorrect) : Math.ceil(GRADED_TOTAL * 0.8);
+    return {
+      text: typeof c.text === "string" ? c.text : "",
+      minCorrect: Math.max(0, Math.min(min, GRADED_TOTAL))
+    };
   }
+
+  // ---- figure ---------------------------------------------------------
+
+  /* svg and html content is injected as markup; code content is shown in
+     a pre block. Any element carrying data-reveal becomes a tap or hover
+     control that toggles its own caption under the figure. */
+  function renderFigure(step) {
+    var f = step.figure;
+    if (!f || typeof f !== "object" || typeof f.content !== "string" || !f.content) return null;
+
+    var fig = el("figure", { class: "fig" });
+    if (f.type === "code") {
+      fig.appendChild(el("pre", { class: "fig-code" }, el("code", { text: f.content })));
+    } else {
+      var body = el("div", { class: "fig-body" });
+      body.innerHTML = f.content;
+      fig.appendChild(body);
+      wireReveals(fig, body.querySelectorAll("[data-reveal]"));
+    }
+    if (typeof f.caption === "string" && f.caption) {
+      fig.appendChild(el("figcaption", { class: "fig-cap", text: f.caption }));
+    }
+    return fig;
+  }
+
+  function wireReveals(fig, nodes) {
+    if (!nodes || !nodes.length) return;
+    var wrap = el("div", { class: "reveals" });
+    Array.prototype.forEach.call(nodes, function (node) {
+      var text = node.getAttribute("data-reveal");
+      if (!text) return;
+      var cap = el("p", { class: "reveal-cap", text: text, hidden: true, id: "reveal-" + (uid += 1) });
+      node.classList.add("reveal");
+      node.setAttribute("tabindex", "0");
+      node.setAttribute("role", "button");
+      node.setAttribute("aria-expanded", "false");
+      node.setAttribute("aria-controls", cap.id);
+      wrap.appendChild(cap);
+
+      var on = false;
+      function show(next) {
+        on = (next === undefined) ? !on : next;
+        cap.hidden = !on;
+        node.setAttribute("aria-expanded", on ? "true" : "false");
+        node.classList.toggle("reveal-on", on);
+      }
+      node.addEventListener("click", function () { show(); });
+      node.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+          e.preventDefault();
+          show();
+        }
+      });
+      if (window.matchMedia && window.matchMedia("(hover: hover)").matches) {
+        node.addEventListener("mouseenter", function () { show(true); });
+        node.addEventListener("mouseleave", function () { show(false); });
+      }
+    });
+    if (wrap.firstChild) fig.appendChild(wrap);
+  }
+
+  // ---- widget ---------------------------------------------------------
+
+  /* The engine renders the controls, keeps the current values, and calls
+     the author's js(values, root) at start and on every change. */
+  function renderWidget(step) {
+    var w = step.widget;
+    if (!w || typeof w !== "object") return null;
+
+    var box = el("section", { class: "widget" });
+    var play = el("div", { class: "play" });
+    if (typeof w.html === "string") play.innerHTML = w.html;
+    box.appendChild(play);
+
+    var values = {};
+    var fn = compile(w.js);
+    function run() {
+      if (!fn) return;
+      try { fn(values, play); } catch (err) { if (window.console) console.error(err); }
+    }
+
+    var controls = isArr(w.controls) ? w.controls : [];
+    if (controls.length) {
+      var wrap = el("div", { class: "controls" });
+      controls.forEach(function (c) {
+        var node = renderControl(c, values, run);
+        if (node) wrap.appendChild(node);
+      });
+      if (wrap.firstChild) box.appendChild(wrap);
+    }
+    if (typeof w.caption === "string" && w.caption) {
+      box.appendChild(el("p", { class: "widget-cap", text: w.caption }));
+    }
+    return { node: box, start: run };
+  }
+
+  function compile(src) {
+    if (typeof src !== "string" || !src.trim()) return null;
+    try {
+      var fn = (new Function("return (" + src + ");"))();
+      return typeof fn === "function" ? fn : null;
+    } catch (err) {
+      if (window.console) console.error(err);
+      return null;
+    }
+  }
+
+  function renderControl(c, values, run) {
+    if (!c || typeof c !== "object") return null;
+    var name = typeof c.name === "string" && c.name ? c.name : "value";
+    var label = typeof c.label === "string" && c.label ? c.label : name;
+    var id = "ctl-" + (uid += 1);
+
+    if (c.type === "range") {
+      var min = isNum(c.min) ? c.min : 0;
+      var max = isNum(c.max) ? c.max : 100;
+      var stepSize = isNum(c.step) ? c.step : 1;
+      var start = isNum(c.value) ? c.value : min;
+      values[name] = start;
+      var out = el("span", { class: "ctl-out", text: withUnit(start, c.unit) });
+      var range = el("input", {
+        class: "rng", id: id, type: "range",
+        min: min, max: max, step: stepSize, value: start
+      });
+      range.addEventListener("input", function () {
+        values[name] = Number(range.value);
+        out.textContent = withUnit(Number(range.value), c.unit);
+        run();
+      });
+      return el("div", { class: "ctl" }, [
+        el("label", { class: "ctl-lbl", for: id, text: label }),
+        el("div", { class: "ctl-row" }, [range, out])
+      ]);
+    }
+
+    if (c.type === "switch") {
+      values[name] = !!c.value;
+      var box = el("input", { class: "sw", id: id, type: "checkbox" });
+      box.checked = !!c.value;
+      box.addEventListener("change", function () { values[name] = box.checked; run(); });
+      return el("div", { class: "ctl" }, [
+        el("label", { class: "ctl-switch", for: id }, [
+          box,
+          el("span", { class: "ctl-lbl", text: label })
+        ])
+      ]);
+    }
+
+    if (c.type === "select") {
+      var options = isArr(c.options) ? c.options : [];
+      var select = el("select", { class: "sel", id: id });
+      options.forEach(function (o) {
+        var v = (o && typeof o === "object") ? String(o.value) : String(o);
+        var t = (o && typeof o === "object" && o.label) ? String(o.label) : v;
+        select.appendChild(el("option", { value: v, text: t }));
+      });
+      var pick = (c.value !== undefined) ? String(c.value) : "";
+      if (pick) select.value = pick;
+      values[name] = select.value;
+      select.addEventListener("change", function () { values[name] = select.value; run(); });
+      return el("div", { class: "ctl" }, [
+        el("label", { class: "ctl-lbl", for: id, text: label }),
+        select
+      ]);
+    }
+
+    return null;
+  }
+
+  function withUnit(v, unit) {
+    return String(v) + (typeof unit === "string" && unit ? " " + unit : "");
+  }
+
+  // ---- screens --------------------------------------------------------
 
   function progressBar(label) {
     var n = queue.length;
@@ -562,41 +1017,47 @@ h1::after {
       "aria-label": label
     }, fill);
     fill.style.width = (n ? (pos / n) * 100 : 0) + "%";
-    return { node: el("div", { class: "progress" }, [
-      el("div", { class: "progress-label" }, [
-        el("span", { text: label }),
-        el("span", { text: (pos + 1) + " / " + n })
+    return {
+      node: el("div", { class: "progress" }, [
+        el("div", { class: "progress-label" }, [
+          el("span", { text: label }),
+          el("span", { text: (pos + 1) + " / " + n })
+        ]),
+        bar
       ]),
-      bar
-    ]), fill: fill, bar: bar, n: n };
+      fill: fill, bar: bar, n: n
+    };
   }
-
-  // ---- intro ----------------------------------------------------------
 
   function renderIntro() {
     clear();
-    var n = steps.length;
-    var mins = meta.minutes ? meta.minutes + " minutes" : "a few minutes";
+    var n = STEPS.length;
+    var minutes = isNum(meta.minutes)
+      ? meta.minutes + (meta.minutes === 1 ? " minute" : " minutes")
+      : "a few minutes";
     var c = criterion();
+    var graded = GRADED_TOTAL === n
+      ? n + (n === 1 ? " step" : " steps")
+      : GRADED_TOTAL + " graded steps and " + (n - GRADED_TOTAL) + " to explore";
     var card = el("section", { class: "card" }, [
       el("ul", { class: "facts" }, [
-        el("li", { text: n + (n === 1 ? " question" : " questions") + ", about " + mins + "." }),
-        el("li", { text: "Nothing is revealed until you answer. Retrieving first is the part that works." }),
+        el("li", { text: graded + ", about " + minutes + "." }),
+        el("li", { text: "Answer each one before you check it. Trying first is what makes it stick." }),
         c.text ? el("li", { text: "Done means: " + c.text }) : null
       ]),
       el("div", { class: "btn-row" }, [
-        el("button", { class: "btn btn-primary", type: "button", text: "Start", onclick: function () { startRound(); } })
+        el("button", { class: "btn btn-primary", type: "button", text: "Start", onclick: startRound })
       ])
     ]);
     app.appendChild(card);
+    var first = card.querySelector("button");
+    if (first) first.focus();
   }
-
-  // ---- question -------------------------------------------------------
 
   function startRound() {
     screen = "question";
     round = 1;
-    queue = steps.map(function (_, i) { return i; });
+    queue = STEPS.map(function (_, i) { return i; });
     pos = 0;
     render();
   }
@@ -610,11 +1071,11 @@ h1::after {
   }
 
   function render() {
-    if (!steps.length) {
+    if (!STEPS.length) {
       clear();
       app.appendChild(el("section", { class: "card" }, [
         el("p", { class: "prompt", text: "This exercise has no steps yet." }),
-        el("p", { text: "The JSON spec in this page is empty or malformed." })
+        el("p", { text: "The JSON in this page is empty or not valid. Add a meta block and a steps list." })
       ]));
       return;
     }
@@ -626,52 +1087,99 @@ h1::after {
   function renderQuestion() {
     clear();
     var i = queue[pos];
-    var step = steps[i];
+    var step = STEPS[i];
     var first = round === 1;
-    var label = (first ? "Question " : "Revisit ") + (pos + 1) + " of " + queue.length;
+    var label = (first ? "Step " : "Again ") + (pos + 1) + " of " + queue.length;
     var p = progressBar(label);
 
     var card = el("section", { class: "card" });
     card.appendChild(p.node);
-    if (step.tag) card.appendChild(el("span", { class: "tag", text: step.tag }));
-    card.appendChild(el("h2", { class: "prompt", text: step.prompt }));
 
-    var body;
-    if (step.kind === "choice" && Array.isArray(step.options)) {
-      body = renderChoice(step, i, p, card);
+    var fig = renderFigure(step);
+    if (fig) card.appendChild(fig);
+
+    card.appendChild(el("h2", { class: "prompt", id: "prompt", tabindex: "-1", text: step.prompt }));
+
+    var widget = renderWidget(step);
+    if (widget) card.appendChild(widget.node);
+
+    if (step.kind === "explore") {
+      card.appendChild(el("div", { class: "answer" }, [
+        el("div", { class: "btn-row" }, [
+          el("button", { class: "btn btn-primary", type: "button", text: "Continue", onclick: function () { advance(p); } })
+        ])
+      ]));
     } else {
-      body = renderShort(step, i, p, card);
+      card.appendChild(renderAnswer(step, i, p, card));
     }
-    card.appendChild(body);
 
     if (step.hint && first) {
-      var hintBox = el("p", { class: "hint", text: step.hint, style: "display:none" });
+      var hintBox = el("p", { class: "hint", text: step.hint, hidden: true });
       var hintBtn = el("button", {
         class: "btn btn-quiet hint-btn", type: "button", text: "Show a hint",
-        onclick: function () { hintBox.style.display = ""; hintBtn.remove(); }
+        onclick: function () { hintBox.hidden = false; hintBtn.remove(); }
       });
       card.appendChild(hintBtn);
       card.appendChild(hintBox);
     }
 
     app.appendChild(card);
+    if (widget) widget.start();
+
+    var heading = card.querySelector(".prompt");
+    if (heading) heading.focus();
+  }
+
+  function renderAnswer(step, i, p, card) {
+    switch (step.kind) {
+      case "choice": return renderChoice(step, i, p, card);
+      case "multi":  return renderMulti(step, i, p, card);
+      case "short":  return renderShort(step, i, p, card);
+      case "order":  return renderOrder(step, i, p, card);
+      case "sort":   return renderAssign(step, i, p, card, "sort");
+      case "match":  return renderAssign(step, i, p, card, "match");
+      default:       return el("div");
+    }
   }
 
   function renderChoice(step, i, p, card) {
-    var list = el("div", { class: "opts" });
+    var list = el("div", { class: "opts", role: "group", "aria-label": "Choose one" });
     step.options.forEach(function (text, idx) {
       var btn = el("button", { class: "opt", type: "button" }, [
         el("span", { class: "opt-key", text: String.fromCharCode(65 + idx) }),
         el("span", { class: "opt-text", text: text })
       ]);
-      btn.addEventListener("click", function () { submit(i, idx, p, card, list); });
+      btn.addEventListener("click", function () { submit_apply(i, idx, p, card); });
       list.appendChild(btn);
     });
     return list;
   }
 
+  function renderMulti(step, i, p, card) {
+    var picked = [];
+    var list = el("div", { class: "opts", role: "group", "aria-label": "Choose every answer that fits" });
+    step.options.forEach(function (text, idx) {
+      var btn = el("button", { class: "opt", type: "button", "aria-pressed": "false" }, [
+        el("span", { class: "opt-key", text: String.fromCharCode(65 + idx) }),
+        el("span", { class: "opt-text", text: text })
+      ]);
+      btn.addEventListener("click", function () {
+        var at = picked.indexOf(idx);
+        if (at === -1) picked.push(idx); else picked.splice(at, 1);
+        btn.setAttribute("aria-pressed", at === -1 ? "true" : "false");
+        btn.setAttribute("data-picked", at === -1 ? "yes" : "no");
+      });
+      list.appendChild(btn);
+    });
+    var submitBtn = el("button", {
+      class: "btn btn-primary", type: "button", text: "Check answers",
+      onclick: function () { submit_apply(i, picked.slice(), p, card); }
+    });
+    return el("div", { class: "answer" }, [list, el("div", { class: "btn-row" }, [submitBtn])]);
+  }
+
   function renderShort(step, i, p, card) {
-    var form = el("form", { class: "short", novalidate: true });
+    var form = el("form", { class: "short answer", novalidate: true });
     var input = el("input", {
       class: "inp", id: "answer-input", type: "text", name: "answer",
       autocomplete: "off", autocapitalize: "off", autocorrect: "off", spellcheck: "false",
@@ -682,42 +1190,113 @@ h1::after {
     form.appendChild(el("button", { class: "btn btn-primary", type: "submit", text: "Check answer" }));
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-      submit(i, input.value, p, card, form);
+      submit_apply(i, input.value, p, card);
     });
     return form;
   }
 
-  function submit(stepIndex, given, p, card, control) {
-    var step = steps[stepIndex];
+  function renderOrder(step, i, p, card) {
+    var seq = [];
+    var picked = el("ol", { class: "chips" });
+    var pool = el("div", { class: "opts", role: "group", "aria-label": "Items to place" });
+    var submitBtn = el("button", { class: "btn btn-primary", type: "button", text: "Check order", disabled: true });
+    var undoBtn = el("button", { class: "btn btn-quiet", type: "button", text: "Undo", disabled: true });
+
+    var poolButtons = step.options.map(function (text, idx) {
+      var btn = el("button", { class: "opt", type: "button" }, el("span", { class: "opt-text", text: text }));
+      btn.addEventListener("click", function () { pick(idx); });
+      pool.appendChild(btn);
+      return btn;
+    });
+
+    function sync() {
+      submitBtn.disabled = seq.length !== step.options.length;
+      undoBtn.disabled = seq.length === 0;
+      poolButtons.forEach(function (btn, idx) { btn.disabled = seq.indexOf(idx) !== -1; });
+      while (picked.firstChild) picked.removeChild(picked.firstChild);
+      seq.forEach(function (idx, n) {
+        picked.appendChild(el("li", { class: "chip" }, [
+          el("span", { class: "chip-n", text: (n + 1) + "." }),
+          el("span", { class: "opt-text", text: step.options[idx] })
+        ]));
+      });
+    }
+    function pick(idx) {
+      if (seq.indexOf(idx) !== -1) return;
+      seq.push(idx);
+      sync();
+    }
+    function undo() { seq.pop(); sync(); }
+
+    undoBtn.addEventListener("click", undo);
+    submitBtn.addEventListener("click", function () { submit_apply(i, seq.slice(), p, card); });
+
+    var wrap = el("div", { class: "answer order" }, [
+      el("p", { class: "lbl", text: "Your order" }),
+      picked,
+      el("p", { class: "lbl", text: "Tap to place these" }),
+      pool,
+      el("div", { class: "btn-row" }, [undoBtn, submitBtn])
+    ]);
+    sync();
+    return wrap;
+  }
+
+  /* sort and match share one shape: one row per item, one button per
+     bucket (sort) or per partner (match). */
+  function renderAssign(step, i, p, card, kind) {
+    var rows = kind === "sort"
+      ? step.items.map(function (item) { return item.text; })
+      : step.lefts.slice();
+    var choices = kind === "sort" ? step.buckets : step.rights;
+    var chosen = rows.map(function () { return -1; });
+    var buttonsPerRow = [];
+
+    var wrap = el("div", { class: "assign" });
+    rows.forEach(function (text, r) {
+      var buttons = choices.map(function (choice, c) {
+        var btn = el("button", { class: "abtn", type: "button", "aria-pressed": "false", text: choice });
+        btn.addEventListener("click", function () { choose(r, c); });
+        return btn;
+      });
+      buttonsPerRow.push(buttons);
+      wrap.appendChild(el("div", { class: "arow", role: "group", "aria-label": text }, [
+        el("p", { class: "atext", text: text }),
+        el("div", { class: "abtns" }, buttons)
+      ]));
+    });
+
+    var submitBtn = el("button", { class: "btn btn-primary", type: "button", text: "Check answers", disabled: true });
+
+    function choose(r, c) {
+      chosen[r] = c;
+      buttonsPerRow[r].forEach(function (btn, k) {
+        btn.setAttribute("aria-pressed", k === c ? "true" : "false");
+      });
+      submitBtn.disabled = chosen.indexOf(-1) !== -1;
+    }
+    submitBtn.addEventListener("click", function () { submit_apply(i, chosen.slice(), p, card); });
+
+    return el("div", { class: "answer" }, [wrap, el("div", { class: "btn-row" }, [submitBtn])]);
+  }
+
+  /* Named submit_apply so the local `submit` button above cannot shadow it. */
+  function submit_apply(stepIndex, given, p, card) {
+    var step = STEPS[stepIndex];
     var ok = isCorrect(step, given);
     latest.set(stepIndex, ok);
 
-    // lock the interaction and mark the options
-    var options = control.querySelectorAll ? control.querySelectorAll(".opt") : [];
-    Array.prototype.forEach.call(options, function (btn, idx) {
+    lockAndMark(step, given, card);
+
+    // Every answer control is locked once the step is answered.
+    Array.prototype.forEach.call(card.querySelectorAll(".answer button"), function (btn) {
       btn.disabled = true;
-      var right = step.kind === "choice" && (typeof step.answer === "number" ? idx === step.answer : norm(step.options[idx]) === norm(step.answer));
-      if (right) {
-        btn.setAttribute("data-state", "right");
-        btn.appendChild(el("span", { class: "opt-mark", text: "Correct answer" }));
-      } else if (idx === given) {
-        btn.setAttribute("data-state", "wrong");
-        btn.appendChild(el("span", { class: "opt-mark", text: "Your answer" }));
-      } else {
-        btn.setAttribute("data-state", "muted");
-      }
     });
-    if (step.kind !== "choice") {
-      var input = control.querySelector ? control.querySelector("input") : null;
-      if (input) { input.readOnly = true; input.value = given; }
-      var btn = control.querySelector ? control.querySelector("button") : null;
-      if (btn) btn.remove();
-    }
 
     p.fill.style.width = ((pos + 1) / p.n) * 100 + "%";
     p.bar.setAttribute("aria-valuenow", String(pos + 1));
 
-    // A hint has done its job once the question is answered.
+    // A hint has done its job once the step is answered.
     var hintBtn = card.querySelector(".hint-btn");
     if (hintBtn) hintBtn.remove();
     var hintBox = card.querySelector(".hint");
@@ -725,28 +1304,105 @@ h1::after {
 
     var box = feedback(step, ok, given);
     card.appendChild(box);
+    card.appendChild(nextRow(p, "Next step"));
+    box.focus();
+  }
 
+  function advance(p) {
+    p.fill.style.width = ((pos + 1) / p.n) * 100 + "%";
+    p.bar.setAttribute("aria-valuenow", String(pos + 1));
+    next(p, "Continue");
+  }
+
+  function nextRow(p, label) {
     var last = pos === queue.length - 1;
-    var next = el("div", { class: "btn-row" }, [
+    return el("div", { class: "btn-row" }, [
       el("button", {
         class: "btn btn-primary", type: "button",
-        text: last ? "See results" : "Next question",
-        onclick: function () {
-          if (last) { screen = "results"; render(); }
-          else { pos += 1; render(); }
-        }
+        text: last ? "See results" : label,
+        onclick: function () { next(p, label); }
       })
     ]);
-    card.appendChild(next);
-    box.focus();
+  }
+
+  function next(p) {
+    if (pos === queue.length - 1) { screen = "results"; render(); }
+    else { pos += 1; render(); }
+  }
+
+  function lockAndMark(step, given, card) {
+    var k = step.kind;
+
+    if (k === "choice") {
+      Array.prototype.forEach.call(card.querySelectorAll(".opt"), function (btn, idx) {
+        btn.disabled = true;
+        if (idx === step.answer) { btn.setAttribute("data-state", "right"); mark(btn, "Right answer"); }
+        else if (idx === given) { btn.setAttribute("data-state", "wrong"); mark(btn, "Your answer"); }
+        else { btn.setAttribute("data-state", "muted"); }
+      });
+      return;
+    }
+
+    if (k === "multi") {
+      var chosen = isArr(given) ? given : [];
+      Array.prototype.forEach.call(card.querySelectorAll(".opt"), function (btn, idx) {
+        btn.disabled = true;
+        var right = step.answer.indexOf(idx) !== -1;
+        var picked = chosen.indexOf(idx) !== -1;
+        if (right) { btn.setAttribute("data-state", "right"); mark(btn, picked ? "Right answer" : "Right answer, not picked"); }
+        else if (picked) { btn.setAttribute("data-state", "wrong"); mark(btn, "Your answer"); }
+        else { btn.setAttribute("data-state", "muted"); }
+      });
+      return;
+    }
+
+    if (k === "short") {
+      var form = card.querySelector(".short");
+      if (form) {
+        var input = form.querySelector("input");
+        if (input) input.readOnly = true;
+        var submitBtn = form.querySelector("button");
+        if (submitBtn) submitBtn.remove();
+      }
+      return;
+    }
+
+    if (k === "order") {
+      var wrap = card.querySelector(".order");
+      if (!wrap) return;
+      Array.prototype.forEach.call(wrap.querySelectorAll(".chip"), function (chip, n) {
+        var ok = given[n] === step.answer[n];
+        chip.setAttribute("data-state", ok ? "right" : "wrong");
+        mark(chip, ok ? "Right" : "Not right");
+      });
+      Array.prototype.forEach.call(wrap.querySelectorAll(".opt"), function (btn) {
+        btn.disabled = true;
+        btn.setAttribute("data-state", "muted");
+      });
+      var undoBtn = wrap.querySelector(".btn-quiet");
+      if (undoBtn) undoBtn.remove();
+      return;
+    }
+
+    if (k === "sort" || k === "match") {
+      Array.prototype.forEach.call(card.querySelectorAll(".arow"), function (row, r) {
+        var correct = k === "sort" ? step.items[r].bucket : step.answer[r];
+        var chose = given[r];
+        Array.prototype.forEach.call(row.querySelectorAll(".abtn"), function (btn, c) {
+          btn.disabled = true;
+          if (c === correct) btn.setAttribute("data-state", "right");
+          else if (c === chose) btn.setAttribute("data-state", "wrong");
+          else btn.setAttribute("data-state", "muted");
+        });
+        row.setAttribute("data-state", chose === correct ? "right" : "wrong");
+        mark(row, chose === correct ? "Right" : "Not right");
+      });
+    }
   }
 
   function feedback(step, ok, given) {
     var box = el("div", { class: "fb " + (ok ? "fb-ok" : "fb-no"), role: "status", tabindex: "-1" });
-    box.appendChild(el("p", {
-      class: "fb-verdict",
-      text: ok ? "Correct" : "Not yet"
-    }));
+    box.appendChild(el("p", { class: "fb-verdict", text: ok ? "Correct" : "Not yet" }));
     if (!ok) {
       box.appendChild(el("p", { class: "fb-answer" }, [
         document.createTextNode("Right answer: "),
@@ -754,7 +1410,7 @@ h1::after {
       ]));
     }
     if (step.feedback) box.appendChild(el("p", { class: "fb-why", text: step.feedback }));
-    var mis = ok ? "" : misconceptionFor(step, step.kind === "choice" ? given : "default");
+    var mis = ok ? "" : misconceptionFor(step, misconceptionKey(step, given));
     if (mis) box.appendChild(el("p", { class: "fb-mis", text: "Watch out: " + mis }));
     return box;
   }
@@ -764,18 +1420,24 @@ h1::after {
   function renderResults() {
     clear();
     var c = criterion();
-    var right = queue.filter(function (i) { return latest.get(i) === true; }).length;
-    var missed = queue.filter(function (i) { return latest.get(i) !== true; });
-    var overall = steps.reduce(function (n, _, i) { return n + (latest.get(i) === true ? 1 : 0); }, 0);
+    var graded = queue.filter(function (i) { return STEPS[i].kind !== "explore"; });
+    var right = graded.filter(function (i) { return latest.get(i) === true; }).length;
+    var missed = graded.filter(function (i) { return latest.get(i) !== true; });
+    var overall = 0;
+    STEPS.forEach(function (s, i) {
+      if (s.kind !== "explore" && latest.get(i) === true) overall += 1;
+    });
     var firstPass = round === 1;
     var met = overall >= c.minCorrect;
 
     var card = el("section", { class: "card" });
-    card.appendChild(el("p", { class: "score", text: right + " of " + queue.length }));
+    card.appendChild(el("p", { class: "score", text: right + " of " + graded.length }));
     card.appendChild(el("p", {
       text: firstPass
-        ? (right === queue.length ? "Every question right on the first pass." : "Right on the first pass, out of " + queue.length + ".")
-        : "Right this round. " + overall + " of " + steps.length + " overall."
+        ? (graded.length && right === graded.length
+            ? "All right on the first pass, out of " + graded.length + " graded steps."
+            : "Right on the first pass: " + right + " of " + graded.length + " graded steps.")
+        : "Right this round. Overall: " + overall + " of " + GRADED_TOTAL + " graded steps."
     }));
 
     if (c.text) {
@@ -788,7 +1450,7 @@ h1::after {
     if (missed.length) {
       var list = el("ul", { class: "res-list" });
       missed.forEach(function (i) {
-        var step = steps[i];
+        var step = STEPS[i];
         list.appendChild(el("li", {}, [
           el("p", { class: "q", text: step.prompt }),
           el("p", { class: "a", text: "Answer: " + modelAnswer(step) }),
@@ -819,7 +1481,7 @@ h1::after {
       class: "spacing",
       text: missed.length
         ? "Do these " + missed.length + " again tomorrow, not in ten minutes. The gap is what makes them stick."
-        : "Come back to this in a day or two and run it again. Spacing the same questions over days is what makes them stay."
+        : "Come back in a day or two and run this again. Spacing the same steps over days is what makes them stay."
     }));
 
     app.appendChild(card);
