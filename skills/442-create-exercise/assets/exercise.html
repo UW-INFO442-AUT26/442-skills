@@ -636,7 +636,12 @@ h1::after {
 
 .atext { grid-area: 1 / 2; margin: 0; font-weight: 600; overflow-wrap: anywhere; }
 
-.abtns { grid-area: 2 / 1 / 3 / -1; display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.abtns {
+  grid-area: 2 / 1 / 3 / -1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+  gap: var(--space-2);
+}
 
 .abtn {
   min-height: var(--tap);
@@ -963,6 +968,15 @@ h1::after {
   document.title = title;
   if (typeof meta.goal === "string" && meta.goal) goalEl.textContent = meta.goal;
   else if (goalEl) goalEl.remove();
+
+  // An exercise may carry its own styles for a bespoke visual. They go in
+  // last, so the exercise can extend the page without re-styling it.
+  if (typeof meta.style === "string" && meta.style.trim()) {
+    var specStyle = document.createElement("style");
+    specStyle.setAttribute("data-from", "spec");
+    specStyle.textContent = meta.style;
+    document.head.appendChild(specStyle);
+  }
 
   var latest = new Map();   // step index -> true when the latest try was right
   var screen = "intro";

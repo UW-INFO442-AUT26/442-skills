@@ -9,13 +9,17 @@ Turn a topic into one web page the student finishes on a phone, then publish it
 to their own GitHub account and hand back a link.
 
 **Movement and visuals first.** Before you write a step, ask what the student
-should SEE and what they should MOVE. If the idea has parts that move, change,
-or relate to each other, build something the student can watch and drive. A
-text question is the fallback, not the default. A quiz is right when one answer
-wins among believable rivals. It is the wrong tool for a process, a set of
-families, a trade-off, or anything that moves. A page the student drives and
-watches teaches more than a page that asks them to recall a sentence, whenever
-the idea is about relations or change.
+should SEE and what they should MOVE. A box of text is not a visual, and
+reading a paragraph is not doing anything. When the idea is about parts, about
+change, or about how things relate, draw it: boxes and arrows, a chart, a
+labelled diagram, a process the student steps through. A text question is the
+fallback, not the default. A quiz is right when one answer wins among
+believable rivals. It is the wrong tool for a process, a set of families, a
+trade-off, or anything that moves. A page the student drives and watches
+teaches more than a page that asks them to recall a sentence, whenever the idea
+is about relations or change. Start from
+[assets/visual-patterns.md](assets/visual-patterns.md): five complete,
+token-styled visuals, ready to paste, instead of a box of text.
 
 When the idea has any of these, reach for a `widget`:
 
@@ -46,22 +50,45 @@ Read [references/learning-science.md](references/learning-science.md) before you
 write steps. It is the authority for this skill: where it and your taste
 disagree about length, order, or feedback, it wins.
 
-## 1. Interview the student
+## 1. Grill the student until the brief is complete
 
-Four questions, one short round, and take their words for the answers:
+**Open with a grill, and do not build until it is finished.** Most requests
+arrive thin ("make me an exercise on React state"). A thin brief produces a
+generic page. So before you write a single step, interrogate the student until
+you can state the whole job back to them and they agree with it.
 
-- **Topic.** What should this be about?
-- **Capability.** What is the one thing you must be able to do afterward? Push
+**Call the Skill tool with `442-grill`.** It owns the interview mechanics: one
+question at a time, your own recommended answer attached, research you can do
+yourself done yourself, a running list of what has been settled. Follow it.
+
+The questions you must have answered before you can build:
+
+- **Topic.** What is this about?
+- **Capability.** What is the one thing they must be able to do afterward? Push
   back on a topic-sized answer ("everything about React") until it is one act
   ("decide whether a component should hold its own state").
-- **Starting point.** What do you already know about it? This sets how hard the
-  first steps are and what counts as a fair wrong answer.
+- **Who and what they already know.** A first-year student and a working
+  engineer need different examples and different wrong answers.
+- **Where it will be used.** Before a lab, during it, after it, or for revision
+  on the bus? That sets the length and how much scaffolding stays.
 - **Length.** 5, 10, or 20 minutes. That decides the number of steps, not the
   other way round.
+- **What they want to see and move.** Ask what the student should watch or
+  drag. If the answer is "whatever works", say which visual you have in mind
+  and confirm it, rather than picking silently.
+- **What to avoid.** Any topic, example, or joke they do not want in the
+  exercise, and anything that must not become public, because the page is.
+- **What done looks like.** The bar in the student's own words. This becomes
+  `meta.criterion`.
 
-**Done when** you can write one sentence for each of the four, and the
-capability sentence names something the student can do rather than a subject
-they have seen.
+Triage before you ask, the way `442-grill` says. Skip what the request already
+answers, decide what you can safely decide and say so in one line, and ask only
+the questions that genuinely change the exercise. Do not ask ten questions at
+once. Do not start building while something material is still unknown.
+
+**Done when** you can write the brief in a few lines, every line traces to the
+student's own words, nothing material is still a guess, and the student has
+read it back and said yes.
 
 ## 2. Pick the interaction the capability needs
 
@@ -89,7 +116,8 @@ has not handled before, so they play before you explain (rule 13).
 Reach for a `widget` when a number, a range, a trade-off, or a process carries
 the idea, and for a `figure` when structure carries it. Mark the parts of a
 figure with `data-reveal` so the student can tap or hover to name them (rule
-16).
+16). Five finished examples of both are in
+[assets/visual-patterns.md](assets/visual-patterns.md), ready to paste.
 
 **What a widget is made of.** A `widget` has `html`, `controls`, `js`, and an
 optional `caption`. There are four control types, and one of them does not hold

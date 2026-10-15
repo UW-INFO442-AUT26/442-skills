@@ -114,6 +114,9 @@ function checkMeta(meta) {
   if (!isInt(c.minCorrect) || c.minCorrect < 0) {
     add("meta.criterion.minCorrect", "required, a whole number that counts graded steps only");
   }
+  if (meta.style !== undefined && (!isText(meta.style) || !meta.style.trim())) {
+    add("meta.style", "optional, but when present it must be a non-empty string of CSS");
+  }
   if (meta.resources !== undefined) {
     if (!Array.isArray(meta.resources)) {
       add("meta.resources", "optional, but when present it must be an array of { label, href }");

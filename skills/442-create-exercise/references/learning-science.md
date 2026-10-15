@@ -232,9 +232,12 @@ the same move.
 
 ## 16. Draw it and move it when the idea is about relations or change
 
-**Rule.** If the idea is about how things relate, or about something that
-changes, show it: a diagram, a code block, or a widget the student can drive.
-Words alone are the fallback, not the default.
+**Rule.** If the idea is about how things relate, or about anything that
+changes, draw it. A diagram, a chart, and an animated process are the default
+for a relational or a dynamic idea, and words alone are the fallback. A block
+of prose that walks the parts in order is not the same thing as the picture:
+the student has to rebuild the relations, which is the work the picture was
+supposed to save.
 
 **Why.** A diagram that shows the relations directly saves the reader the work
 of rebuilding them from prose (Larkin & Simon, 1987). Pictures and words
@@ -254,7 +257,11 @@ a process that runs. Reach for `figure` when the point is structure. When the
 widget animates, the motion has to be the idea itself: a Play or Step button
 that walks a process, a control the student drags, a diagram that answers to a
 value. Mark the parts of a figure with `data-reveal` so the student can tap or
-hover to name them. Never draw decoration, and never animate decoration.
+hover to name them. Never draw decoration, and never animate decoration. Five
+of these visuals are already built, with the markup, the controls and the js to
+paste, in [assets/visual-patterns.md](../assets/visual-patterns.md): an
+animated process, a bar chart, a line chart, a labelled diagram, and a state
+machine.
 
 ## Where each rule lands
 
@@ -272,7 +279,7 @@ hover to name them. Never draw decoration, and never animate decoration.
 | 13 | an early `explore` step with a `widget` the student drags or plays |
 | 14 | a prediction step placed before the observation |
 | 15 | `figure` or `widget` on the first step of an idea |
-| 16 | `figure` for structure, `widget` for a process that moves |
+| 16 | `figure` for structure, `widget` for a process that moves, both from `assets/visual-patterns.md` |
 
 ## How a kind is chosen
 
