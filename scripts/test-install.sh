@@ -230,6 +230,50 @@ check $? "installer exits clean"
 contains "$WORK/log17" "Could not create" "the unusable target was reported"
 [ -L "$P/.omp/skills/442-brand" ]; check $? "the other targets still worked"
 
+printf '\n15. installs are recorded, and --update refreshes all of them\n'
+P="$WORK/updatable"
+mkdir -p "$P"
+git -C "$P" init -q -b main
+run_install "$P" > "$WORK/log18" 2>&1
+check $? "installer exits clean"
+[ -f "$HOME_DIR/.442-skills-installs" ]; check $? "the install was recorded"
+contains "$HOME_DIR/.442-skills-installs" "project " "with the project scope"
+contains "$WORK/log18" "Update later with" "and the summary says how to update"
+
+# A skill added upstream reaches the project on the next update. The probe is
+# added to the source the fake checkout clones from, not to the real repo.
+mkdir -p "$SRC/skills/442-probe-upstream"
+printf -- '---\nname: 442-probe-upstream\ndescription: A probe skill added upstream. Use when testing the update path in this test.\n---\n\nBody.\n\n## What'"'"'s next\n\nNothing, this is a test.\n' > "$SRC/skills/442-probe-upstream/SKILL.md"
+git -C "$SRC" add -A
+git -C "$SRC" -c user.name=test -c user.email=test@example.com commit -qm "add a probe skill"
+run_install "$WORK" --update > "$WORK/log19" 2>&1
+check $? "update exits clean"
+[ -L "$P/.omp/skills/442-probe-upstream" ]; check $? "the new skill is linked"
+contains "$WORK/log19" "New skills: 442-probe-upstream" "and the update names it"
+
+# Run from an unrelated directory: the record is what it reads, not the folder
+# it happens to be started in.
+run_install "$WORK" --update > "$WORK/log20" 2>&1
+check $? "update runs from anywhere"
+contains "$WORK/log20" "Already at the latest" "and reports that nothing changed"
+
+# A skill removed upstream loses its link instead of dangling.
+git -C "$SRC" rm -rq skills/442-probe-upstream
+git -C "$SRC" -c user.name=test -c user.email=test@example.com commit -qm "remove it again"
+run_install "$WORK" --update > "$WORK/log21" 2>&1
+contains "$WORK/log21" "Gone upstream: 442-probe-upstream" "a removed skill is reported"
+[ -e "$P/.omp/skills/442-probe-upstream" ]; [ $? -ne 0 ]; check $? "and its dangling link is gone"
+
+# Uninstall drops the record, so updates stop looking there.
+run_uninstall "$P" --project > /dev/null 2>&1
+not_contains "$HOME_DIR/.442-skills-installs" "$P" "uninstall drops the record"
+
+printf '\n16. an update on a machine that has never installed\n'
+rm -f "$HOME_DIR/.442-skills-installs"
+run_install "$WORK" --update > "$WORK/log22" 2>&1
+check $? "update exits clean without a record"
+contains "$WORK/log22" "No install is recorded" "and says so"
+
 if [ "$FAILED" = "0" ]; then
   printf '\ninstall.sh behaves. All checks passed.\n'
 else

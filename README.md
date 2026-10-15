@@ -57,6 +57,38 @@ the wrong place.
 
 Read [`install.sh`](install.sh) first if you want to see what it does. It's short.
 
+## Updating
+
+The skills are symlinks into one checkout at `~/.442-skills`, so an edit to a
+skill arrives with a pull, and a skill added after you installed arrives once it
+is linked in. One command does both:
+
+```bash
+bash ~/.442-skills/install.sh --update
+```
+
+It refreshes every install this machine has made, from any directory, and prints
+what changed:
+
+```
+[442-skills] New skills: 442-update
+[442-skills] Changed: 442-voice 442-react-init
+[442-skills] Updated 2 place(s). Restart your agent if it was already running.
+```
+
+You do not have to remember where you installed it. Every install is recorded in
+`~/.442-skills-installs`, one line per project plus one for a machine-wide
+install, and `uninstall.sh` drops its own line again. A skill that is deleted
+upstream loses its link on the next update, so nothing is left dangling.
+
+If the `~/.442-skills` checkout is gone, the same command rebuilds it, since it
+clones before it reads the record. On a machine that has never installed, it says
+so and does nothing.
+
+An agent can do this for you: ask it to update the class skills, and the
+`442-update` skill runs the same command and reports what changed. Either way,
+restart your agent afterwards, or it cannot see the skills that are new.
+
 ## What it changes, and what it leaves alone
 
 Installing only adds. Nothing you already have gets replaced.
@@ -119,6 +151,7 @@ checkout stays at `~/.442-skills` until you delete it yourself.
 | `442-grill` | Asks you one question at a time until a vague idea becomes a written spec. |
 | `442-brand` | The class colors, type, and spacing. Other skills read it, so you rarely call it yourself. |
 | `442-voice` | Makes prose read like a person wrote it. Call it when you write a README, docs, or anything else a human reads. |
+| `442-update` | Brings the installed skills up to date. Ask for it after the class adds or changes a skill. |
 | `442-write-skill` | How to write a skill for this repo. Read it before you contribute one. |
 
 Call a skill by name, with the `442-` prefix. Or just describe what you want, and

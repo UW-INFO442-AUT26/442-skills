@@ -97,4 +97,34 @@ for agents_md in "${AGENTS_FILES[@]}"; do
   say "Removed the INFO 442 rules block from $agents_md"
 done
 
+# Drop this install from the record the installer keeps, so --update stops
+# looking for it. Every other line is left exactly as it was.
+STATE_FILE="$HOME/.442-skills-installs"
+if [ -f "$STATE_FILE" ]; then
+  tmp="$(mktemp)"
+  dropped=0
+  while read -r kind where; do
+    case "$kind" in
+      global)
+        if [ "$SCOPE" != "project" ]; then dropped=$((dropped + 1)); else printf 'global\n'; fi
+        ;;
+      project)
+        if [ "$SCOPE" != "global" ] && [ "$where" = "$PROJECT_DIR" ]; then
+          dropped=$((dropped + 1))
+        else
+          printf 'project %s\n' "$where"
+        fi
+        ;;
+      "") ;;
+      *) printf '%s %s\n' "$kind" "$where" ;;
+    esac
+  done < "$STATE_FILE" > "$tmp"
+  if [ "$dropped" -gt 0 ]; then
+    if [ -s "$tmp" ]; then mv "$tmp" "$STATE_FILE"; else rm -f "$tmp" "$STATE_FILE"; fi
+    say "Dropped this install from $STATE_FILE"
+  else
+    rm -f "$tmp"
+  fi
+fi
+
 say "Done. The checkout at $DEST is left in place; remove it with: rm -rf $DEST"
