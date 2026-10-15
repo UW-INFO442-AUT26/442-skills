@@ -93,6 +93,7 @@ checkout stays at `~/.442-skills` until you delete it yourself.
 | `442-prioritize` | Sorts a pile of requirements and ideas into P0, P1, and P2. |
 | `442-grill` | Asks you one question at a time until a vague idea becomes a written spec. |
 | `442-brand` | The class colors, type, and spacing. Other skills read it, so you rarely call it yourself. |
+| `442-voice` | Makes prose read like a person wrote it. Call it when you write a README, docs, or anything else a human reads. |
 | `442-write-skill` | How to write a skill for this repo. Read it before you contribute one. |
 
 Call a skill by name, with the `442-` prefix. Or just describe what you want, and
@@ -100,16 +101,17 @@ your agent picks the one that fits.
 
 ## What goes into your AGENTS.md
 
-Two class rules about AI use, so that anyone reading your work can see how it was
-made:
+The installer writes one block with three class rules:
 
 - **Say which code an AI wrote**, in a comment that names what it did and how you
   used it.
 - **Add a `Co-authored-by:` line to every commit an AI makes.** An AI is never the
   only author of a commit.
+- **Call `442-voice` before writing prose** that a person will read, so a README or
+  a report does not come back sounding like a model wrote it.
 
-The installer writes both. The exact wording lives in
-[`reference/agents-block.md`](reference/agents-block.md), so if the class changes
+The exact wording lives in
+[`reference/agents-block.md`](reference/agents-block.md). If the class changes
 those rules, change them there rather than on your own machine.
 
 ## Contribute a skill

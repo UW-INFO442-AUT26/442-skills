@@ -31,9 +31,9 @@ directly first.
 ## House rules for this repo
 
 - **No em dashes**, no "as an AI", no filler. Plain technical English.
-- The class voice is the one in `.agents/AGENTS.md` on the contributor's
-  machine (the working agreements), and `jeremy-writing-style` where it
-  applies.
+- **Prose reads like a person wrote it.** Before you write or edit a README,
+  docs, a PR, or anything else a human reads, call `442-voice`. It names the
+  patterns to cut and the ones to leave alone.
 - **Design work reads `442-brand`.** Never hand-type a color; use the
   tokens. If a skill produces something visual, it calls `442-brand`
   first.
@@ -56,5 +56,7 @@ request and is reviewed before merge.
   pointer.
 - A **What's next** line ends the skill.
 - No em dashes; no raw color values where `442-brand` supplies tokens.
+- Prose in the change reads like a person wrote it, not like a model filling
+  space.
 - `scripts/check-repo.mjs` passes. If you touched `install.sh` or
   `uninstall.sh`, its run of `scripts/test-install.sh` passes too.

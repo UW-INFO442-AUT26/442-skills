@@ -34,4 +34,10 @@ Add sort handler to the task list
 
 Co-authored-by: Your Real Name your_github_email@example.com
 ```
+
+### Write like a person
+
+When you write a README, docs, a PR description, or anything else a person will
+read, call the `442-voice` skill first. It covers the patterns that make prose
+read as machine output, and what to do instead.
 <!-- END 442-skills -->
