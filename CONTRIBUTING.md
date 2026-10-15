@@ -28,6 +28,13 @@ change: open a pull request, it gets reviewed, then it merges.
    The `name` must match the directory. The `description` is what the agent
    reads to decide whether to fire your skill, so name the real triggers.
 
+   **Quote the description if it contains a colon followed by a space**, or any
+   other YAML punctuation (`[`, `{`, `#`, `&`, `*`, a quote at the start):
+   `description: "Rewrites prose: it makes a draft read like a person wrote it.
+   Use when ..."`. Unquoted, the frontmatter does not parse and the agent never
+   sees your skill at all. The gate catches this, so a submission with it will
+   not reach review.
+
 3. Put anything long (references, templates, scripts) in the skill's own folder
    and point at it from `SKILL.md`. Keep the body to steps and one completion
    criterion.
@@ -42,6 +49,10 @@ Run the gate and make it pass:
 ```bash
 node scripts/check-repo.mjs
 ```
+
+CI runs that same command on your pull request (`.github/workflows/validate.yml`),
+so this is the check that gates the merge. It validates the frontmatter against
+the Agent Skills spec, checks the house rules, and runs both test scripts.
 
 Then verify the thing actually works, not just that the file exists. Run the
 skill once, end to end, and paste what came back in the PR description. A skill

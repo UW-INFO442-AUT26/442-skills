@@ -18,8 +18,13 @@ directly first.
 
 - One directory per skill: `skills/<name>/SKILL.md`, plus any
   `references/`, `assets/`, or `scripts/` it owns.
-- Frontmatter is `name` and `description` only. `name` equals the
-  directory name and carries the `442-` prefix.
+- Frontmatter is `name`, `description`, and (only when a skill is
+  user-invoked) `disable-model-invocation`. `name` equals the directory name
+  and carries the `442-` prefix. **Quote the description if it contains a
+  colon followed by a space, or any other YAML punctuation** (`[`, `{`, `#`,
+  `&`, `*`, a quote at the start). Unquoted, the frontmatter does not parse,
+  and the skill then has no name and no description, so no agent will ever
+  load it. `scripts/check-repo.mjs` catches this.
 - The `description` is the skill's pointer: state what it is and the
   branches that should trigger it. It is model-facing and always loaded,
   so it earns the hardest pruning in the file.
@@ -48,6 +53,18 @@ directly first.
 Read [`CONTRIBUTING.md`](CONTRIBUTING.md). Every change arrives by pull
 request and is reviewed before merge.
 
+## Run the gate
+
+```bash
+node scripts/check-repo.mjs
+```
+
+It validates every skill against the Agent Skills spec and the house rules, then
+runs `scripts/test-install.sh` and `scripts/test-check-repo.sh` in throwaway
+directories. CI runs the same command on every pull request and every push to
+`main`, so a red gate locally is a red pull request. When it fails, fix the
+cause, never the check.
+
 ## Done when
 
 - The skill's `description` names its trigger branches and its name
@@ -58,5 +75,6 @@ request and is reviewed before merge.
 - No em dashes; no raw color values where `442-brand` supplies tokens.
 - Prose in the change reads like a person wrote it, not like a model filling
   space.
-- `scripts/check-repo.mjs` passes. If you touched `install.sh` or
-  `uninstall.sh`, its run of `scripts/test-install.sh` passes too.
+- `scripts/check-repo.mjs` passes, which includes its runs of
+  `scripts/test-install.sh` and `scripts/test-check-repo.sh`. If you added a
+  skill, the README table lists it.

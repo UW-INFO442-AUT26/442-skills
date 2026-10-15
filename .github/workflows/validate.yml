@@ -1,0 +1,33 @@
+name: validate
+
+# The same gate a contributor runs in their terminal, so a red pull request and
+# a red local run mean the same thing:
+#
+#   node scripts/check-repo.mjs
+#
+# It validates every skill against the Agent Skills spec (frontmatter, name,
+# description, links), checks the repo's own conventions, and runs both test
+# scripts in throwaway directories.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  merge_group:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Check the shell scripts parse
+        run: for f in install.sh uninstall.sh scripts/*.sh; do bash -n "$f"; done
+      - name: Validate the skills and the repo conventions
+        run: node scripts/check-repo.mjs

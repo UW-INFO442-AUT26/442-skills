@@ -145,12 +145,21 @@ If you write a skill worth sharing, open a pull request. Every change gets
 reviewed before it lands. Read [`CONTRIBUTING.md`](CONTRIBUTING.md) first, and
 [`AGENTS.md`](AGENTS.md) for the rules this repo follows.
 
+CI validates every pull request the same way a contributor can locally:
+
+```bash
+node scripts/check-repo.mjs
+```
+
+It checks the frontmatter of every skill against the Agent Skills spec, the house
+rules, and the installer, so a broken skill cannot merge.
+
 ## Layout
 
 ```
 skills/     one directory per skill: <name>/SKILL.md, plus whatever it needs
 reference/  source documents the skills cite, including the AGENTS.md block
-scripts/    check-repo.mjs, the gate, and the installer test
+scripts/    check-repo.mjs, the gate, and the test scripts it runs
 install.sh  the installer
 ```
 

@@ -1,6 +1,6 @@
 ---
 name: 442-write-skill
-description: How to write an agent skill for the INFO 442 skills repo: context pointers, the two loads, information hierarchy, leading words, pruning, and the frontmatter/invocation mechanics. Use when writing or editing any SKILL.md, AGENTS.md, or doc an agent reads, or when a new INFO 442 skill is proposed.
+description: "How to write an agent skill for the INFO 442 skills repo: context pointers, the two loads, information hierarchy, leading words, pruning, and the frontmatter/invocation mechanics. Use when writing or editing any SKILL.md, AGENTS.md, or doc an agent reads, or when a new INFO 442 skill is proposed."
 ---
 
 # Write a skill

@@ -1,6 +1,6 @@
 ---
 name: 442-create-roadmap
-description: Turns an INFO 442 project brief and team list into an execution-ready development roadmap: phases and milestones, a sized task breakdown with dependencies, team allocation with an explicit reason per assignment, a week-by-week plan with buffer, risks with mitigations, and an execution strategy. Use when a team is starting a project, asking for a work plan or schedule, dividing tasks among members, or planning around milestone deadlines and busy weeks.
+description: "Turns an INFO 442 project brief and team list into an execution-ready development roadmap: phases and milestones, a sized task breakdown with dependencies, team allocation with an explicit reason per assignment, a week-by-week plan with buffer, risks with mitigations, and an execution strategy. Use when a team is starting a project, asking for a work plan or schedule, dividing tasks among members, or planning around milestone deadlines and busy weeks."
 ---
 
 # Build a development roadmap

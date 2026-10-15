@@ -1,6 +1,6 @@
 ---
 name: 442-brand
-description: The INFO 442 visual language: color tokens, type scale, spacing, and component patterns for anything a student or the agent builds or designs (web pages, exercises, slide-adjacent web artifacts, React apps). Use when a task involves choosing colors, fonts, layout, or styling for INFO 442 work, or when another skill needs the class design tokens.
+description: "The INFO 442 visual language: color tokens, type scale, spacing, and component patterns for anything a student or the agent builds or designs (web pages, exercises, slide-adjacent web artifacts, React apps). Use when a task involves choosing colors, fonts, layout, or styling for INFO 442 work, or when another skill needs the class design tokens."
 ---
 
 # INFO 442 brand
