@@ -1,15 +1,15 @@
-/* INFO 442 design tokens — owned by the 442-brand skill.
+/* INFO 442 design tokens, owned by the 442-brand skill.
    Import into any project: `@import "./tokens.css";` or paste at the top.
    Change a value here and in STYLE.md together, or every consumer drifts. */
 
 :root {
-  /* Brand — use as marks, not as fields. */
+  /* Brand: use as marks, not as fields. */
   --uw-purple:      #4B2E83;
   --uw-purple-deep: #351F63;
   --uw-gold:        #B7A57A;
   --uw-gold-deep:   #85754D;
 
-  /* Neutrals — the actual surface. */
+  /* Neutrals: the actual surface. */
   --bg:       #F7F7FB;
   --surface:  #FFFFFF;
   --surface-2:#EDEDF4;
@@ -23,7 +23,7 @@
   --accent-ink:  #FFFFFF;
   --accent-soft: #EDE7FB;
 
-  /* Semantic state — reserve for real state, never decoration. */
+  /* Semantic state: reserve for real state, never decoration. */
   --success: #1F7A5C;
   --success-soft: #E2F3EC;
   --warning: #9A6414;
@@ -46,7 +46,7 @@
   --leading: 1.55;
   --leading-tight: 1.2;
 
-  /* Space — 4 px base */
+  /* Space: 4 px base */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;

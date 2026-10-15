@@ -48,7 +48,7 @@ for (const dir of skills) {
     if (!fm.description) err(`${dir}: missing description`);
     else {
       if (fm.description.length < 40) warn(`${dir}: description is thin (${fm.description.length} chars)`);
-      if (fm.description.length > 700) err(`${dir}: description too long (${fm.description.length} chars) — it is always-loaded`);
+      if (fm.description.length > 700) err(`${dir}: description too long (${fm.description.length} chars), it is always-loaded`);
       if (!/use when/i.test(fm.description)) warn(`${dir}: description has no "Use when" trigger branch`);
     }
   }
@@ -68,10 +68,16 @@ for (const doc of ["README.md", "CONTRIBUTING.md", "AGENTS.md", "install.sh"]) {
   if (!existsSync(join(root, doc))) err(`missing ${doc}`);
 }
 
-for (const file of ["README.md", "CONTRIBUTING.md", "AGENTS.md"]) {
-  const p = join(root, file);
-  if (existsSync(p) && /—/.test(readFileSync(p, "utf8")))
-    err(`${file}: contains an em dash`);
+// Em dashes are banned repo-wide (house style). scripts/ is exempt: it holds
+// the detector itself.
+const textExt = /\.(md|css|sh|mjs|js|jsx|json|html|txt|yml|yaml)$/;
+for (const path of readdirSync(root, { recursive: true })) {
+  const p = join(root, path);
+  if (!statSync(p).isFile()) continue;
+  const rel = path.toString();
+  if (rel.startsWith("scripts/") || rel.startsWith(".git/")) continue;
+  if (!textExt.test(rel)) continue;
+  if (/—/.test(readFileSync(p, "utf8"))) err(`${rel}: contains an em dash; rewrite the sentence`);
 }
 
 for (const w of warnings) console.warn(`warn: ${w}`);

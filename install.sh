@@ -36,7 +36,7 @@ else
     || die "Could not clone $CLONE_URL. Check the repo name and your network."
 fi
 
-[ -d "$DEST/skills" ] || die "$DEST/skills is missing — the clone looks wrong."
+[ -d "$DEST/skills" ] || die "$DEST/skills is missing; the clone looks wrong."
 
 # 2. Symlink each skill into every agent harness that is present on this
 #    machine. A symlink means `install.sh` again is the update path.
@@ -90,4 +90,4 @@ fi
 
 say "Done. Skills installed:"
 for d in "$DEST"/skills/*/; do printf '  %s\n' "$(basename "$d")"; done
-say "Restart your agent, then try one — e.g. ask it to \"build me a React project\"."
+say "Restart your agent, then try one, for example: \"build me a React project\"."

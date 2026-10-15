@@ -2,7 +2,7 @@
 
 A set of agent skills for **INFO 442, Cooperative Software Development**. Install
 once, then your AI agent can scaffold a project, build you a practice exercise,
-plan a roadmap, write a spec, and more — all with the class conventions built in.
+plan a roadmap, write a spec, and more, all with the class conventions built in.
 
 Built for the course, usable by anyone.
 

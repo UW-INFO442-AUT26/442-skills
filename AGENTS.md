@@ -1,4 +1,4 @@
-# AGENTS.md — the 442-skills repo
+# AGENTS.md: the 442-skills repo
 
 The operating contract for any AI agent working **in this repository**
 (adding or editing a skill). Students using the installed skills are

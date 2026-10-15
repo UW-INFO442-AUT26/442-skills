@@ -1,4 +1,4 @@
-<!-- BEGIN 442-skills (managed by github.com/UW-INFO442-AUT26/442-skills/install.sh — edit there, not here) -->
+<!-- BEGIN 442-skills (managed by github.com/UW-INFO442-AUT26/442-skills/install.sh; edit there, not here) -->
 ## INFO 442 (Autumn 2026)
 
 This machine has the INFO 442 skills installed (`~/.agents/skills/442-*`).
@@ -24,7 +24,7 @@ fine, hiding it is not. Never cite code you wrote by hand.
 
 An AI agent must never be the sole author of a commit. Append a
 `Co-authored-by:` trailer to the very end of every commit message, using
-the human's real GitHub name and email — find them with `git config
+the human's real GitHub name and email (find them with `git config
 user.name` / `user.email`, or `gh api user`; if they cannot be found, ask
 the human before committing. Leave one blank line between the commit
 body and the trailer:
