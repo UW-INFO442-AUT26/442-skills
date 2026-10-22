@@ -10,28 +10,46 @@ before, and each project carries a rules version.
 Two things are true at once in this class:
 
 1. Only signed-in users read or write the data.
-2. Access ends at the class cutoff, **18 December 2026**.
+2. Access ends at the class cutoff, **31 December 2026**.
 
 Both belong in the rule, on the operations the app actually uses. A rule
 that only hides buttons in the frontend enforces nothing: the database is
 reachable from any browser console, so the database itself has to refuse.
 
-## The example in the slides is not usable as written
+## What the slides show, and what is wrong with it
+
+The Firestore example:
 
 ```
 allow read, write: if request.auth != null
   && timestamp.now() < timestamp.date(2026, 6, 30);
 ```
 
-Two problems, and both bite quietly:
-
 - `timestamp.now()` does not exist. The current time in a Firestore rule is
-  `request.time`, a `Timestamp`. There is no `timestamp.now()` function.
-- `2026, 6, 30` is in the past. A cutoff in the past refuses everything from
-  the moment it deploys, which looks exactly like a broken app.
+  `request.time`, a `Timestamp`.
+- `2026, 6, 30` is in the past, and a cutoff in the past refuses everything
+  from the moment it deploys, which looks exactly like a broken app.
 
-`request.auth != null` is correct, and `timestamp.date(year, month, day)`
+`request.auth != null` there is right, and `timestamp.date(year, month, day)`
 is a real function: it builds midnight UTC on that date.
+
+The Realtime Database example:
+
+```json
+{
+  "rules": {
+    ".read": "now < 1782806400000",
+    ".write": "now < 1782806400000"
+  }
+}
+```
+
+- **No `auth != null`.** As written this lets anyone on the internet read and
+  write the whole database until the cutoff. A clock is not a lock.
+- `1782806400000` is `2026-06-30T08:00:00Z`, a past instant, and not
+  `00:00:00 UTC` as the note beside it claims.
+- JSON has no comments. The `// 2026-06-30` note on each line stops the file
+  from parsing on deploy, so the date belongs above the block, not inside it.
 
 ## Firestore, the rule to write
 
@@ -42,26 +60,26 @@ service cloud.firestore {
   match /databases/{database}/documents {
     match /{document=**} {
       allow read, write: if request.auth != null
-        && request.time < timestamp.date(2026, 12, 18);
+        && request.time < timestamp.date(2026, 12, 31);
     }
   }
 }
 ```
 
-Three things to know about that date. `timestamp.date(2026, 12, 18)` is
-`2026-12-18T00:00:00Z`, which is 16:00 on 17 December in Seattle, so access
-closes a day earlier than the words suggest. When the exact moment
-matters, pin it:
+Two things to know about that date. `timestamp.date(2026, 12, 31)` is
+`2026-12-31T00:00:00Z`, which is 16:00 on 30 December in Seattle, so access
+closes a day earlier than the words suggest. That form closes the 31st
+before it starts. When the whole day should stay open, pin the instant:
 
 ```js
       allow read, write: if request.auth != null
-        && request.time < timestamp.value(1797667200000);
+        && request.time < timestamp.value(1798790400000);
 ```
 
-`timestamp.value` takes epoch milliseconds. `1797667200000` is
-`2026-12-19T08:00:00Z`, which is the end of 18 December in Seattle. Pick one
-form, say which instant it means in the report, and get the student's
-agreement before deploying either.
+`timestamp.value` takes epoch milliseconds. `1798790400000` is
+`2027-01-01T08:00:00Z`, which is the end of 31 December in Seattle, so the
+whole day stays open. Pick one form, say which instant it means in the
+report, and get the student's agreement before deploying either.
 
 The rules file has to be wired up in `firebase.json` before a deploy finds
 it:
@@ -77,8 +95,8 @@ Deploy with `firebase deploy --only firestore`.
 ```json
 {
   "rules": {
-    ".read": "auth != null && now < 1797667200000",
-    ".write": "auth != null && now < 1797667200000"
+    ".read": "auth != null && now < 1798790400000",
+    ".write": "auth != null && now < 1798790400000"
   }
 }
 ```
@@ -86,7 +104,9 @@ Deploy with `firebase deploy --only firestore`.
 Three differences from Firestore, all of them easy to get wrong:
 `auth`, not `request.auth`; `now`, which is the server's milliseconds since
 the epoch, not a timestamp object; and the rule is a JSON string per path,
-where a rule on a parent covers its children.
+where a rule on a parent covers its children. Both halves earn their place:
+`auth != null` closes the database to the public, and the clock closes it
+after the cutoff. Drop either and the rule still runs, which is the problem.
 
 Wire it up with `"database": { "rules": "database.rules.json" }` in
 `firebase.json`, and deploy with `firebase deploy --only database`.

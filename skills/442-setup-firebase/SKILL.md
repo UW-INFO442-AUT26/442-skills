@@ -106,9 +106,11 @@ is quoted in your report next to the step that clears it.
 ## 4. Set the cutoff on the database
 
 Read [references/rules.md](references/rules.md) before you write a rule.
-The class cutoff is **18 December 2026**. The date in the course slides,
-`2026, 6, 30`, is last year and useless here, and the syntax beside it
-does not exist in current rules, so do not copy either without checking.
+The class cutoff is **31 December 2026**, and the whole day stays open, so
+the rule closes at the start of 1 January in Seattle. The date in the course
+slides, `2026, 6, 30`, is last year and useless here, the syntax beside it
+does not exist in current rules, and the Realtime Database slide left out its
+`auth != null` half, so do not copy any of it without checking.
 
 Ask for the exact time of day and the timezone before deploying a rule
 that closes access, and say what the rule does to the student's own app
