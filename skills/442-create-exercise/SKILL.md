@@ -1,12 +1,21 @@
 ---
 name: 442-create-exercise
-description: "Builds a mobile-first practice exercise on any topic as one self-contained web page, then publishes it to the student's own GitHub account as a public GitHub Pages site and hands back the live link and a QR code. The author picks the interaction that teaches the idea best, which is often not a quiz: a simulation to play with and step through, an order to rebuild by dragging, a set of items to sort, a pair of lists to match. Use when a student asks for practice, drills, a quiz, self-testing, or to be quizzed on a topic, or wants notes turned into something to rehearse on their phone."
+description: "Builds practice for one capability, in one of two shapes: a mobile-first page (a quiz, a simulation, a drag order, a sort, a match) published to GitHub Pages with a live link and a QR code, or a small React and Vite practice project the student clones and fixes TODO comments in. Use when a student asks for practice, drills, a quiz, self-testing, a lab warm-up, or a coding exercise to fix on a laptop, or wants notes turned into something to rehearse."
 ---
 
 # Build an exercise
 
-Turn a topic into one web page the student finishes on a phone, then publish it
-to their own GitHub account and hand back a link.
+INFO 442 practice comes in two shapes. The capability picks which one.
+
+| Shape | What the student does | Reach for it when |
+|---|---|---|
+| A page | Answers on a phone in about ten minutes, one step at a time | The capability is a decision they can practise by answering: a quiz, a sort, a match, a simulation to play with |
+| A practice project | Clones a small React project on a laptop and fixes two to four TODO comments | The capability is work in an editor: wiring state, reading a component an agent wrote, changing code that already runs |
+
+**This file is the page track.** For a practice project, run step 1 as written,
+then follow [references/practice-problem.md](references/practice-problem.md)
+instead of steps 2 to 6. When a topic fits either shape, say which you
+recommend in one line and build that one.
 
 **Movement and visuals first.** Before you write a step, ask what the student
 should SEE and what they should MOVE. A box of text is not a visual, and
@@ -109,7 +118,7 @@ then take the kind that does it. Often the answer is not a question at all.
 still finish with the keyboard and with taps, so no one is locked out of the
 step. Both grade exactly as they always did.
 
-`explore` is the interactive one, and it is **ungraded**: nothing is scored on
+`explore` is the interactive one, and it is an **activity**: nothing is scored on
 it and it never counts toward `minCorrect`. Put it first on an idea the student
 has not handled before, so they play before you explain (rule 13).
 
@@ -170,7 +179,7 @@ Its `_guide` key documents every field, so you do not need another reference.
 The rules that are not negotiable:
 
 - **6 to 12 steps** for a 10 minute exercise. Fewer for 5 minutes.
-- Every graded step carries `feedback` that explains **why**, not whether, and
+- Every question carries `feedback` that explains **why**, not whether, and
   `choice` and `multi` carry a `misconception` naming the tempting wrong
   belief.
 - **Interleave.** Neighbouring steps change kind, and they change sub-topic
@@ -180,7 +189,7 @@ The rules that are not negotiable:
 - **Fade.** An early step on a new idea may carry a `hint`. The last step on
   that idea is a `short` recall with no hint.
 - `meta.criterion` states the bar in the student's words, and
-  `meta.criterion.minCorrect` agrees with that text. It counts graded steps
+  `meta.criterion.minCorrect` agrees with that text. It counts questions
   only.
 - **Give them somewhere to go next.** `meta.resources` is an optional short
   list, `[{ "label", "href", "note" }]`, shown on the intro and the results

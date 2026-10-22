@@ -143,7 +143,7 @@ checkout stays at `~/.442-skills` until you delete it yourself.
 |---|---|
 | `442-react-init` | Sets up a clean Vite + React project: default boilerplate removed, INFO 442 home page in its place. |
 | `442-setup-firebase` | Adds Firestore, Realtime Database, sign-in, or Hosting to a project, with the class security rules and the December cutoff. |
-| `442-create-exercise` | Turns a topic into a mobile-first practice exercise, and publishes it as a link you can open on your phone. |
+| `442-create-exercise` | Turns a topic into practice: a mobile-first page you open on your phone, or a small React project you clone and fix on a laptop. |
 | `442-create-roadmap` | Turns a project brief and your team's constraints into a week-by-week plan. |
 | `442-create-personas` | Writes realistic user personas for a problem statement. |
 | `442-create-names` | Works with you on a product name, and tests it against the alternatives. |

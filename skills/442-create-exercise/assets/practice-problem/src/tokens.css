@@ -1,0 +1,108 @@
+/* INFO 442 design tokens, owned by the 442-brand skill.
+   A vendored copy, so this project runs without the skills installed.
+
+   One difference from skills/442-brand/tokens.css: the dark theme here
+   follows the operating system instead of waiting for data-theme="dark" on
+   <html>. That keeps a student's first run looking right with no setup. If
+   you change a value, change it in 442-brand first, then here. */
+
+:root {
+  /* Brand: use as marks, not as fields. */
+  --uw-purple:      #4B2E83;
+  --uw-purple-deep: #351F63;
+  --uw-gold:        #B7A57A;
+  --uw-gold-deep:   #85754D;
+
+  /* Neutrals: the actual surface. */
+  --bg:       #F7F7FB;
+  --surface:  #FFFFFF;
+  --surface-2:#EDEDF4;
+  --ink:      #16151D;
+  --ink-2:    #3C3B4A;
+  --muted:    #6B6A7B;
+  --border:   #DADAE4;
+
+  /* One accent carries interaction. */
+  --accent:      #6C4AB6;
+  --accent-ink:  #FFFFFF;
+  --accent-soft: #EDE7FB;
+
+  /* Semantic state: reserve for real state, never decoration. */
+  --success: #1F7A5C;
+  --success-soft: #E2F3EC;
+  --warning: #9A6414;
+  --warning-soft: #FBEEDA;
+  --error:   #A32B32;
+  --error-soft: #FBE6E7;
+  --info:    #2F5F96;
+  --info-soft: #E6EEF8;
+
+  /* Type */
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2.25rem;
+  --leading: 1.55;
+  --leading-tight: 1.2;
+
+  /* Space: 4 px base */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+
+  --radius: 10px;
+  --radius-sm: 6px;
+  --radius-pill: 999px;
+  --shadow-1: 0 1px 2px rgba(22, 21, 29, 0.06), 0 1px 3px rgba(22, 21, 29, 0.08);
+  --shadow-2: 0 6px 16px rgba(22, 21, 29, 0.10);
+  --tap: 44px;
+
+  --motion: 160ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --motion: 1ms; }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:       #0F0E15;
+    --surface:  #1A1822;
+    --surface-2:#242230;
+    --ink:      #F2F1F7;
+    --ink-2:    #C9C7D6;
+    --muted:    #9A98AC;
+    --border:   #302E3C;
+    --accent:      #9B7BE0;
+    --accent-ink:  #14121B;
+    --accent-soft: #2A2340;
+    --uw-purple: #8A6FC7;
+    --uw-gold:   #D2C49B;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading);
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a, button { transition: color var(--motion) var(--ease), background var(--motion) var(--ease); }
+}
