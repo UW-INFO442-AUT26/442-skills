@@ -10,13 +10,13 @@ this file is the rules for using them.
 | `--bg` / `--surface` | page and card backgrounds | n/a |
 | `--ink` / `--ink-2` | body text, secondary text | body text below `--ink-2` |
 | `--accent` | the one primary action, the one thing to look at | spreading it across many elements |
-| `--uw-purple` | brand mark: a heading rule, a logo, a small badge | large fills behind body text |
+| `--uw-purple` | brand mark: a heading rule, a logo, a border | large fills behind body text |
 | `--uw-gold` | a single deliberate accent: a highlight, a divider, a stat | pairing it with the accent on the same element |
 | `--success` / `--warning` / `--error` | real state only | decoration |
 
 The UW signal is a *mark*, not a theme. A page whose only purple is a
-short heading rule and a badge still reads as UW; a page painted purple
-reads as neither UW nor professional.
+short rule under its title reads as UW; a page painted purple reads as
+neither UW nor professional.
 
 **Contrast:** `--ink` on `--bg`, `--ink` on `--surface`, and
 `--accent-ink` on `--accent` all clear 4.5:1. `--muted` is for labels and
@@ -60,8 +60,10 @@ Keep these shapes consistent across every 442 artifact.
 - **Button**: primary is `--accent` fill, `--accent-ink` label,
   `--radius-sm`, min height `--tap`. Secondary is transparent fill with a
   `--border` stroke and `--ink` label. One primary button per screen.
-- **Badge / tag**: `--radius-pill`, `--text-xs`, an `--*-soft` background
-  with its matching dark text. Use a UW-purple badge for course identity.
+- **Metadata line**: the facts about a thing (its number, its kind, its
+  length) are one line of `--text-sm` `--muted` text under its heading,
+  items separated by ` · `. Course identity comes from the title, the rule,
+  and the links, so it needs no label of its own.
 - **Input**: `--surface`, `--border` stroke, `--radius-sm`, min height
   `--tap`, focus ring in `--accent`.
 - **Callout**: a 3 px `--accent` left border on `--accent-soft`, or the
@@ -81,6 +83,8 @@ Before calling a design done, check every one:
 ## Done when
 
 - `tokens.css` is imported and no raw hex appears in the project's own CSS.
+- Headings are headings: no pill, chip, or uppercase label sits above one.
+  Anything a pill would carry is a line of text under the heading instead.
 - The mobile 360 px pass is complete and scrolls vertically only.
 - Exactly one accent-colored primary action is visible per screen.
 - UW purple/gold appear as marks, not as fields.

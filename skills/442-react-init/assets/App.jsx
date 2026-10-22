@@ -18,7 +18,6 @@ export default function App() {
   return (
     <div className="page">
       <header className="site-header">
-        <span className="badge">INFO 442</span>
         <h1 className="site-title">{projectName}</h1>
       </header>
 
