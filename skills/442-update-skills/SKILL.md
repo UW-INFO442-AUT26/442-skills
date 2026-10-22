@@ -1,5 +1,5 @@
 ---
-name: 442-update
+name: 442-update-skills
 description: Brings the installed INFO 442 skills up to date. Use when a student asks whether their class skills are current, asks for a skill the class just added, or asks to update or refresh the skills.
 ---
 
