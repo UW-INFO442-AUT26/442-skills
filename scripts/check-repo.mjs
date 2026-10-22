@@ -225,6 +225,7 @@ else runTestScript("test-install.sh", "install");
 // A validator that cannot prove it catches anything is worse than none: it gets
 // trusted. These fixtures are the proof.
 runTestScript("test-check-repo.sh", "validator");
+runTestScript("test-inspect.sh", "inspector");
 
 // Em dashes are banned repo-wide (house style). scripts/ is exempt: it holds
 // the detector itself.
