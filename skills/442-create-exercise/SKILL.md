@@ -48,9 +48,12 @@ Three rules hold on every step:
 
 - **Nothing reveals the answer before submit.** Not the prompt, not the option
   list, not a `figure`, not a `widget`.
-- **Write simply.** Short sentences. Common words. Explain a term the first
-  time it is used. That holds for the page's own copy and for every `prompt`,
-  `feedback`, and `misconception` string you write.
+- **Write the way a teacher talks.** One idea in a sentence. A term is
+  explained the moment it appears, in that same sentence or the next, so the
+  student never holds two unknowns at once. One new term a step, not three.
+  That holds for the page's own copy and for every `prompt`, `feedback`, and
+  `misconception` string. Call `442-voice` before you write page copy, then cut
+  whatever does not carry a fact.
 - **Take the look from the system, not your taste.** The page follows the
   checked `442-brand` design system, so every exercise looks like a 442
   artifact. Add no colors and no sizes by hand.

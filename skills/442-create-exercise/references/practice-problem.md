@@ -4,7 +4,8 @@ The other track. Use it when the capability is work in an editor: wiring state,
 reading a component somebody else wrote, changing code an agent produced. The
 student clones a small React project, finds TODO comments, and fixes them.
 
-The rules that hold on both tracks still hold: write simply, take the look from
+The rules that hold on both tracks still hold: the copy rule from step 3 of
+[../SKILL.md](../SKILL.md) (write the way a teacher talks), the look from
 `442-brand`, and never make the student guess what done looks like. One rule
 changes. A quiz must not reveal its answer; a practice problem may, because the
 student is learning to do the work, not to recall it.
@@ -50,6 +51,10 @@ problem, so keep its shape and change its content.
   code under the comment. Remember which track you are on.
 - **Keep the page running at every save.** No red screen, no console error. A
   page that crashes teaches the student where the terminal is and nothing else.
+- **Name the trap by what happens, not by what it is called.** "0 is falsy"
+  belongs in a book. The student needs the behaviour: React shows `0`, and hides
+  `false` and `null`. The same goes for render, truthy, instance, and every other
+  word that names a thing instead of showing it.
 - **Leave one trap.** The naive fix should fail in a way they can see, and a
   comment should say how to notice it. The zero trap is the model: a number in
   front of `&&` renders a bare `0` on the page.
@@ -100,8 +105,8 @@ node scripts/build-index.mjs --check
 ```
 
 **Done when** `--check` exits 0, the landing page opens at
-`exercises/<slug>/`, and the card on the home page carries the Interactive
-badge.
+`exercises/<slug>/`, and the card on the home page lists the problem as
+Interactive.
 
 ## 6. Hand it over
 
