@@ -16,7 +16,7 @@ function Card() {
     <article className="card">
       <h2 className="card__title">Study space hours</h2>
       <p className="card__body">
-        The iSchool lab is open 9 to 5. This is the card your button will
+        The iStartup Lab is open 24-7. This is the card your button will
         show and hide.
       </p>
     </article>
