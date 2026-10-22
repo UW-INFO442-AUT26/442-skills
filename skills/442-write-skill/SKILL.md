@@ -101,3 +101,53 @@ You win twice: fewer tokens, and a sharper hook for the agent to hang its thinki
 - The **environment** is a source of truth too (`package.json` scripts, config files, the directory layout, `--help` output), and a document that restates it is a **cache**: a copy of a lookup, earning its load only when the lookup is expensive. Cache what the agent cannot find by looking: the unwritten convention, the reason behind a choice, the gotcha no config confesses. Leave the one-file, one-command lookups to the environment, where they cannot go stale.
 - Check every line for **relevance**: does it still bear on what the document does? A line loses relevance by never bearing on the task (mere exposition, or a branch that should be disclosed) or by going stale as the behaviour or world it describes changes. Shorter documents are easier to keep relevant. Without a pruning discipline the default fate is **sediment**: stale layers that settle because adding feels safe and removing feels risky, until you must core down through them to find what is still live.
 - Hunt **no-ops** sentence by sentence: an instruction the model already obeys by default pays load to say nothing. The test (does it change behaviour versus the default?) is model-relative, not reader-relative: two people disagreeing about a no-op disagree about the default, and settle it by running the document, not by debate. When a sentence fails, delete the whole sentence rather than trim words from it. The test also grades leading words: a word too weak to beat the default (_be thorough_ when the agent is already thorough-ish) is a no-op, and the fix is a stronger word (_relentless_), not a different technique.
+
+## After the gate goes green, offer it to the class
+
+A skill that works for one student is a good skill. One that would work for
+every student in INFO 442 belongs in the class repo, and the set gets better
+every time somebody sends one. So when the skill is written, and
+`node scripts/check-repo.mjs` is green, judge it against the bar below and then
+ask the student once.
+
+The bar:
+
+- **It is about the class's work, not one project.** A skill that reads one
+  app's files stays in that app.
+- **Its description names a trigger a stranger would type.** If only the person
+  who wrote it would ever say the words that fire it, it is not shareable yet.
+- **A student who installs it gains something on the first run.**
+- **It carries no student data.** No names, no IDs, no grades, no coursework.
+  The repo is public.
+
+Clear the bar and ask in one sentence: this could help other students, and you
+can open the pull request. Miss the bar and say why in one line, then stop. Ask
+once, and take the answer as final.
+
+If they say yes:
+
+1. **Read `CONTRIBUTING.md` in the class repo and follow it exactly:** branch
+   `feat/<skill-name>`, one skill per pull request, the gate, the title format,
+   and a body carrying what the skill is for, what fires it, and the evidence
+   from a real run.
+2. **Hand the errand to a subagent when the harness has one, and say that you
+   did.** Branch, copy, gate run, commit, pull request is long and mechanical,
+   and it keeps this conversation clean. With no subagent, do the same steps
+   yourself in this session. Either way the contribution conventions are the
+   same, and you report the pull request URL.
+3. **Report what opened.** The URL, what the reviewer will see, and whether the
+   commit carries a `Co-authored-by:` line, which the class rules require. Never
+   claim a merge you did not watch happen.
+
+It needs the GitHub CLI signed in (`gh auth status`). If it is not, say so, push
+the branch if you can, and leave the student the one command that opens the
+pull request.
+
+**Done when** the student has a pull request URL they can open, or a one-line
+reason the skill is staying on their machine.
+
+## What's next
+
+Run `node scripts/check-repo.mjs` one last time, then ask whether the skill
+should go to the class. That question is the last step, not an afterthought:
+every skill in this repo arrived through it.
