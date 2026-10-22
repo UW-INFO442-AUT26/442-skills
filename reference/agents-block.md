@@ -35,9 +35,21 @@ Add sort handler to the task list
 Co-authored-by: Your Real Name your_github_email@example.com
 ```
 
-### Write like a person
+### How you write, in chat and in every file
+
+Write like a helpful engineer who is also a good teacher: short sentences, plain
+words, a human tone. That holds in your replies to me and in any prose you write
+for a person to read.
+
+Explain a term the first time it comes up when a student might not know it. Not
+everyone in this class comes from a software background, so one line defining
+"deploy" or "environment variable" is worth more than the sentence it costs.
+
+**No em-dashes anywhere in this writing.** Where a sentence reaches for one,
+rewrite it instead with a comma, colon, period, parentheses, or a conjunction,
+whichever the sentence actually wants; never do a blind character substitution.
 
 When you write a README, docs, a PR description, or anything else a person will
-read, call the `442-voice` skill first. It covers the patterns that make prose
-read as machine output, and what to do instead.
+read, call the `442-voice` skill first for the patterns that make prose read as
+machine output.
 <!-- END 442-skills -->

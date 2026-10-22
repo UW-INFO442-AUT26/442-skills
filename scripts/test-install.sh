@@ -274,6 +274,26 @@ run_install "$WORK" --update > "$WORK/log22" 2>&1
 check $? "update exits clean without a record"
 contains "$WORK/log22" "No install is recorded" "and says so"
 
+printf '\n17. a change to the rules block reaches installed projects\n'
+P2="$WORK/block"
+mkdir -p "$P2"
+git -C "$P2" init -q -b main
+printf '# My own notes\n\nSomething I wrote before installing.\n' > "$P2/AGENTS.md"
+run_install "$P2" > "$WORK/log23" 2>&1
+contains "$P2/AGENTS.md" "Cite AI-written code" "the block arrives on install"
+
+# A later release rewrites the block wholesale, markers and all.
+printf '<!-- BEGIN 442-skills (test) -->\n## INFO 442 (test)\n\nRules version: 2.\n<!-- END 442-skills -->\n' > "$SRC/reference/agents-block.md"
+git -C "$SRC" add -A
+git -C "$SRC" -c user.name=test -c user.email=test@example.com commit -qm "block v2"
+run_install "$P2" --update > "$WORK/log24" 2>&1
+check $? "update exits clean"
+contains "$WORK/log24" "Refreshed the INFO 442 rules block" "the update says it refreshed the block"
+contains "$P2/AGENTS.md" "Rules version: 2" "the new block lands"
+not_contains "$P2/AGENTS.md" "Cite AI-written code" "the old block content is gone"
+contains "$P2/AGENTS.md" "Something I wrote before installing." "the student's own text survives"
+[ "$(grep -cF "<!-- BEGIN 442-skills" "$P2/AGENTS.md")" = "1" ]; check $? "exactly one block after the refresh"
+
 if [ "$FAILED" = "0" ]; then
   printf '\ninstall.sh behaves. All checks passed.\n'
 else
