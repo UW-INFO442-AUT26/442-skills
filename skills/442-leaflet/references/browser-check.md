@@ -4,6 +4,12 @@ A map that compiles is not a map that works. These checks are what
 "verified" means for map code. Run them on the dev server and again on
 the built page, because the marker image breaks only in a build.
 
+If your agent cannot drive a browser yet, start with
+[`442-browser-use`](../../442-browser-use/SKILL.md). It installs what is missing, starts
+the dev server, screenshots at 360 and 1280, and reports a container with no height,
+which is the bug that turns a map into a grey strip. The numbers below are what to read
+once the page is actually open.
+
 ## Start the app
 
 ```sh
