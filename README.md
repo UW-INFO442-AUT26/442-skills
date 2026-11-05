@@ -145,6 +145,7 @@ checkout stays at `~/.442-skills` until you delete it yourself.
 | `442-setup-firebase` | Adds Firestore, Realtime Database, sign-in, or Hosting to a project, with the class security rules and the December cutoff. |
 | `442-setup-leaflet` | Adds an interactive map with Leaflet and React-Leaflet: the versions that fit, the map component, the marker icon fix, and a browser check. |
 | `442-leaflet` | How to write, read, and debug map code: the current docs, the eight patterns, and how to prove a map works. |
+| `442-browser-use` | Looks at your running page in a real browser at phone and laptop width, screenshots both, and reports what is broken with the console. Use it before a milestone. |
 | `442-create-exercise` | Turns a topic into practice: a mobile-first page you open on your phone, or a small React project you clone and fix on a laptop. |
 | `442-create-roadmap` | Turns a project brief and your team's constraints into a week-by-week plan. |
 | `442-create-personas` | Writes realistic user personas for a problem statement. |
