@@ -12,6 +12,11 @@ minutes because an undecided question does not stay undecided. It gets
 answered by accident while someone writes code, and undoing that costs an
 afternoon. The grill ends with a `SPEC.md` the student can build against.
 
+Ask one plain question per message and let the student type the answer. Each
+question is an ordinary sentence with your recommendation inside it, so a
+question about two approaches reads as one line of prose, not as a list to pick
+from.
+
 Resolve decisions only. Design and implementation are the next conversation,
 not this one.
 
@@ -32,16 +37,20 @@ not this one.
 
 3. **Research before you ask.** Read what informs the current question first:
    the assignment brief, `README.md`, the existing code, any docs the project
-   keeps. Then ask in this shape: "I'd pick X because `<fact>` unless you see a
-   reason not to." The recommendation is a starting point, not the answer.
+   keeps. Then ask in one sentence, in this shape: "I'd pick X because `<fact>`
+   unless you see a reason not to." The recommendation is a starting point, not
+   the answer.
    *Done when:* the question you ask carries the facts you found and the answer
    you would choose.
 
-4. **Offer genuine options only.** Two or three real approaches that a
-   reasonable engineer could defend. An option that cannot win on its merits is
-   a strawman, and a strawman makes your recommendation look free when a real
+4. **Name the alternatives inside the question.** Two or three real approaches
+   that a reasonable engineer could defend, written into the same sentence as
+   your recommendation, with the one you would pick marked. The student answers
+   in their own words. An alternative that cannot win on its merits is a
+   strawman, and a strawman makes your recommendation look free when a real
    trade-off is at stake.
-   *Done when:* every option you list could be chosen.
+   *Done when:* every alternative you name could be chosen, and the answer came
+   back in the student's own words.
 
 5. **Keep the running list.** After each answer, restate the decisions so far in
    one short block: the decision, the choice, and the student's reason. Do this
@@ -51,8 +60,8 @@ not this one.
    it.
 
 6. **One question per exchange, then check the tree.** Wait for the answer
-   before opening the next branch, so the student never faces a wall of
-   choices. If they answer several at once, log each one and skip what is now
+   before opening the next branch, so each question is answered before the next
+   one appears. If they answer several at once, log each one and skip what is now
    covered. If they say "you decide", name the choice you are about to make and
    get a yes first. When the branches run out, ask whether any consequential
    question is left.
