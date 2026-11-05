@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# Exercises the 442-setup-firebase inspector against fixture projects. The
-# point is that the report is stable and read-only: same answers from the same
-# files, and nothing in the project changes.
+# Exercises the skill inspectors against fixture projects: the Firebase one in
+# 442-setup-firebase and the Leaflet one in 442-setup-leaflet. The point is that
+# each report is stable and read-only: same answers from the same files, and
+# nothing in the project changes.
 #
 #   bash scripts/test-inspect.sh
 set -uo pipefail
@@ -86,6 +87,97 @@ contains "$WORK/out3" "configured from files: nothing yet" "says nothing is set 
 printf '\n4. a missing directory\n'
 node "$INSPECT" "$WORK/nope" > /dev/null 2>&1
 [ $? -ne 0 ]; check $? "exits non-zero when the folder is missing"
+
+printf '\n5. a Vite React project with a working Leaflet map\n'
+LEAFLET="$REPO_DIR/skills/442-setup-leaflet/scripts/inspect.mjs"
+L="$WORK/leaflet-app"
+mkdir -p "$L/src"
+cat > "$L/package.json" <<'JSON'
+{
+  "name": "map-app",
+  "dependencies": { "react": "^19.0.0", "react-dom": "^19.0.0", "leaflet": "^1.9.4", "react-leaflet": "^5.0.0" },
+  "devDependencies": { "vite": "^7.0.0" },
+  "scripts": { "dev": "vite", "build": "vite build" }
+}
+JSON
+printf "import 'leaflet/dist/leaflet.css'\nimport App from './App.jsx'\n" > "$L/src/main.jsx"
+cat > "$L/src/App.jsx" <<'JSX'
+import L from 'leaflet'
+import { MapContainer, TileLayer } from 'react-leaflet'
+L.Icon.Default.imagePath = ''
+export default () => (
+  <MapContainer center={[47.6, -122.3]} zoom={13} style={{ height: '400px' }}>
+    <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; OpenStreetMap" />
+  </MapContainer>
+)
+JSX
+printf '<html><body><div id="root"></div></body></html>\n' > "$L/index.html"
+
+node "$LEAFLET" "$L" > "$WORK/lout1" 2>&1
+check $? "leaflet inspector exits 0"
+contains "$WORK/lout1" "framework: vite + react" "leaflet: names the framework"
+contains "$WORK/lout1" "react: ^19.0.0" "leaflet: reports react"
+contains "$WORK/lout1" "leaflet: ^1.9.4 (installed no)" "leaflet: reports the package and that it is not installed yet"
+contains "$WORK/lout1" "react-leaflet: ^5.0.0 (installed no)" "leaflet: reports react-leaflet"
+contains "$WORK/lout1" "version fit: ok" "leaflet: the versions fit"
+contains "$WORK/lout1" "leaflet css: imported in src/main.jsx" "leaflet: finds the css import"
+contains "$WORK/lout1" "html entry: index.html" "leaflet: finds the Vite entry"
+contains "$WORK/lout1" "unpkg css link: no" "leaflet: no unpkg link"
+contains "$WORK/lout1" "map container: MapContainer in src/App.jsx" "leaflet: finds the map"
+contains "$WORK/lout1" "tile url: https://tile.openstreetmap.org/{z}/{x}/{y}.png" "leaflet: reads the tile url"
+contains "$WORK/lout1" "tile subdomains: no" "leaflet: the url has no subdomain"
+contains "$WORK/lout1" "attribution: yes" "leaflet: finds the attribution"
+contains "$WORK/lout1" "container height: set on the container" "leaflet: finds the height"
+contains "$WORK/lout1" "icon fix: Icon.Default patched" "leaflet: finds the icon fix"
+contains "$WORK/lout1" "Nothing was changed." "leaflet: says it changed nothing"
+
+printf '\n6. a Create React App project with the old instructions\n'
+C="$WORK/cra-app"
+mkdir -p "$C/public" "$C/src"
+cat > "$C/package.json" <<'JSON'
+{
+  "name": "old-app",
+  "dependencies": { "react": "^18.2.0", "react-scripts": "5.0.1", "leaflet": "^1.9.4", "react-leaflet": "^5.0.0" },
+  "scripts": { "start": "react-scripts start" }
+}
+JSON
+printf '<html><head><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/></head></html>\n' > "$C/public/index.html"
+cat > "$C/src/Map.jsx" <<'JSX'
+import 'leaflet/styles.css'
+import { MapContainer, TileLayer } from 'react-leaflet'
+export default () => (
+  <MapContainer center={[47.6, -122.3]} zoom={13}>
+    <TileLayer url="http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+  </MapContainer>
+)
+JSX
+node "$LEAFLET" "$C" > "$WORK/lout2" 2>&1
+contains "$WORK/lout2" "framework: create-react-app + react" "leaflet: names Create React App"
+contains "$WORK/lout2" "html entry: public/index.html" "leaflet: finds the CRA entry"
+contains "$WORK/lout2" "unpkg css link: yes" "leaflet: flags the unpkg link"
+contains "$WORK/lout2" "css path: leaflet/styles.css is the 2.0 beta path" "leaflet: flags the 2.0 beta css path"
+contains "$WORK/lout2" "version fit: mismatch: react-leaflet 5 needs react 19" "leaflet: flags the React mismatch"
+contains "$WORK/lout2" "tile subdomains: yes" "leaflet: flags the {s} tile url"
+contains "$WORK/lout2" "tile over http: yes" "leaflet: flags an http tile url"
+contains "$WORK/lout2" "attribution: no" "leaflet: flags a missing attribution"
+contains "$WORK/lout2" "container height: no height found" "leaflet: flags a missing height"
+contains "$WORK/lout2" "icon fix: no" "leaflet: flags the missing icon fix"
+
+printf '\n7. the leaflet inspector writes nothing\n'
+git -C "$L" init -q -b main
+git -C "$L" add -A
+git -C "$L" -c user.name=test -c user.email=test@example.com commit -qm fixture
+node "$LEAFLET" "$L" > /dev/null 2>&1
+[ -z "$(git -C "$L" status --porcelain)" ]; check $? "the working tree is unchanged after the leaflet inspector"
+
+printf '\n8. the leaflet inspector on a folder with no project\n'
+mkdir -p "$WORK/empty"
+node "$LEAFLET" "$WORK/empty" > "$WORK/lout3" 2>&1
+check $? "leaflet inspector exits 0 without a package.json"
+contains "$WORK/lout3" "package.json: no" "leaflet: says there is no package.json"
+contains "$WORK/lout3" "map container: no MapContainer yet" "leaflet: says there is no map"
+node "$LEAFLET" "$WORK/nope" > /dev/null 2>&1
+[ $? -ne 0 ]; check $? "leaflet inspector exits non-zero when the folder is missing"
 
 if [ "$FAILED" = "0" ]; then
   printf '\ninspector behaves. All checks passed.\n'
