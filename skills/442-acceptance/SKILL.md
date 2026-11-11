@@ -92,7 +92,7 @@ One status per row, and the reason under the table.
 
 | Status | Means |
 | --- | --- |
-| `pass` | Did what the row expects, first try, no console error |
+| `pass` | Did what the row expects, first try, no console error from the app's own code |
 | `bug` | The thing is broken, or the console threw |
 | `unexpected` | It works, but not the way a user would expect |
 | `blocked` | Could not be tested at all, and the detail says why |
