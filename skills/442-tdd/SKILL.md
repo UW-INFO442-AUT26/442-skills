@@ -1,6 +1,6 @@
 ---
 name: 442-tdd
-description: "Test-first development for INFO 442 code, run one behavior at a time: list the behaviors, write one test, watch it fail, write the smallest code that passes, refactor with the suite green, then take the next one. Walks the student through every pass out loud and shows each test run instead of summarising it. Adapts to the stack (React, JavaScript, Firebase) and sets a runner up when the project has none. Use when adding a feature, fixing a bug, or changing behavior in a React, JavaScript, or Firebase project, or when the student asks for tests, TDD, vitest, or proof that a change works."
+description: "Test-first development for INFO 442 code, run one behavior at a time: list the behaviors, write one test, watch it fail, write the smallest code that passes, refactor with the suite green, then take the next one. Coaches the student through every pass out loud: the red run quoted, the change named, the green run shown, then a closing line on what the pass did and what is next. Adapts to the stack (React, JavaScript, Firebase) and sets a runner up when the project has none. Use when adding a feature, fixing a bug, or changing behavior in a React, JavaScript, or Firebase project, or when the student asks for tests, TDD, vitest, or proof that a change works."
 ---
 
 # Test first
@@ -25,24 +25,60 @@ or accept that the line it covers is untested.
 Work one behavior per pass. A request holding three behaviors is three trips
 around the loop, each leaving the suite green.
 
-## How to talk through a pass
+## What the student sees
 
-The student is here to learn the loop, so each pass is narrated in four lines
-and no more:
+The student is learning this loop, and they cannot see your terminal. A pass
+that runs quietly looks like files changing for no reason, and the one lesson
+worth teaching, that the red run came before the code, is exactly the part
+they miss. So every pass produces three messages, at three moments, in this
+shape:
 
-1. the behavior, in one sentence
-2. the command you ran
-3. the output it printed, quoted
-4. what you changed, and the run that went green
+```text
+It "submitting with no title shows Title is required" is red.
 
-Show the output rather than describing it. "The test fails" is a claim; the
-assertion line is proof, and proof is what teaches. When a pass needs a
-decision from the student, ask it as one plain sentence in the conversation
-and wait for their reply, because a picker hands you a click where you wanted
-their words.
+  $ npm test -- src/TitleField.test.jsx
+  FAIL src/TitleField.test.jsx
+  AssertionError: expected '' to be 'Title is required'
+    at src/TitleField.test.jsx:9:42
+```
 
-**Done when** the student could repeat the pass back to you: what you tested,
-what went red, what you changed, what went green.
+Then the change, and the run it turned green:
+
+```text
+Green: TitleField now renders the error paragraph when title is empty.
+  $ npm test
+  Test Files  3 passed (3)
+       Tests  12 passed (12)
+```
+
+Then, once the refactor is done or skipped:
+
+```text
+Pass done. TitleField renders "Title is required" for an empty title, one
+test added, suite green, refactor skipped because the change was one line.
+Next: "a saved draft with an empty title keeps the previous title".
+```
+
+The rules behind the shape:
+
+- **Quote the output, do not describe it.** "The test fails" is a claim. The
+  `AssertionError` line is proof, and proof is what makes a student trust the
+  loop instead of tolerating it. Three to six lines of output, not the whole
+  log.
+- **Send the red message before you write the implementation.** It is the
+  moment the loop is won or lost, and it is unpublishable after the fact.
+- **Name the change in one clause.** What the code now does, not which file
+  you opened.
+- **Close the pass with the count and the next line.** That closing message is
+  what turns a run of edits into a lesson: one behavior, one test, suite
+  green, here is what is next.
+
+When a pass needs a decision, ask it as one plain sentence in the
+conversation and wait for the reply, because a picker hands you a click where
+you wanted the student's words.
+
+**Done when** a student who read nothing but your three messages could say
+what was tested, what went red, what changed, and what they would see next.
 
 ## 1. List the behaviors
 
@@ -114,8 +150,9 @@ the reason the sentence describes. The one thing it does not become is a test
 nobody saw fail.
 
 **Done when** the output shows this one test failing on its own assertion,
-you have quoted that line to the student, and you can say in one sentence why
-it fails.
+you have sent the student that behavior and that quoted line, and you can say
+in one sentence why it fails. The message goes out before step 4 begins: red
+first, then the code, or the loop did not happen.
 
 ## 4. Green: the smallest code that passes
 
@@ -133,7 +170,9 @@ the sentence held more than one behavior: go back to step 1 and take the
 smaller one.
 
 **Done when** the test that was red a moment ago passes, the whole suite is
-green, and you can name the line that made the difference.
+green, you can name the line that made the difference, and the student has the
+green run in front of them: the command and the pass counts, in the same
+message as the change.
 
 ## 5. Refactor, and prune the tests
 
@@ -147,10 +186,32 @@ or a snapshot of markup nobody decided, because it breaks on a rename and
 teaches nothing. Deleting a test is safe here in a way it will never be
 later: you watched this behavior's test fail, so you know what it catches.
 
-**Done when** the suite is green after the last edit, and every remaining test
-name describes an outcome a user could notice.
+**Done when** the suite is green after the last edit, every remaining test
+name describes an outcome a user could notice, and if there was nothing worth
+changing you have said so in one clause instead of skipping the step silently.
 
-## 6. Next line, or stop
+## 6. Say what the pass did
+
+Send the closing message. It is one short block, and it is the part the
+student keeps:
+
+```text
+Pass done. TitleField renders "Title is required" for an empty title, one
+test added, suite green, refactor skipped because the change was one line.
+Next: "a saved draft with an empty title keeps the previous title".
+```
+
+Say what changed for the user, how the suite moved, what the refactor did or
+why it was skipped, and what comes next. No praise and no summary of the
+conversation, because the student already read that.
+
+Then paste it nowhere and edit nothing: the message is the record until the
+commit at the end.
+
+**Done when** the message has been sent and it names the behavior, the suite
+state, the refactor, and the next line.
+
+## 7. Next line, or stop
 
 Mark the behavior done in the list, take the next line, and go back to step 3.
 
@@ -158,9 +219,9 @@ Stop when the list is empty, not when the session is long. Then report the
 count in one line: how many behaviors, how many tests, and that each test was
 seen failing before the code existed.
 
-Do not ask permission between passes. The narration is the check-in: the
-student watches the red run and the green run, and the only two places you
-stop for them are a decision in step 1 and a runner in step 2.
+Do not ask permission between passes. The narration is the check-in, and the
+only two places you stop for the student are a decision in step 1 and a runner
+in step 2.
 
 **Done when** every line in the list has a test that was watched failing, and
 the student can see the whole list ticked off.
@@ -180,6 +241,12 @@ These hold on every pass, whatever the deadline says:
 - Every test name is a behavior. A name like `it("calls setTitle")` is a
   rewrite, because it pins how the code works instead of what a person sees.
 - A request with an "and" in it is two passes. Say so before starting.
+- The red message goes out before the implementation exists. If code went in
+  first, revert it, take the test red again, and send the failure: a pass the
+  student did not watch go red is a pass they have to take on faith.
+- No test for the next line until the pass's closing message is sent. The seam
+  between passes is where the lesson lands, and it is the first thing dropped
+  when the work gets busy.
 
 ## What's next
 
