@@ -8,7 +8,7 @@ To run these checks, drive the page with [`442-browser`](../../442-browser/SKILL
 it installs on demand through npx, opens the page, and evaluates the snippets below.
 For a one-command check that screenshots at 360 and 1280 and reports a container with
 no height, which is the bug that turns a map into a grey strip, use
-[`442-browser-use`](../../442-browser-use/SKILL.md). The numbers below are what to read
+[`442-page-check`](../../442-page-check/SKILL.md). The numbers below are what to read
 once the page is actually open.
 
 ## Start the app

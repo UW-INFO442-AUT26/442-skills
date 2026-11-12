@@ -155,4 +155,4 @@ session you forgot about is what leaves a laptop fan spinning.
 Say what the browser showed, in the words of the flow you ran: which click
 did what, what the console said, and where the recording is. What to do about
 it is the next skill's job, or the student's question. For a one-command
-render check at phone and laptop width, use `442-browser-use` instead.
+render check at phone and laptop width, use `442-page-check` instead.

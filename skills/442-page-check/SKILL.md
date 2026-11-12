@@ -1,9 +1,9 @@
 ---
-name: 442-browser-use
+name: 442-page-check
 description: "Runs a one-command render audit of a page that is already running: opens it at 360px and 1280px in a real browser, screenshots both, and reports what is actually wrong, including console errors, a page wider than the phone, containers that have content but no height, images that did not load, and taps that are too small. Use when a student asks whether their page renders, whether it looks right on a phone, why the map, navbar, or image does not appear, or before a milestone. For clicking through a flow or recording one, use 442-browser instead."
 ---
 
-# Look at the page
+# Check the page
 
 A React app compiles whether or not it works. A map with no height compiles, renders
 as a grey strip, and passes every check you can run from a terminal. The only thing
