@@ -1,73 +1,194 @@
 ---
 name: 442-tdd
-description: Test-first development for INFO 442 code. Write one failing test that states the behavior (red), make it pass with the smallest change (green), then refactor with the suite still green. Adapts to the project's stack (React, JavaScript, Firebase) and test runner, and sets one up when the project has none. Use when adding a feature, fixing a bug, or changing behavior in a React, JavaScript, or Firebase project, and when the student asks for tests, TDD, vitest, or proof that a change works.
+description: "Test-first development for INFO 442 code, run one behavior at a time: list the behaviors, write one test, watch it fail, write the smallest code that passes, refactor with the suite green, then take the next one. Walks the student through every pass out loud and shows each test run instead of summarising it. Adapts to the stack (React, JavaScript, Firebase) and sets a runner up when the project has none. Use when adding a feature, fixing a bug, or changing behavior in a React, JavaScript, or Firebase project, or when the student asks for tests, TDD, vitest, or proof that a change works."
 ---
 
 # Test first
 
-Drive one change through the loop, one test at a time:
+Every line of production code arrives because a test was red and demanded it.
+That is the whole discipline, and it is what makes the suite worth trusting:
+there is nowhere for untested code to hide, because code that nothing asked
+for was never written.
 
-- **red**: write a test for the behavior, run it, watch it fail for the right reason.
-- **green**: write the smallest code that makes it pass.
-- **refactor**: clean the code up with the test still passing.
+The suite is not there to please a QA group and not to prove the app works.
+It is there so you can **refactor**. With a suite you trust, ugly code is a
+thing you clean up on a Tuesday. With a suite you doubt, every cleanup is a
+gamble, so nobody touches the mess, and it rots until the team is afraid of
+its own work. A suite you can trust is the only thing that lets you look at
+code you wrote and say "that looks like a mess" and then fix it without fear.
 
-The test comes first. A test written after the code has never been seen to fail, so nothing tells you it detects anything; a test you watched fail proves the assertion can catch the behavior's absence. That is the whole reason to pay the cost of writing it first.
+A test written after its code passes on the very first run, so nobody has seen
+it catch anything. It is a description of what the code happens to do, not a
+demand for what it should do. When you find one, delete it and write it first,
+or accept that the line it covers is untested.
 
-Work one behavior per pass. A request with three behaviors is three trips around the loop, each leaving the suite green.
+Work one behavior per pass. A request holding three behaviors is three trips
+around the loop, each leaving the suite green.
 
-## 1. Name the behavior in one sentence
+## How to talk through a pass
 
-Ask what the user can do after this change that they cannot do now, and answer with something observable:
+The student is here to learn the loop, so each pass is narrated in four lines
+and no more:
+
+1. the behavior, in one sentence
+2. the command you ran
+3. the output it printed, quoted
+4. what you changed, and the run that went green
+
+Show the output rather than describing it. "The test fails" is a claim; the
+assertion line is proof, and proof is what teaches. When a pass needs a
+decision from the student, ask it as one plain sentence in the conversation
+and wait for their reply, because a picker hands you a click where you wanted
+their words.
+
+**Done when** the student could repeat the pass back to you: what you tested,
+what went red, what you changed, what went green.
+
+## 1. List the behaviors
+
+Write the list before writing anything else: every behavior the request
+contains, one line each, in words a user would use.
 
 > Submitting the form with no title shows "Title is required".
+> Submitting a saved draft with an empty title keeps the previous title.
 
-For a bug, name the correct behavior in the same shape: "Saving a draft with an empty title keeps the previous title". Pick the smallest behavior that is worth a test and would fail today.
+Split on "and". "Users can add a task and delete one" is two lines and two
+passes. For a bug, the line is the correct behavior, not the symptom:
+"saving keeps the previous title", not "fix the save bug".
 
-Done when: one sentence names one observable outcome, with no "and" holding a second outcome inside it.
+Show the list to the student with its count, then take the top line.
 
-## 2. Find the test runner, or set one up
+**Done when** the list names every behavior the request contains, each line
+holds one observable outcome, the student has seen it, and the first line is
+small enough that one test can state it.
 
-Read `package.json` for a `test` script, then look for `vitest.config.*`, `jest.config.*`, or existing `*.test.*` files.
+## 2. Get a green baseline
 
-- **Runner present**: use it. Run the suite once now, before touching anything, and note what passes. That baseline is what tells you later whether a failure is yours.
-- **No runner**: ask the student which one they want, recommending the default for their stack. A freshly scaffolded Vite React project has none. [`references/test-runners.md`](references/test-runners.md) has the install and config for Vitest with React Testing Library, `node:test` for plain JavaScript, and the Firebase Emulator Suite.
+Read `package.json` for a `test` script, then look for `vitest.config.*`,
+`jest.config.*`, or existing `*.test.*` files.
 
-Done when: one command runs the whole suite, you have run it, and it is green before your change.
+- **Runner present**: use it and leave it alone. Run the whole suite now, in
+  front of the student, and quote the result. That baseline is what tells you
+  whether a failure later is yours.
+- **No runner**: recommend the default for the stack in one sentence and ask
+  in the same message, so they answer with a word instead of a search. A
+  freshly scaffolded Vite React project has none.
+  [`references/test-runners.md`](references/test-runners.md) has the install
+  and config for Vitest with React Testing Library, `node:test` for plain
+  JavaScript, and the Firebase Emulator Suite.
 
-## 3. Red: write one failing test
+**Done when** one command runs the whole suite, you have run it, it was green,
+and the student saw the output.
 
-Name the test with the sentence from step 1. Add one test this pass: with a batch of new tests you cannot tell which assertion is driving the code. Assert on what the outside sees, never on how the code is built:
+## 3. Red: one test, run it, read the failure
 
-- **React**: render the component, then assert on what is on screen (`screen.getByRole`, `screen.getByText`). Props in, visible output out.
-- **JavaScript**: call the exported function and assert its return value, or the state it changed.
-- **Firebase**: call your own module's function and assert what it returns or writes. Use the emulator for behavior that is really a query or a transaction, and keep the assertion at your boundary rather than on SDK internals.
+One test for the top line of the list, named with that line. Then run it,
+alone first, so the output is only about this behavior:
 
-Run it. It must fail, and the failure must be your assertion, not a typo, a missing import, or a test the runner never collected. If it passes, the behavior already exists or the test is not checking what you think.
+```bash
+npm test -- src/TitleField.test.jsx     # vitest or jest, one file
+node --test src/title.test.js           # node:test, one file
+```
 
-Done when: the new test runs, fails on its own assertion, and you can say in one sentence why it fails.
+Assert on what the outside sees, never on how the code is built:
+
+- **React**: render the component, then assert on screen text and roles
+  (`screen.getByRole`, `screen.getByText`). Props in, visible output out.
+- **JavaScript**: call the exported function and assert its return value, or
+  the state it changed.
+- **Firebase**: call your own module's function and assert what it returns or
+  writes. The emulator is right for a real query or a transaction, and the
+  assertion stays on your boundary rather than on SDK internals.
+
+Then run the whole suite. Two failures mean two passes, and you have started
+the second too early.
+
+The failure has to come from your assertion. A typo, a missing import, or a
+file the runner never collected is a broken test, not a red one: fix it and
+run again.
+
+A test that passes on its first run stops the pass. Either the behavior
+already exists, so the line comes off the list instead of getting a test, or
+the assertion is weaker than the sentence, so tighten it until it fails for
+the reason the sentence describes. The one thing it does not become is a test
+nobody saw fail.
+
+**Done when** the output shows this one test failing on its own assertion,
+you have quoted that line to the student, and you can say in one sentence why
+it fails.
 
 ## 4. Green: the smallest code that passes
 
-Write the least code that makes the assertion pass. It may be specific to the one case and slightly ugly; that is expected, because the next behavior is the next trip around the loop. Options, extra cases, and generalization are code for behaviors you have not tested yet.
+Write the least code that makes the assertion pass, and no more. A hardcoded
+return is fine when it is what the one test asks for; the next behavior is the
+next pass, and it is what turns the constant into real logic. Options, extra
+cases, and generalization are code for behaviors nobody has tested yet.
 
-Run the new test, then the whole suite. If passing it drags in unrelated code, the sentence from step 1 held more than one behavior; return to step 1 and take the smaller one.
+Run the new test, then the whole suite. Write no production code this pass
+after the suite goes green, because anything added now arrives without a test
+asking for it.
 
-Done when: the whole suite passes, including the test that failed a moment ago.
+If the smallest pass drags in code that has nothing to do with the sentence,
+the sentence held more than one behavior: go back to step 1 and take the
+smaller one.
+
+**Done when** the test that was red a moment ago passes, the whole suite is
+green, and you can name the line that made the difference.
 
 ## 5. Refactor, and prune the tests
 
-Improve the code with the tests green: names, duplication, and where each piece lives. Change the implementation only; the behavior from step 1 stays where it is.
+Now, and only now, improve the code: names, duplication, and where each piece
+lives. Behavior does not change. One edit at a time, suite after each, so a
+red suite points at the edit that caused it.
 
-Hold the tests to the same bar. Each one names a behavior. Delete a test that pins something incidental (an exact call count, a private helper, a CSS class, a snapshot of markup nothing decided), because those break on a rename and hide the behavior that matters. Run the suite after each edit.
+Hold the tests to the same bar. Each one names a behavior. Delete a test that
+pins something incidental, an exact call count, a private helper, a CSS class,
+or a snapshot of markup nobody decided, because it breaks on a rename and
+teaches nothing. Deleting a test is safe here in a way it will never be
+later: you watched this behavior's test fail, so you know what it catches.
 
-Done when: the suite is green after the last edit, and every remaining test name describes an outcome a user could notice.
+**Done when** the suite is green after the last edit, and every remaining test
+name describes an outcome a user could notice.
 
-## 6. Next behavior, or stop
+## 6. Next line, or stop
 
-Take the next behavior from the request and start again at step 1. Stop when the request is satisfied, not when you run out of ideas.
+Mark the behavior done in the list, take the next line, and go back to step 3.
 
-Done when: every behavior in the request has a test, and every test was seen failing before the code that makes it pass existed.
+Stop when the list is empty, not when the session is long. Then report the
+count in one line: how many behaviors, how many tests, and that each test was
+seen failing before the code existed.
+
+Do not ask permission between passes. The narration is the check-in: the
+student watches the red run and the green run, and the only two places you
+stop for them are a decision in step 1 and a runner in step 2.
+
+**Done when** every line in the list has a test that was watched failing, and
+the student can see the whole list ticked off.
+
+## The stop rules
+
+These hold on every pass, whatever the deadline says:
+
+- No production code without a red test in this pass. If a line got in
+  another way, delete it or write the test that demands it.
+- One red test at a time. A second test while the first is red means the
+  first one is no longer driving the code.
+- Refactor with the suite green, never while it is red, and never in the same
+  edit as a new behavior.
+- A test that has never failed is fixed or deleted. Keeping it is a green
+  light over code nobody checked.
+- Every test name is a behavior. A name like `it("calls setTitle")` is a
+  rewrite, because it pins how the code works instead of what a person sees.
+- A request with an "and" in it is two passes. Say so before starting.
 
 ## What's next
 
-Run the suite one more time in front of the student, then commit the test and the code together (`git add -A && git commit -m "Add <behavior>, tested first"`) so the history shows which test failed first.
+Run the suite one last time in front of the student, then commit the test and
+the code together, with the behavior named in the message:
+
+```bash
+git add -A && git commit -m "Add title validation, tested first"
+```
+
+The history is the argument for the next pass: a commit whose test failed in
+the commit before it is the one thing that proves the loop was run.
