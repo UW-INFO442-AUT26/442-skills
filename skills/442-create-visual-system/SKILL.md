@@ -1,6 +1,6 @@
 ---
 name: 442-create-visual-system
-description: "Interviews a team about their product's visual and verbal system, builds a component board in HTML they can open and react to, and iterates until it lands, then writes design.md and voice.md. Use when a project needs its own look and its own way of talking, when a screen looks generic or accidentally like a template, when the copy sounds like a robot, when a demo needs to feel designed, or when no design decisions are written down."
+description: "Interviews a team about their product's look, builds a component board in HTML they can open and react to, iterates until it lands, and writes design.md. Use when a project needs its own look, when a screen looks generic or accidentally like a template, when a demo needs to feel designed, or when no design decisions are written down."
 ---
 
 # Build the visual system
@@ -15,19 +15,19 @@ look and read like the same demo.
 This skill makes those decisions explicit, puts them on one page you can look at,
 and keeps changing the tokens and the words until the page feels like the product.
 
-Four files come out of it:
+Three files come out of it:
 
 - `design/board.html` opens by double-clicking. Every component and state, the type
-  specimen, the spacing and grid, the motifs, and a copy panel, with a switch
+  specimen, the spacing and grid, the motifs, and the density switch, with a switch
   between directions.
 - `design/tokens.css` is the same tokens, ready to import into the app.
-- `design.md` is the visual system: direction, typography, spacing, color,
-  geometry, components, motifs, motion, contrast numbers, and what you rejected.
-- `voice.md` is the verbal system: how the product talks, tone by situation,
-  capitalization and punctuation, microcopy patterns, and banned phrasing.
+- `design.md` is the system: direction, typography, spacing, color, geometry,
+  components, motifs, motion, contrast numbers, and what you rejected.
 
-Two files for two kinds of decision. A team edits the words far more often than the
-palette, and burying the words inside a design doc means nobody reads them.
+Words are a separate job with their own document. Call the Skill tool with
+`442-create-brand-voice` for how the product talks, and run it after this one, since
+copy read aloud against a real type scale is a different decision than copy read in a
+list.
 
 **Boundary with `442-brand`.** The class brand owns class-facing artifacts: the
 course page, exercises, slides, anything presented as 442 material. Read it with
@@ -35,17 +35,32 @@ the Skill tool first when that is what you are building. A product's own identit
 is different work, and it is this skill. When a project is half class artifact,
 treat the class tokens as one of the three directions rather than as the answer.
 
+## Two modes, decided from the invocation
+
+The default is fast. The word `detailed` in the request switches to the full
+interview.
+
+| Invocation | What happens |
+|---|---|
+| `/442-create-visual-system for a shift app` | Ask the four questions only the team can answer, decide the rest yourself, and announce every decision in one line so it can be overruled. About ten minutes. |
+| `/442-create-visual-system detailed, a claim tracker for caseworkers` | Ask the full bank in [references/question-set.md](references/question-set.md), one at a time, and let the team make each call. |
+
+Detect `detailed` anywhere in the request, in any case. When in doubt, take the
+default: a team that wanted the longer interview will ask for it, and a twelve
+question interview about a logo-less MVP gets abandoned half way.
+
+In default mode the decisions you make alone are still written down with a reason,
+because an unexplained rule gets broken the first time somebody disagrees with it.
+
 ## 1. Read before you ask
 
 Collect in writing: the product in one line, who uses it, where it runs, the
 screens that exist, and an inventory of what already exists in the code. Read
-`README.md`, the spec, `src/index.css`, the two most finished components, and
-**every user-facing string you can find** (`grep` for button labels, error
-messages, empty states, page titles).
+`README.md`, the spec, `src/index.css`, and the two most finished components.
 
-The strings matter as much as the colors. Voice work on invented examples produces
-a voice nobody can use; voice work on the strings that already exist produces one
-they can see is wrong.
+Also grep the source for user-facing strings. You are not rewriting them here, but
+they tell you the register the product already has, and how much text each surface
+carries, which is what the density and type decisions rest on.
 
 If the product has no name and no mark, say so in one line and offer to proceed: a
 visual system does not need a logo, but the mark will have to match later (Call the
@@ -57,14 +72,18 @@ least ten real UI strings are written down.
 ## 2. Interrogate, one question at a time
 
 Ask one question per message, each with your recommended answer inside it so the
-student can reply "yes" or correct you. Offer "you decide" as a real answer and
-take it as final. Ten questions is the whole interview; twenty gets abandoned.
+student can reply "yes" or correct you. Offer "you decide" as a real answer and take
+it as final.
 
-The bank is in [references/question-set.md](references/question-set.md): six visual
-questions (register, references, density, type, the job of color, geometry) and
-four verbal ones (how it addresses one person, how much it explains, whether it
-apologizes, what it refuses to say). Ask the verbal four even when the team came in
-asking only about colors, because copy is where most projects sound identical.
+**Default mode, the four questions only the team can answer:** the register (who is
+looking and what they are doing), two interfaces they find easy or hard to look at,
+the density the busiest screen forces, and corners versus borders versus shadows.
+Those four set type, color, spacing ladder, and geometry, and everything else is
+derivable.
+
+**Detailed mode** adds type personality, the job of color, and the one signature
+mark. Full bank with the recommendation to carry into each:
+[references/question-set.md](references/question-set.md).
 
 Two rules while asking:
 
@@ -74,8 +93,9 @@ Two rules while asking:
 - **Write each answer into the running list** after the reply, so a wrong turn shows
   up while it is still cheap.
 
-*Done when:* every question is answered or delegated, and each answer is one line
-in a running decision list.
+*Done when:* every question in the chosen mode is answered or delegated, every
+decision you made alone is written down with a reason, and each answer is one line in
+a running list.
 
 ## 3. Set the scales before the look
 
@@ -95,17 +115,18 @@ written list of tokens with a one-line purpose each.
 ## 4. Draft three directions, named
 
 A direction is a stance, not a color. Each one carries type, spacing rhythm, color
-roles, corner and border geometry, a signature motif, and **one line of copy written
-in that direction's voice**, because a look and a voice that disagree read as two
-products.
+roles, corner and border geometry, and a signature motif. Each one also gets **one
+real string written in its register** on the same page: a look and a voice that
+disagree read as two products, and a single sentence is enough to catch it.
 
 An example line, for a shift app, is the empty state: `No shifts yet` in one
 direction, `Nothing on the rota. Add the first shift.` in another. Same screen,
-different product.
+different product. The full voice job is `442-create-brand-voice`; this is a
+sanity check, not a substitute.
 
 Derive them, do not decorate: the register picks the type, the density picks the
-spacing, the domain picks the color roles and the motif, and the verbal answers pick
-the sentence. Each direction gets one line of rationale tied to an answer from step
+spacing, the domain picks the color roles and the motif, and the audience picks the
+sentence. Each direction gets one line of rationale tied to an answer from step
 2. Recommend one, then let the student pick.
 
 *Done when:* three named directions exist, each with type, spacing rhythm, color
@@ -118,7 +139,7 @@ Copy [`assets/board.html`](assets/board.html) to `design/board.html` and rewrite
 token blocks with the three directions, keeping all three on one page behind a
 switch. The full matrix is in [references/board-spec.md](references/board-spec.md):
 components and states, the type specimen with a measure demo, the spacing and rhythm
-demonstration, the grid, the motifs, and the copy panel.
+demonstration, the grid, and the motifs.
 
 Three constraints make it usable:
 
@@ -168,13 +189,11 @@ look boxed. Write the measured numbers into `design.md`.
 targets of at least 44 by 44 pixels on mobile, no state carried by color alone, and
 motion that stops under `prefers-reduced-motion`.
 
-**The verbal gate.** Read the ten real strings from step 1 against `voice.md` out
-loud. Every one should be understandable with no context, name what happened, and
-say what to do next. Delete the words that survive in every product: seamlessly,
-empower, simply, easily, robust, leverage, world-class, delight.
+Words are not gated here. If a team has no `voice.md` yet, say so in one line and
+point at `442-create-brand-voice`, because the copy is the next thing that will look
+unfinished.
 
-*Done when:* every pair has a measured ratio, the physical checks pass, and the ten
-strings have been rewritten or confirmed.
+*Done when:* every pair has a measured ratio and the physical checks pass.
 
 ## 8. Write design.md
 
@@ -227,32 +246,17 @@ question in week eight.
 *Done when:* `design.md` exists with all eleven sections and the contrast numbers
 are real measurements.
 
-## 9. Write voice.md
-
-Separate file, because words change more often than colors and because a teammate
-writing a button label will not open a design system. Content, in this order, is
-specified in [references/voice.md](references/voice.md).
-
-The short version: voice is constant, tone changes by situation. A refused payment,
-an empty list, and a success message are three different tones from one voice, and a
-team that only writes the success message will invent the other two under deadline.
-
-*Done when:* `voice.md` exists with the voice description, the four dials, a
-situation table covering at least errors, empty states, success, destructive
-actions, and onboarding, the capitalization and punctuation rules, the microcopy
-patterns, and the banned list.
-
-## 10. Hand off
+## 9. Hand off
 
 Copy `design/tokens.css` into the app and import it once. Then say the two rules
 that keep a system alive: a color or a size that a token already names never gets
-typed again, and a new string gets checked against `voice.md` before it ships.
+typed again, and a string is not a design decision so it does not belong here.
 
 *Done when:* the app imports the token file, no component hard-codes a value a token
-names, and the team knows where the two documents live.
+names, and the team knows where `design.md` lives.
 
 ## What's next
 
-Commit `design/`, `design.md`, and `voice.md`, then Call the Skill tool with
-`442-page-check` to see the first real screen at phone and laptop width with these
-tokens applied, and rewrite its copy against `voice.md` while you are there.
+Commit `design/` and `design.md`, then Call the Skill tool with
+`442-create-brand-voice` so the words match the look, and `442-page-check` to see the
+first real screen at phone and laptop width with these tokens applied.

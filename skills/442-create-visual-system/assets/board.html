@@ -447,17 +447,6 @@ td .mono { color: var(--ink-2); }
   background-image: radial-gradient(var(--border) 1px, transparent 1px);
   background-size: 8px 8px;
 }
-.copy-panel { display: grid; gap: var(--space-2); }
-.copy-pair {
-  display: grid; gap: var(--space-1); grid-template-columns: 1fr;
-  padding: var(--space-3) var(--space-4); background: var(--surface);
-  border: 1px solid var(--border); border-radius: var(--radius-sm);
-  border-left: 3px solid var(--border);
-}
-.copy-pair.bad { border-left-color: var(--error); }
-.copy-pair.good { border-left-color: var(--success); }
-.copy-pair .tag { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
-.copy-pair .said { font-size: var(--text-base); color: var(--ink); }
 @media (max-width: 44.9rem) { .grid-demo { grid-template-columns: 1fr; } .grid-demo .phone { width: 100%; } }
 
 /* The token printout, so a team can copy the active direction into tokens.css */
@@ -761,19 +750,6 @@ pre {
     <div class="motif-row is-edge"><span class="idx">11:30</span><span>Accent edge on the row, repeated on cards</span></div>
     <div class="motif-row"><span class="num">3</span><span>Oversized numeral as the row marker</span></div>
     <div class="motif-row is-dotted"><span class="idx">18:15</span><span>Dotted field, used on empty and status rows only</span></div>
-  </div>
-
-  <h2>Copy, in this type</h2>
-  <p class="label">The same strings written twice. Words look different at your measure, so decide them here.</p>
-  <div class="copy-panel">
-    <div class="copy-pair bad"><span class="tag">before</span><span class="said">Invalid input. Please try again.</span></div>
-    <div class="copy-pair good"><span class="tag">after</span><span class="said">Enter a date after today.</span></div>
-    <div class="copy-pair bad"><span class="tag">before</span><span class="said">No data available</span></div>
-    <div class="copy-pair good"><span class="tag">after</span><span class="said">Nothing on the rota. Add the first shift.</span></div>
-    <div class="copy-pair bad"><span class="tag">before</span><span class="said">Are you sure you want to delete this?</span></div>
-    <div class="copy-pair good"><span class="tag">after</span><span class="said">Delete the 4pm shift? This cannot be undone.</span></div>
-    <div class="copy-pair bad"><span class="tag">before</span><span class="said">Successfully saved!</span></div>
-    <div class="copy-pair good"><span class="tag">after</span><span class="said">Shift saved.</span></div>
   </div>
 
   <h2>Contrast to measure before you finish</h2>

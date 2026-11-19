@@ -40,14 +40,14 @@ thing, and say so in `design.md`.
 | Rhythm | the same three blocks spaced at two different steps, so the difference is visible |
 | Grid | one column at 360px, then the card grid at laptop width |
 | Motifs | four candidate signature marks side by side, applied to a row rather than drawn alone |
-| Copy panel | the same five strings written two ways, rendered in the system's type |
 | Radius | the radius tokens applied to real cards |
 
 ## Why the board carries more than components
 
 Half of a design system is not a component. The type scale, the spacing rhythm, the
-grid, the motifs, and the copy are what a team will improvise badly in the app if the
-board does not show them.
+grid, and the motifs are what a team will improvise badly in the app if the board does
+not show them. Words are the other half and they live in their own skill,
+`442-create-brand-voice`, with their own board.
 
 - **The measure demo** puts a paragraph at the token width and the same paragraph
   full width. The difference is the argument, and it does not need explaining.
@@ -55,9 +55,6 @@ board does not show them.
   about "more space" until they see it.
 - **The motif row** shows four candidates applied to a real list row, not floating
   alone, because a mark that only works in isolation is not a motif.
-- **The copy panel** renders the same five strings two ways in the system's own type.
-  Words look different at your measure, in your font, at your size, which is why
-  copy decided in a document and never seen in place gets rewritten in the app.
 
 ## Wiring rules
 
