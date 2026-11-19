@@ -151,7 +151,7 @@ checkout stays at `~/.442-skills` until you delete it yourself.
 | `442-create-exercise` | Turns a topic into practice: a mobile-first page you open on your phone, or a small React project you clone and fix on a laptop. |
 | `442-create-roadmap` | Turns a project brief and your team's constraints into a week-by-week plan. |
 | `442-create-personas` | Writes realistic user personas for a problem statement. |
-| `442-create-names` | Works with you on a product name, and tests it against the alternatives. |
+| `442-create-names` | Works with you on a product name, hunts past the generic one, and tests it against the alternatives. |
 | `442-tdd` | Builds a change test first: write the failing test, make it pass, then clean it up. |
 | `442-prioritize` | Sorts a pile of requirements and ideas into P0, P1, and P2. |
 | `442-grill` | Asks you one question at a time until a vague idea becomes a written spec. |
