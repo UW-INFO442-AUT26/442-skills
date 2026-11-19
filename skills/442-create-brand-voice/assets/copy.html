@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Copy board</title>
+<!--
+  The copy board. Copy this file to copy/copy.html and fill in the product.
+  - It reads ../design/tokens.css when that file exists, so the copy appears in
+    the product's own type. Without it, the fallback tokens below apply and the
+    page still looks reasonable.
+  - No build step. Double-click to open.
+  - Every section here maps to a section of voice.md. If it is not on this page,
+    it does not get checked, and if it does not get checked it does not exist.
+-->
+<link rel="stylesheet" href="../design/tokens.css">
+<style>
+:root {
+  --bg: #fbfaf8; --surface: #ffffff; --surface-2: #f3f1ee;
+  --ink: #16181d; --ink-2: #3c4149; --muted: #6b7280;
+  --border: #e2ded8; --edge: #8b8578;
+  --accent: #4a3a86; --accent-ink: #ffffff; --accent-soft: #ece8f7;
+  --success: #1f6b45; --warning: #8a5a00; --error: #a12121; --error-soft: #fbeaea;
+  --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+  --text-xs: 0.75rem; --text-sm: 0.875rem; --text-base: 1rem;
+  --text-lg: 1.125rem; --text-xl: 1.375rem; --text-2xl: 1.75rem;
+  --leading: 1.55; --leading-tight: 1.15;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+  --space-5: 24px; --space-6: 32px; --space-7: 48px;
+  --radius: 6px; --radius-sm: 4px; --shadow-1: 0 1px 2px rgba(22,24,29,.08);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-sans); font-size: var(--text-base);
+  line-height: var(--leading); -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 60rem; margin: 0 auto; padding: var(--space-5) var(--space-4) var(--space-7); }
+h1 { font-size: var(--text-2xl); line-height: var(--leading-tight); margin: 0 0 var(--space-2); }
+h2 {
+  font-size: var(--text-lg); line-height: var(--leading-tight);
+  margin: var(--space-6) 0 var(--space-3);
+  padding-bottom: var(--space-2); border-bottom: 1px solid var(--border);
+}
+p { margin: 0 0 var(--space-3); max-width: 62ch; color: var(--ink-2); }
+.label {
+  font-family: var(--font-mono); font-size: var(--text-xs);
+  letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted);
+  margin: 0 0 var(--space-2);
+}
+.voice-line {
+  font-size: var(--text-xl); line-height: var(--leading-tight); color: var(--ink);
+  max-width: 30ch; margin: 0 0 var(--space-3);
+}
+.dials { display: grid; gap: var(--space-2); grid-template-columns: 1fr; }
+@media (min-width: 40rem) { .dials { grid-template-columns: 1fr 1fr; } }
+.dial {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: var(--space-3) var(--space-4);
+}
+.dial .k { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.dial .v { font-size: var(--text-sm); color: var(--ink); }
+table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); background: var(--surface); }
+th, td { text-align: left; padding: var(--space-3); border-bottom: 1px solid var(--border); vertical-align: top; }
+th { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 600; }
+td.tone { color: var(--ink-2); white-space: nowrap; }
+td.eg { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--ink); }
+.pairs { display: grid; gap: var(--space-2); }
+.pair {
+  display: grid; gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface); border: 1px solid var(--border);
+  border-left: 3px solid var(--border); border-radius: var(--radius-sm);
+}
+.pair.bad { border-left-color: var(--error); }
+.pair.good { border-left-color: var(--success); }
+.pair .tag { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.pair .said { font-size: var(--text-base); color: var(--ink); }
+.banned { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.banned span {
+  font-family: var(--font-mono); font-size: var(--text-xs);
+  padding: 2px var(--space-2); border-radius: var(--radius-sm);
+  border: 1px solid var(--error); color: var(--error);
+  text-decoration: line-through;
+}
+.rule {
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm); color: var(--ink-2); margin: 0 0 var(--space-2);
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Copy board</h1>
+  <p class="label">Replace every bracketed line with the product's own words.</p>
+  <p class="voice-line">[The voice in one line, phrased so a teammate can repeat it.]</p>
+
+  <h2>The four dials</h2>
+  <div class="dials">
+    <div class="dial"><div class="k">Formality</div><div class="v">[position and boundary]</div></div>
+    <div class="dial"><div class="k">Warmth</div><div class="v">[position and boundary]</div></div>
+    <div class="dial"><div class="k">Brevity</div><div class="v">[position and boundary]</div></div>
+    <div class="dial"><div class="k">Authority</div><div class="v">[position and boundary]</div></div>
+  </div>
+
+  <h2>Tone by situation</h2>
+  <table>
+    <thead><tr><th>Situation</th><th>Tone</th><th>The product says</th></tr></thead>
+    <tbody>
+      <tr><td>Error</td><td class="tone">plain, no blame</td><td class="eg">Could not save the shift. Check your connection and try again.</td></tr>
+      <tr><td>Empty state</td><td class="tone">matter of fact</td><td class="eg">Nothing on the rota. Add the first shift.</td></tr>
+      <tr><td>Success</td><td class="tone">short, past tense</td><td class="eg">Shift saved.</td></tr>
+      <tr><td>Destructive</td><td class="tone">serious, names the thing</td><td class="eg">Delete the 4pm shift? This cannot be undone.</td></tr>
+      <tr><td>Loading</td><td class="tone">honest</td><td class="eg">Saving...</td></tr>
+      <tr><td>Onboarding</td><td class="tone">one instruction</td><td class="eg">Tap a row to see the hours behind it.</td></tr>
+      <tr><td>Limit or refusal</td><td class="tone">rule, then way forward</td><td class="eg">You can add five roles on this plan.</td></tr>
+      <tr><td>Legal or account</td><td class="tone">formal, no contractions</td><td class="eg">Your account will be closed in 30 days.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Patterns, both ways</h2>
+  <p class="label">The left border says which one to keep. Delete the bad column once the team agrees.</p>
+  <div class="pairs">
+    <div class="pair bad"><span class="tag">button, before</span><span class="said">Submit</span></div>
+    <div class="pair good"><span class="tag">button, after</span><span class="said">Save shift</span></div>
+    <div class="pair bad"><span class="tag">error, before</span><span class="said">Invalid input. Please try again.</span></div>
+    <div class="pair good"><span class="tag">error, after</span><span class="said">Enter a date after today.</span></div>
+    <div class="pair bad"><span class="tag">empty, before</span><span class="said">No data available</span></div>
+    <div class="pair good"><span class="tag">empty, after</span><span class="said">Nothing on the rota. Add the first shift.</span></div>
+    <div class="pair bad"><span class="tag">destructive, before</span><span class="said">Are you sure you want to delete this?</span></div>
+    <div class="pair good"><span class="tag">destructive, after</span><span class="said">Delete the 4pm shift? This cannot be undone.</span></div>
+    <div class="pair bad"><span class="tag">success, before</span><span class="said">Successfully saved!</span></div>
+    <div class="pair good"><span class="tag">success, after</span><span class="said">Shift saved.</span></div>
+  </div>
+
+  <h2>Banned</h2>
+  <div class="banned">
+    <span>seamlessly</span><span>empower</span><span>simply</span><span>easily</span>
+    <span>robust</span><span>leverage</span><span>world-class</span><span>delight</span>
+    <span>effortless</span><span>cutting-edge</span><span>unlock</span><span>supercharge</span>
+    <span>solution</span><span>platform</span><span>ecosystem</span><span>synergy</span>
+  </div>
+  <p class="rule">No adjective in a button label.</p>
+  <p class="rule">No sentence that would still be true with a competitor's name swapped in.</p>
+
+  <h2>Strings to rewrite</h2>
+  <p class="label">Paste the ten real strings found in the code, then rewrite each one.</p>
+  <table>
+    <thead><tr><th>Where</th><th>Now</th><th>Rewrite</th></tr></thead>
+    <tbody>
+      <tr><td class="tone">[surface]</td><td class="eg">[the string in the code]</td><td class="eg">[the string after voice.md]</td></tr>
+      <tr><td class="tone">[surface]</td><td class="eg">[the string in the code]</td><td class="eg">[the string after voice.md]</td></tr>
+      <tr><td class="tone">[surface]</td><td class="eg">[the string in the code]</td><td class="eg">[the string after voice.md]</td></tr>
+      <tr><td class="tone">[surface]</td><td class="eg">[the string in the code]</td><td class="eg">[the string after voice.md]</td></tr>
+      <tr><td class="tone">[surface]</td><td class="eg">[the string in the code]</td><td class="eg">[the string after voice.md]</td></tr>
+    </tbody>
+  </table>
+
+</div>
+</body>
+</html>
