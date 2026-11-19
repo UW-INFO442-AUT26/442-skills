@@ -152,6 +152,7 @@ checkout stays at `~/.442-skills` until you delete it yourself.
 | `442-create-roadmap` | Turns a project brief and your team's constraints into a week-by-week plan. |
 | `442-create-personas` | Writes realistic user personas for a problem statement. |
 | `442-create-names` | Works with you on a product name, hunts past the generic one, and tests it against the alternatives. |
+| `442-create-visual-system` | Interviews you about your product's look, builds a component board to react to, and writes design.md. |
 | `442-logo` | Interviews you about your logo, writes the brief, and hands you one prompt to paste into Gemini. |
 | `442-tdd` | Builds a change test first: write the failing test, make it pass, then clean it up. |
 | `442-prioritize` | Sorts a pile of requirements and ideas into P0, P1, and P2. |
